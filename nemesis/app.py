@@ -52,7 +52,8 @@ def user_details(userid):
         token = request.args["token"]
         instance = LdapInstance()
         print sessions[token]
-        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0]):
+        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
+            and instance.is_teacher_of(sessions[token][0], userid):
             try:
                 details = instance.get_user_details(userid)
                 full_name = details["Full name"] + " " + details["Surname"]
