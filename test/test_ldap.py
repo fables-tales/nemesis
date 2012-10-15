@@ -22,8 +22,9 @@ class TestAuth(unittest.TestCase):
         self.assertTrue(instance.get_user_details("teacher_coll2")["E-mail"], "mail@mail.com")
 
     def test_get_college_name(self):
-        print "here"
         instance = LdapInstance("../nemesis/userman")
+        self.assertEqual(instance.get_college_name("college-1"), "college the first")
+        self.assertEqual(instance.get_college_name("college-2"), "secondary college")
 
 if __name__ == '__main__':
     unittest.main()
