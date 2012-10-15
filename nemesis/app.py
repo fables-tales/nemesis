@@ -18,6 +18,7 @@ def auth():
         password = request.form["password"]
         instance = LdapInstance()
         if instance.bind(username, password):
+            print instance.is_teacher(username)
             if instance.is_teacher(username):
                 auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
                 sessions[auth_hash["token"]] = (username, password)
@@ -61,12 +62,25 @@ def user_details(userid):
                 return json.dumps({"full_name":full_name, "email":email}), 200
             except:
                 return '["error":"an error occured"}', 500
-    return '', 403
+    return '{}', 403
 
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
-    pass
+    if request.form.has_key("token"):
+        print "got a token"
+        token = request.form["token"]
+        instance = LdapInstance()
+        print sessions[token]
+        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
+            and instance.is_teacher_of(sessions[token][0], userid):
+                if request.form.has_key("email"):
+                    print request.form["email"]
+                    instance.set_user_attribute(userid, "mail", request.form["email"])
+                if request.form.has_key("password"):
+                    instance.set_user_password(userid, request.form["password"])
+                return '{}', 200
 
+    return '{}', 403
 
 if __name__ == "__main__":
     app.debug = True
