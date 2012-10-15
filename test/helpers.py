@@ -1,5 +1,8 @@
 import httplib
 import urllib
+import sys
+import os
+sys.path.append(os.path.abspath('../nemesis/'))
 
 def server_post(endpoint, params=None):
     conn = httplib.HTTPConnection("localhost:5000")
