@@ -25,6 +25,21 @@ def auth():
     return '', 403
 
 
+@app.route("/deauth", methods=["POST"])
+def deauth():
+    deleted = False
+    if request.form.has_key("token"):
+        token = request.form["token"]
+        if sessions.has_key(token):
+            del sessions[token]
+            deleted = True
+
+
+    if app.debug:
+        return str(deleted), 200
+    else:
+        return '',200
+
 
 if __name__ == "__main__":
     app.debug = True
