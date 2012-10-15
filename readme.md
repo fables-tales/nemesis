@@ -61,12 +61,15 @@ and then run these userman commands (your LDAP **must** be empty for this to wor
 
 ./userman group addusers team3 teacher_coll2 student_coll2_1 student_coll2_2
 
+#set the user's password to 'facebees'
 echo "type 'facebees'"
 ./userman user passwd teacher_coll1
 
+#set the user's password to 'noway'
 echo "type 'noway'"
 ./userman user passwd teacher_coll2
 
+#set the user's password to 'cows'
 echo "type 'cows'"
 ./userman user passwd student_coll1_1
 ```
