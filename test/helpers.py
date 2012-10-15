@@ -19,11 +19,9 @@ def server_post(endpoint, params=None):
 
 def server_get(endpoint, params=None):
     conn = httplib.HTTPConnection("localhost:5000")
-    headers = {"Content-type": "application/x-www-form-urlencoded",
-                "Accept": "text/plain"}
     if params != None:
         url_params = urllib.urlencode(params)
-        conn.request("GET", endpoint, url_params, headers)
+        conn.request("GET", endpoint + "?" + url_params)
     else:
         conn.request("GET", endpoint)
 
