@@ -44,6 +44,24 @@ def deauth():
     else:
         return '',200
 
+@app.route("/user/<userid>", methods=["GET"])
+def user_details(userid):
+    print "gogo"
+    if request.args.has_key("token"):
+        print "got a token"
+        token = request.args["token"]
+        instance = LdapInstance()
+        print sessions[token]
+        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0]):
+            try:
+                details = instance.get_user_details(userid)
+                full_name = details["Full name"] + " " + details["Surname"]
+                email     = details["E-mail"]
+                return json.dumps({"full_name":full_name, "email":email}), 200
+            except:
+                return '["error":"an error occured"}', 500
+    return '', 403
+
 
 if __name__ == "__main__":
     app.debug = True
