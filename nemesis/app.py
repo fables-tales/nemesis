@@ -14,14 +14,18 @@ def auth():
     print request.args
     print request.form
     if request.form.has_key("username") and request.form.has_key("password"):
-        print "woo"
         username = request.form["username"]
         password = request.form["password"]
-        print username,password
         instance = LdapInstance()
-        if instance.bind(username, password) and instance.is_teacher(username):
-            auth_hash = {"auth":sha256(str(random.randint(0,1000000))).hexdigest()}
-            return json.dumps(auth_hash)
+        if instance.bind(username, password):
+            if instance.is_teacher(username):
+                auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
+                sessions[auth_hash["token"]] = (username, password)
+                return json.dumps(auth_hash)
+            else:
+                return '{"error": "not a teacher"}', 403
+        else:
+            return '{"error": "invalid credentials"}', 403
     return '', 403
 
 
