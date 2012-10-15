@@ -84,6 +84,9 @@ class LdapInstance:
     def get_user_details(self,userid):
         return user_details(self.userman_path, userid)
 
+    def get_college(self, userid):
+        return college_for_user(self.userman_path, userid)
+
     def is_teacher_of(self, teacherid, userid):
         return is_teacher_of(self.userman_path, teacherid, userid)
 
@@ -103,6 +106,12 @@ class LdapInstance:
         password = str(password)
         modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
         self.conn.modify_s(bind_str, modlist)
+
+    def get_college_name(self, college_group):
+        return college_name(self.userman_path, college_group)
+
+    def get_group_users(self, group):
+        return group_members(self.userman_path, group)
 
 if __name__ == "__main__":
     assert LdapInstance().is_teacher("teacher_coll1") == True
