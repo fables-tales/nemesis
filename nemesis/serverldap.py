@@ -42,6 +42,12 @@ def college_for_user(userman_path, userid):
         if userid in group_members(userman_path, college):
             return college
 
+def college_name(userman_path, college_group):
+    college_group = college_group.replace("college-", "")
+    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
+    name = " ".join(p.stdout.read().strip().split("\n")[0].split(" ")[1:])
+    return name
+
 def is_teacher_of(userman_path, teacher_id, student_id):
     teacher_college = college_for_user(userman_path, teacher_id)
     student_college = college_for_user(userman_path, student_id)
