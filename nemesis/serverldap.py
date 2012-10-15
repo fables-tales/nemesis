@@ -1,8 +1,13 @@
 import ldap
 import ConfigParser
 import subprocess
-import os
+import hashlib
+import base64
 
+
+def encode_pass(p):
+    h = hashlib.sha1(p)
+    return "{SHA}%s" %( base64.b64encode( h.digest() ) )
 
 def run_userman_task(task, userman_path):
     process = task
