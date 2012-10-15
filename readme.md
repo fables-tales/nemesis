@@ -3,7 +3,7 @@
 This is Nemesis, a new system for allowing team leaders running teams for the
 [Student Robotics](http://studentrobotics.org) competition to change their passwords.
 
-##Phippen you ass, just let me hack on it
+##Phippen, you ass, just let me hack on it
 
 Ok cool, run this (anywhere that isn't in a git repository), also this command
 downloads a ~400 meg ubuntu vm image.
