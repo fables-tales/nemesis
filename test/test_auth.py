@@ -12,7 +12,7 @@ class TestAuth(unittest.TestCase):
 
     def test_auth_invalid_body(self):
         resp = helpers.server_post("/auth", {"username":"wrong", "password":"fail"})
-        self.assertEqual(resp.read(), "")
+        self.assertEqual(resp.read(), '{"error": "invalid credentials"}')
 
     def test_auth_valid_resp_code(self):
         resp = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
@@ -21,11 +21,18 @@ class TestAuth(unittest.TestCase):
     def test_auth_valid_body(self):
         resp = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
         resp = resp.read()
-        self.assertTrue(resp.find("{\"auth\":") != -1)
+        self.assertTrue(resp.find("{\"token\":") != -1)
         self.assertTrue(resp.find("}") != -1)
 
     def test_auth_valid_not_teacher_code(self):
-        self.fail()
+        #tests that we can't login as a student, even with a valid username
+        #and password
+        resp = helpers.server_post("/auth", {"username":"student_coll1_1", "password":"cows"})
+        self.assertEqual(resp.status, 403)
+
+    def test_auth_valid_not_teacher_body(self):
+        resp = helpers.server_post("/auth", {"username":"student_coll1_1", "password":"cows"})
+        self.assertEqual(resp.read(), '{"error": "not a teacher"}')
 
 
 #    def test_shuffle(self):
