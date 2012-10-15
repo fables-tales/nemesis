@@ -43,8 +43,6 @@ def is_teacher_of(userman_path, teacher_id, student_id):
     student_college = college_for_user(userman_path, student_id)
     return teacher_college == student_college
 
-
-
 class LdapInstance:
     def __init__(self,userman_path="userman"):
         self.config = ConfigParser.SafeConfigParser()
