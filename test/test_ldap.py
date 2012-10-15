@@ -21,5 +21,9 @@ class TestAuth(unittest.TestCase):
         instance.set_user_attribute("teacher_coll2", "mail", "mail@mail.com")
         self.assertTrue(instance.get_user_details("teacher_coll2")["E-mail"], "mail@mail.com")
 
+    def test_get_college_name(self):
+        print "here"
+        instance = LdapInstance("../nemesis/userman")
+
 if __name__ == '__main__':
     unittest.main()
