@@ -4,17 +4,19 @@ import subprocess
 import os
 
 
-def get_teachers(userman_path):
-    process = ["./userman", "group", "members", "teachers"]
+def run_userman_task(task, userman_path):
+    process = task
     p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
     p.wait()
+    return p
+
+def get_teachers(userman_path):
+    p = run_userman_task(["./userman", "group", "members", "teachers"], userman_path)
     return p.stdout.read().split(" ")
 
 
 def user_details(userman_path, userid):
-    process = ["./userman", "user", "info", userid]
-    p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
-    p.wait()
+    p = run_userman_task(["./userman", "user", "info", userid], userman_path)
     lines = p.stdout.read().strip().split("\n")
     results = {}
     for line in lines:
@@ -22,6 +24,25 @@ def user_details(userman_path, userid):
         results[key] = value
 
     return results
+
+
+def group_members(userman_path, group):
+    p = run_userman_task(["./userman", "group", "members", group], userman_path)
+    return p.stdout.read().strip().split(" ")
+
+def college_for_user(userman_path, userid):
+    p = run_userman_task(["./userman", "group", "list"], userman_path)
+    groups = p.stdout.read().strip().split("\n")
+    colleges = [x for x in groups if x.find("college-") != -1]
+    for college in colleges:
+        if userid in group_members(userman_path, college):
+            return college
+
+def is_teacher_of(userman_path, teacher_id, student_id):
+    teacher_college = college_for_user(userman_path, teacher_id)
+    student_college = college_for_user(userman_path, student_id)
+    return teacher_college == student_college
+
 
 
 class LdapInstance:
@@ -48,6 +69,9 @@ class LdapInstance:
 
     def get_user_details(self,userid):
         return user_details(self.userman_path, userid)
+
+    def is_teacher_of(self, teacherid, userid):
+        return is_teacher_of(self.userman_path, teacherid, userid)
 
 
 if __name__ == "__main__":
