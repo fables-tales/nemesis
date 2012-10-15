@@ -52,5 +52,17 @@ class TestAuth(unittest.TestCase):
         bind_result = instance.bind("student_coll2_2", args_hash["password"])
         self.assertTrue(bind_result)
 
+
+    def test_user_post_set_password_wrong_teacher(self):
+        args_hash = {}
+        args_hash["token"] = self.auth_hash
+        args_hash["password"] = "abc" + str(random.randint(0,10000))
+        resp = helpers.server_post("/user/student_coll1_2", args_hash)
+        self.assertEqual(resp.status, 403)
+        instance = LdapInstance("../nemesis/userman")
+        bind_result = instance.bind("student_coll2_2", args_hash["password"])
+        self.assertFalse(bind_result)
+
+
 if __name__ == '__main__':
     unittest.main()
