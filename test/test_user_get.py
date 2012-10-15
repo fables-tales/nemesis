@@ -27,5 +27,9 @@ class TestAuth(unittest.TestCase):
         resp = helpers.server_get("/user/wqoifjwqfie", {"token":self.auth_hash})
         self.assertNotEqual(resp.status, 200)
 
+    def test_user_get_valid_teacher_wrong_college_code(self):
+        resp = helpers.server_get("/user/student_coll2_1", {"token":self.auth_hash})
+        self.assertEqual(resp.status, 403)
+
 if __name__ == '__main__':
     unittest.main()
