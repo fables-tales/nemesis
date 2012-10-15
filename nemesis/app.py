@@ -82,6 +82,24 @@ def set_user_details(userid):
 
     return '{}', 403
 
+@app.route("/college", methods=["GET"])
+def college_list():
+    if request.args.has_key("token"):
+        print "got a token"
+        token = request.args["token"]
+        instance = LdapInstance()
+        print sessions[token]
+        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0]):
+            college_group = instance.get_college(sessions[token][0])
+            college_name  = instance.get_college_name(college_group)
+            college_users = instance.get_group_users(college_group)
+            obj = {}
+            obj["college_name"] = college_name
+            obj["userids"] = college_users
+            return json.dumps(obj), 200
+
+    return "{}", 403
+
 if __name__ == "__main__":
     app.debug = True
     app.run()
