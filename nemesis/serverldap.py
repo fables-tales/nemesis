@@ -69,6 +69,12 @@ class LdapInstance:
         except ldap.INVALID_CREDENTIALS:
             return False
 
+    def manager_bind(self):
+        self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
+        bind_str = "cn=%s,o=sr" % self.config.get('ldap', 'username')
+        password = self.config.get("ldap", "password")
+        return self.conn.simple_bind_s(bind_str, password)
+
     def get_user_details(self,userid):
         return user_details(self.userman_path, userid)
 
