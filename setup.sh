@@ -9,4 +9,5 @@ else
 fi
 
 git clone https://github.com/samphippen/srobo-ldap-box.git
+cd srobo-ldap-box
 vagrant up --provision
