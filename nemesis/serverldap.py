@@ -30,7 +30,6 @@ def user_details(userman_path, userid):
 
     return results
 
-
 def group_members(userman_path, group):
     p = run_userman_task(["./userman", "group", "members", group], userman_path)
     return p.stdout.read().strip().split(" ")
