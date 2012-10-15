@@ -13,5 +13,13 @@ class TestAuth(unittest.TestCase):
     def test_is_teacher_of_teacher(self):
         self.assertTrue(is_teacher_of("../nemesis/userman", "teacher_coll1", "student_coll1_1"))
 
+    def test_manager_bind(self):
+        self.assertTrue(LdapInstance("../nemesis/userman").manager_bind())
+
+    def test_set_user_email(self):
+        instance = LdapInstance("../nemesis/userman")
+        instance.set_user_attribute("teacher_coll2", "mail", "mail@mail.com")
+        self.assertTrue(instance.get_user_details("teacher_coll2")["E-mail"], "mail@mail.com")
+
 if __name__ == '__main__':
     unittest.main()
