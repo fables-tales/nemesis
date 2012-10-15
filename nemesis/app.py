@@ -63,6 +63,10 @@ def user_details(userid):
                 return '["error":"an error occured"}', 500
     return '', 403
 
+@app.route("/user/<userid>", methods=["POST"])
+def set_user_details(userid):
+    pass
+
 
 if __name__ == "__main__":
     app.debug = True
