@@ -18,6 +18,9 @@ class TestAuth(unittest.TestCase):
         resp = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
         self.assertEqual(resp.status, 200)
 
+        resp = helpers.server_post("/auth", {"username":"teacher_coll2", "password":"noway"})
+        self.assertEqual(resp.status, 200)
+
     def test_auth_valid_body(self):
         resp = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
         resp = resp.read()
