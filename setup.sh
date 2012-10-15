@@ -2,6 +2,7 @@
 ruby=$(which ruby)
 
 if [ ruby == "/usr/bin/ruby" ]
+then
     sudo gem install vagrant
 else
     gem install vagrant
