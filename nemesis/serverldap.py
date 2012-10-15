@@ -17,7 +17,7 @@ def run_userman_task(task, userman_path):
 
 def get_teachers(userman_path):
     p = run_userman_task(["./userman", "group", "members", "teachers"], userman_path)
-    return p.stdout.read().split(" ")
+    return p.stdout.read().strip().split(" ")
 
 
 def user_details(userman_path, userid):
