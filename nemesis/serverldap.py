@@ -81,6 +81,22 @@ class LdapInstance:
     def is_teacher_of(self, teacherid, userid):
         return is_teacher_of(self.userman_path, teacherid, userid)
 
+    def set_user_attribute(self, user_id, attribute, new_value):
+        self.manager_bind()
+
+        bind_str = "uid=" + user_id + ",ou=users,o=sr"
+        mod_attrs = [(ldap.MOD_REPLACE, attribute, str(new_value))]
+        print mod_attrs
+        self.conn.modify_s(bind_str, mod_attrs)
+
+    def set_user_password(self, user_id, password):
+        self.manager_bind()
+
+        bind_str = "uid=" + user_id + ",ou=users,o=sr"
+        #string it
+        password = str(password)
+        modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
+        self.conn.modify_s(bind_str, modlist)
 
 if __name__ == "__main__":
     assert LdapInstance().is_teacher("teacher_coll1") == True
