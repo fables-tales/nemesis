@@ -30,9 +30,9 @@ Teachers are:
         <th>Username</th><th>Password</th>
     </tr>
     <tr>
-        <td>teacher\_coll1</td><td>facebees</td>
+        <td>teacher_coll1</td><td>facebees</td>
     </tr>
-        <td>teacher\_coll2</td><td>noway</td>
+        <td>teacher_coll2</td><td>noway</td>
     </tr>
 </table>
 
