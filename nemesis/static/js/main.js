@@ -35,7 +35,7 @@ function load_college_dialogue() {
             userid = obj["userids"][i];
             build += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + userid + "</a></li>";
         }
-        $("#college-users").html(build)
+    $("#college-users").html(build)
 
         for (var i = 0; i < obj["userids"].length; i++) {
             var userid = obj["userids"][i];
@@ -47,8 +47,8 @@ function load_college_dialogue() {
                 show_edit(uid);
             });
         }
-        $("#login").hide();
-        $("#college").show();
+    $("#login").hide();
+    $("#college").show();
     });
 }
 function back() {
@@ -57,13 +57,43 @@ function back() {
     current_userid = "";
 }
 
+function login() {
+    var hash = {"username":$("#username").attr("value"), "password":$("#password").attr("value")};
+    $.post("/auth", hash, function(resp) {
+        token = JSON.parse(resp)["token"];
+        $("#error").text("login win");
+        load_college_dialogue();
+    }).error(function(fail) {
+        console.log("fail");
+        obj = JSON.parse(fail.responseText);
+        if (obj["error"] == "invalid credentials") {
+            $("#error").text("Username/password incorrect");
+            console.log("invalid credentials");
+        } else if (obj["error"] == "not a teacher") {
+            $("#error").text("You are not a teacher");
+        }
+    });
+}
+
 $(document).ready(function() {
+    $("#login").keyup(function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {
+            login();
+        }
+    });
     $("#username").focus(function() {
-        $("#username").attr("value", "");
+        text = $("#username").attr("value");
+        if (text == "username") {
+            $("#username").attr("value", "");
+        }
     });
 
     $("#password").focus(function() {
-        $("#password").attr("value", "");
+        text = $("#password").attr("value");
+        if (text == "password") {
+            $("#password").attr("value", "");
+        }
     });
 
     $("#back").click(function() {
@@ -95,24 +125,5 @@ $(document).ready(function() {
     });
 
     console.log("here");
-    $("#go").click(function() {
-        console.log("cliccked!");
-        $.post("/auth", {"username":$("#username").attr("value"),
-        "password":$("#password").attr("value")},
-            function(resp) {
-                token = JSON.parse(resp)["token"]
-                $("#error").text("login win");
-                load_college_dialogue();
-            }).error(
-            function(fail) {
-                console.log("fail");
-                obj = JSON.parse(fail.responseText);
-                if (obj["error"] == "invalid credentials") {
-                    $("#error").text("Username/password incorrect");
-                    console.log("invalid credentials");
-                } else if (obj["error"] == "not a teacher") {
-                    $("#error").text("You are not a teacher");
-                }
-            });
-    });
+    $("#go").click(login);
 });
