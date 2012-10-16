@@ -12,6 +12,32 @@ downloads a ~400 meg ubuntu vm image.
 curl https://raw.github.com/samphippen/nemesis/master/setup.sh | bash && cd srobo-ldap-box
 ```
 
+After that, follow the final setup instructions (they get printed to the screen).
+Once you're all run, the server can be started by starting the venv, and starting
+the server. The vm forwards port 5000 to localhost:5000, so you do this
+
+```shell
+source venv/bin/activate
+cd nemesis
+python app.py
+```
+
+and then point your browser at localhost:5000. This allows you to do testing.
+
+Teachers are:
+<table>
+    <tr>
+        <th>Username</th><th>Password</th>
+    </tr>
+    <tr>
+        <td>teacher\_coll1</td><td>facebees</td>
+    </tr>
+        <td>teacher\_coll2</td><td>noway</td>
+    </tr>
+</table>
+
+
+
 ##Setting it up the difficult way™
 
 Your LDAP needs to be configured like [this](https://www.studentrobotics.org/trac/wiki/PrepareLDAP).
