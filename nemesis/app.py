@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, url_for
 import json
 app = Flask(__name__)
+
 from hashlib import sha256
 from serverldap import LdapInstance
 import random
@@ -8,6 +9,18 @@ import random
 
 sessions = {}
 
+
+@app.route("/")
+def index():
+    return open('templates/index.html').read()
+
+@app.route("/css/bootstrap.css")
+def bootstrap_css():
+    return open("static/css/bootstrap.css").read()
+
+@app.route("/js/main.js")
+def javascript():
+    return open("static/js/main.js").read()
 
 @app.route("/auth", methods=["POST"])
 def auth():
@@ -102,4 +115,4 @@ def college_list():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')
