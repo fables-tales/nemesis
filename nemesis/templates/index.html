@@ -14,6 +14,11 @@
 
             .hero-unit {
                 margin-top: 100px;
+                padding-bottom:15px;
+            }
+
+            .edit-input {
+                width:100%;
             }
 
             .hero-unit h1 {
@@ -24,13 +29,17 @@
                 width:600px;
             }
 
+            #error {
+                margin-top:20px;
+            }
+
         </style>
 
         <script type="text/javascript" src="static/js/main.js"></script>
     </head>
     <body>
         <div class="container">
-            <div class="hero-unit">
+            <div class="hero-unit" id="login">
                 <h1>Nemesis Login</h1>
                 <br>
                 <div>
@@ -38,6 +47,31 @@
                     <input type="password" id="password" value="password"></input>
                     <button value="Go!" id="go">Go</button>
                 </div>
+                <p id="error">
+                Click go to login
+                </p>
+            </div>
+
+            <div id="college" style="display:none;">
+                <div id="college-name"></div>
+                <div id="college-users"></div>
+            </div>
+
+            <div class="hero-unit" id="user" style="display:none;">
+                <a href="#" id="back">Back</a>
+                <h1 id="user-name"></h1>
+                <div>
+                    <label for="user-email">Email: </label>
+                    <input id="user-email" type="text" class="edit-input"></input>
+                </div>
+                <div>
+                    <label for="user-password">Password: </label>
+                    <input id="user-password" type="password" value="" class="edit-input"></input>
+                </div>
+                <div>
+                    <button id="set" class="edit-input">Set Details</button>
+                </div>
+
             </div>
         </div>
     </body>
