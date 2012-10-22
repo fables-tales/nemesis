@@ -14,7 +14,6 @@ def run_userman_task(task, userman_path):
     p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
     p.wait()
     retcode = p.returncode
-    print retcode
     if retcode != 0:
         raise "A userman task failed" + str(task)
     return p
