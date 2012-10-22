@@ -13,6 +13,10 @@ def run_userman_task(task, userman_path):
     process = task
     p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
     p.wait()
+    retcode = p.returncode
+    print retcode
+    if retcode != 0:
+        raise "A userman task failed" + str(task)
     return p
 
 def get_teachers(userman_path):
