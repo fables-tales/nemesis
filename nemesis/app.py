@@ -7,29 +7,29 @@ from serverldap import LdapInstance
 import random
 import os
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+PATH = os.path.dirname(os.path.abspath(__file__))
 
 sessions = {}
 
 
 @app.route("/")
 def index():
-    return open('templates/index.html').read()
+    return open(PATH + '/templates/index.html').read()
 
 @app.route("/css/bootstrap.css")
 def bootstrap_css():
-    return open("static/css/bootstrap.css").read()
+    return open(PATH + "/static/css/bootstrap.css").read()
 
 @app.route("/js/main.js")
 def javascript():
-    return open("static/js/main.js").read()
+    return open(PATH + "/static/js/main.js").read()
 
 @app.route("/auth", methods=["POST"])
 def auth():
     if request.form.has_key("username") and request.form.has_key("password"):
         username = request.form["username"]
         password = request.form["password"]
-        instance = LdapInstance()
+        instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
             if instance.is_teacher(username):
                 auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
@@ -61,7 +61,7 @@ def deauth():
 def user_details(userid):
     if request.args.has_key("token"):
         token = request.args["token"]
-        instance = LdapInstance()
+        instance = LdapInstance(PATH + "/userman")
         if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
             and instance.is_teacher_of(sessions[token][0], userid):
             try:
@@ -77,7 +77,7 @@ def user_details(userid):
 def set_user_details(userid):
     if request.form.has_key("token"):
         token = request.form["token"]
-        instance = LdapInstance()
+        instance = LdapInstance(PATH + "/userman")
         if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
             and instance.is_teacher_of(sessions[token][0], userid):
                 if request.form.has_key("email"):
@@ -92,7 +92,7 @@ def set_user_details(userid):
 def college_list():
     if request.args.has_key("token"):
         token = request.args["token"]
-        instance = LdapInstance()
+        instance = LdapInstance(PATH + "/userman")
         if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0]):
             college_group = instance.get_college(sessions[token][0])
             college_name  = instance.get_college_name(college_group)
