@@ -5,7 +5,9 @@ app = Flask(__name__)
 from hashlib import sha256
 from serverldap import LdapInstance
 import random
+import os
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 sessions = {}
 
