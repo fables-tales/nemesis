@@ -17,7 +17,7 @@ function populate_user(dict, userid) {
 }
 
 function show_edit(userid) {
-    $.get("/user/" + userid, {"token":token}, function(response) {
+    $.get("user/" + userid, {"token":token}, function(response) {
         $("#college").hide();
         populate_user(JSON.parse(response), userid);
         $("#user").show();
@@ -26,7 +26,7 @@ function show_edit(userid) {
 
 function load_college_dialogue() {
     show_spinner();
-    $.get("/college", {"token":token}, function(resp) {
+    $.get("college", {"token":token}, function(resp) {
         hide_spinner();
         var obj = JSON.parse(resp);
         $("#college-name").text(obj["college_name"]);
@@ -57,7 +57,7 @@ function back() {
 
 function login() {
     var hash = {"username":$("#username").attr("value"), "password":$("#password").attr("value")};
-    $.post("/auth", hash, function(resp) {
+    $.post("auth", hash, function(resp) {
         token = JSON.parse(resp)["token"];
         $("#error").text("login win");
         load_college_dialogue();
@@ -111,7 +111,7 @@ $(document).ready(function() {
 
         if (!empty && current_userid != "") {
             opts["token"] = token;
-            $.post("/user/" + current_userid, opts, function(resp) {
+            $.post("user/" + current_userid, opts, function(resp) {
                 back();
             });
         }
