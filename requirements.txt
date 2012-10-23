@@ -1,12 +1,14 @@
+Flask==0.9
 GnuPGInterface==0.3.2
+Jinja2==2.6
 Landscape-Client==11.07.1.1
 PAM==0.4.2
 Twisted-Core==11.0.0
+Werkzeug==0.8.3
 apt-xapian-index==0.44
 chardet==2.0.1
 command-not-found==0.2.44
-## FIXME: could not find svn URL in dependency_links for this package:
-distribute==0.6.16dev-r0
+distribute==0.6.19
 httplib2==0.7.2
 keyring==0.6.2
 launchpadlib==1.9.8
@@ -28,4 +30,3 @@ virtualenv==1.6.4
 wadllib==1.2.0
 wsgiref==0.1.2
 zope.interface==3.6.1
-## The following requirements were added by pip --freeze:
