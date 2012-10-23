@@ -40,9 +40,7 @@ function load_college_dialogue() {
         for (var i = 0; i < obj["userids"].length; i++) {
             var userid = obj["userids"][i];
             $("#user-" + userid).click(function() {
-                console.log(this.id);
                 uid = this.id.split("-")[1];
-                console.log(uid);
                 current_userid = uid;
                 show_edit(uid);
             });
@@ -64,11 +62,9 @@ function login() {
         $("#error").text("login win");
         load_college_dialogue();
     }).error(function(fail) {
-        console.log("fail");
         obj = JSON.parse(fail.responseText);
         if (obj["error"] == "invalid credentials") {
             $("#error").text("Username/password incorrect");
-            console.log("invalid credentials");
         } else if (obj["error"] == "not a teacher") {
             $("#error").text("You are not a teacher");
         }
@@ -124,6 +120,5 @@ $(document).ready(function() {
 
     });
 
-    console.log("here");
     $("#go").click(login);
 });
