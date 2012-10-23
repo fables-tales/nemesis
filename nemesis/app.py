@@ -6,11 +6,19 @@ from hashlib import sha256
 from serverldap import LdapInstance
 import random
 import os
+import sqlite3
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-sessions = {}
 
+def sqlite_connect():
+    return sqlite3.connect(PATH + "/db/nemesis.sqlite")
+
+def get_username(token):
+    c = sqlite_connect()
+    cur = c.cursor()
+    result = cur.execute("SELECT username FROM auth WHERE token=?", (token,))
+    return result.next()[0]
 
 @app.route("/")
 def index():
@@ -32,8 +40,15 @@ def auth():
         instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
             if instance.is_teacher(username):
-                auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
-                sessions[auth_hash["token"]] = (username, password)
+                token = str(sha256(str(random.randint(0,1000000))).hexdigest())
+                auth_hash = {"token":token}
+
+                c = sqlite_connect()
+                cur = c.cursor()
+                print token
+                cur.execute("DELETE FROM auth WHERE token=?", (token,))
+                cur.execute("INSERT INTO auth values (?,?)", (token, username))
+                c.commit()
                 return json.dumps(auth_hash)
             else:
                 return '{"error": "not a teacher"}', 403
@@ -47,10 +62,15 @@ def deauth():
     deleted = False
     if request.form.has_key("token"):
         token = request.form["token"]
-        if sessions.has_key(token):
-            del sessions[token]
-            deleted = True
+        c = sqlite_connect()
+        cur = c.cursor()
+        r = cur.execute("DELETE FROM auth WHERE token=?", (token,))
+        c.commit()
 
+        if c.total_changes == 1:
+            deleted = True
+        else:
+            deleted = False
 
     if app.debug:
         return str(deleted), 200
@@ -62,8 +82,9 @@ def user_details(userid):
     if request.args.has_key("token"):
         token = request.args["token"]
         instance = LdapInstance(PATH + "/userman")
-        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
-            and instance.is_teacher_of(sessions[token][0], userid):
+        teacher_username = get_username(token)
+        if instance.is_teacher(teacher_username)\
+            and instance.is_teacher_of(teacher_username, userid):
             try:
                 details = instance.get_user_details(userid)
                 full_name = details["Full name"] + " " + details["Surname"]
@@ -78,8 +99,9 @@ def set_user_details(userid):
     if request.form.has_key("token"):
         token = request.form["token"]
         instance = LdapInstance(PATH + "/userman")
-        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0])\
-            and instance.is_teacher_of(sessions[token][0], userid):
+        teacher_username = get_username(token)
+        if instance.is_teacher(teacher_username)\
+            and instance.is_teacher_of(teacher_username, userid):
                 if request.form.has_key("email"):
                     instance.set_user_attribute(userid, "mail", request.form["email"])
                 if request.form.has_key("password"):
@@ -93,8 +115,9 @@ def college_list():
     if request.args.has_key("token"):
         token = request.args["token"]
         instance = LdapInstance(PATH + "/userman")
-        if instance.bind(*sessions[token]) and instance.is_teacher(sessions[token][0]):
-            college_group = instance.get_college(sessions[token][0])
+        teacher_username = get_username(token)
+        if instance.is_teacher(teacher_username):
+            college_group = instance.get_college(teacher_username)
             college_name  = instance.get_college_name(college_group)
             college_users = instance.get_group_users(college_group)
             obj = {}
