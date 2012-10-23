@@ -30,3 +30,8 @@ virtualenv==1.6.4
 wadllib==1.2.0
 wsgiref==0.1.2
 zope.interface==3.6.1
+## The following requirements were added by pip --freeze:
+elementtree==1.2.7-20070827-preview
+lazr.authentication==0.1.2
+pysqlite==2.6.3
+wsgi-intercept==0.5.1
