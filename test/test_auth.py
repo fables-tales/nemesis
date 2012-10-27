@@ -1,5 +1,5 @@
 import unittest
-import helpers
+import test_helpers as helpers
 
 class TestAuth(unittest.TestCase):
 

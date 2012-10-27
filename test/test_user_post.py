@@ -1,6 +1,6 @@
 import unittest
 import json
-import helpers
+import test_helpers as helpers
 import random
 from serverldap import LdapInstance
 

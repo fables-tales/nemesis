@@ -1,8 +1,8 @@
 import unittest
-import helpers
 from hashlib import sha256
 import random
 import json
+import test_helpers as helpers
 
 class TestAuth(unittest.TestCase):
     def setUp(self):

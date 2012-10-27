@@ -1,6 +1,6 @@
 import unittest
 import json
-import helpers
+import test_helpers as helpers
 
 class TestAuth(unittest.TestCase):
 

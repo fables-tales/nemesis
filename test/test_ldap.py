@@ -1,5 +1,4 @@
 import unittest
-import helpers
 from serverldap import LdapInstance, is_teacher_of
 
 class TestAuth(unittest.TestCase):
