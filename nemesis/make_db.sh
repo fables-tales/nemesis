@@ -4,4 +4,5 @@ sqlite3 db/nemesis.sqlite "CREATE table IF NOT EXISTS registrations (id INTEGER 
                                                                      college_group    VARCHAR(256),\
                                                                      first_name       VARCHAR(256),\
                                                                      last_name        VARCHAR(256),\
-                                                                     email            VARCHAR(256));"
+                                                                     email            VARCHAR(256),\
+                                                                     team             VARCHAR(256));"
