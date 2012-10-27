@@ -91,6 +91,20 @@ def deauth():
     else:
         return '',200
 
+@app.route("/user/register", methods=["POST"])
+def register_user():
+    if handle_authentication(request.form):
+        instance         = LdapInstance(PATH + "/userman")
+        teacher_username = get_username(request.form["token"])
+        college_group    = instance.get_college(teacher_username)
+        first_name       = request.form["first_name"]
+        last_name        = request.form["last_name"]
+        email            = request.form["email"]
+        team             = request.form["team"]
+        helpers.register_user(teacher_username, college_group, first_name, last_name, email, team)
+        return "", 200
+    return "", 403
+
 @app.route("/user/<userid>", methods=["GET"])
 def user_details(userid):
     if handle_authentication(request.args, userid):
