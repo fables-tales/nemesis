@@ -4,6 +4,10 @@ app = Flask(__name__)
 
 from hashlib import sha256
 from serverldap import LdapInstance
+
+from helpers import sqlite_connect
+
+import helpers
 import random
 import os
 import sqlite3
@@ -23,9 +27,6 @@ def handle_authentication(args,userid=None):
             return teacher
 
     return False
-
-def sqlite_connect():
-    return sqlite3.connect(PATH + "/db/nemesis.sqlite")
 
 def get_username(token):
     c = sqlite_connect()
