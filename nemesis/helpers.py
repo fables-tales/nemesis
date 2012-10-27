@@ -9,8 +9,8 @@ def sqlite_connect():
 def register_user(teacher_username, college_group, first_name, last_name, email, team):
     conn = sqlite_connect()
     cur = conn.cursor()
-    prep_statement = "INSERT INTO registrations (teacher_username, college_group, first_name, last_name, email, team) VALUES (?,?,?,?,?, ?)";
-    cur.execute(prep_statement, (teacher_username, college_group, first_name, last_name, email))
+    prep_statement = "INSERT INTO registrations (teacher_username, college_group, first_name, last_name, email, team) VALUES (?,?,?,?,?,?)";
+    cur.execute(prep_statement, (teacher_username, college_group, first_name, last_name, email, team))
     conn.commit()
 
 
