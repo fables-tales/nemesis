@@ -11,6 +11,19 @@ import sqlite3
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 
+def handle_authentication(args,userid=None):
+    if args.has_key("token"):
+        token = args["token"]
+        instance = LdapInstance(PATH + "/userman")
+        teacher_username = get_username(token)
+        teacher = instance.is_teacher(teacher_username)
+        if userid is not None:
+            return teacher and instance.is_teacher_of(teacher_username, userid)
+        else:
+            return teacher
+
+    return False
+
 def sqlite_connect():
     return sqlite3.connect(PATH + "/db/nemesis.sqlite")
 
@@ -79,51 +92,41 @@ def deauth():
 
 @app.route("/user/<userid>", methods=["GET"])
 def user_details(userid):
-    if request.args.has_key("token"):
-        token = request.args["token"]
+    if handle_authentication(request.args, userid):
         instance = LdapInstance(PATH + "/userman")
-        teacher_username = get_username(token)
-        if instance.is_teacher(teacher_username)\
-            and instance.is_teacher_of(teacher_username, userid):
-            try:
-                details = instance.get_user_details(userid)
-                full_name = details["Full name"] + " " + details["Surname"]
-                email     = details["E-mail"]
-                return json.dumps({"full_name":full_name, "email":email}), 200
-            except:
-                return '["error":"an error occured"}', 500
+        try:
+            details = instance.get_user_details(userid)
+            full_name = details["Full name"] + " " + details["Surname"]
+            email     = details["E-mail"]
+            return json.dumps({"full_name":full_name, "email":email}), 200
+        except:
+            return '["error":"an error occured"}', 500
     return '{}', 403
 
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
-    if request.form.has_key("token"):
-        token = request.form["token"]
+    if handle_authentication(request.form, userid):
         instance = LdapInstance(PATH + "/userman")
-        teacher_username = get_username(token)
-        if instance.is_teacher(teacher_username)\
-            and instance.is_teacher_of(teacher_username, userid):
-                if request.form.has_key("email"):
-                    instance.set_user_attribute(userid, "mail", request.form["email"])
-                if request.form.has_key("password"):
-                    instance.set_user_password(userid, request.form["password"])
-                return '{}', 200
+        if request.form.has_key("email"):
+            instance.set_user_attribute(userid, "mail", request.form["email"])
+        if request.form.has_key("password"):
+            instance.set_user_password(userid, request.form["password"])
+        return '{}', 200
 
     return '{}', 403
 
 @app.route("/college", methods=["GET"])
 def college_list():
-    if request.args.has_key("token"):
-        token = request.args["token"]
+    if handle_authentication(request.args):
         instance = LdapInstance(PATH + "/userman")
-        teacher_username = get_username(token)
-        if instance.is_teacher(teacher_username):
-            college_group = instance.get_college(teacher_username)
-            college_name  = instance.get_college_name(college_group)
-            college_users = instance.get_group_users(college_group)
-            obj = {}
-            obj["college_name"] = college_name
-            obj["userids"] = college_users
-            return json.dumps(obj), 200
+        teacher_username = get_username(request.args["token"])
+        college_group = instance.get_college(teacher_username)
+        college_name  = instance.get_college_name(college_group)
+        college_users = instance.get_group_users(college_group)
+        obj = {}
+        obj["college_name"] = college_name
+        obj["userids"] = college_users
+        return json.dumps(obj), 200
 
     return "{}", 403
 
