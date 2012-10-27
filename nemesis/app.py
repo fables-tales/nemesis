@@ -124,9 +124,11 @@ def college_list():
         college_group = instance.get_college(teacher_username)
         college_name  = instance.get_college_name(college_group)
         college_users = instance.get_group_users(college_group)
+        college_teams = instance.get_college_teams(college_group)
         obj = {}
         obj["college_name"] = college_name
         obj["userids"] = college_users
+        obj["teams"] = college_teams
         return json.dumps(obj), 200
 
     return "{}", 403
