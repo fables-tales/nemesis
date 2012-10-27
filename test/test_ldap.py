@@ -26,5 +26,17 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(instance.get_college_name("college-1"), "college the first")
         self.assertEqual(instance.get_college_name("college-2"), "secondary college")
 
+    def test_get_college_teams_1(self):
+        instance = LdapInstance("../nemesis/userman")
+        teams = instance.get_college_teams("college-1")
+        print teams
+        self.assertTrue("team1" in teams)
+        self.assertTrue("team2" in teams)
+
+    def test_get_college_teams_2(self):
+        instance = LdapInstance("../nemesis/userman")
+        teams = instance.get_college_teams("college-2")
+        self.assertTrue("team3" in teams)
+
 if __name__ == '__main__':
     unittest.main()
