@@ -51,6 +51,14 @@ def college_name(userman_path, college_group):
     name = " ".join(p.stdout.read().strip().split("\n")[0].split(" ")[1:])
     return name
 
+def college_teams(userman_path, college_group):
+    college_group = college_group.replace("college-", "")
+    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
+    lines = p.stdout.read().strip().split("\n")
+    team_lines = [x for x in lines if x.find("team") != -1]
+    team_lines = [x.replace("\t - ", "") for x in lines]
+    return team_lines
+
 def is_teacher_of(userman_path, teacher_id, student_id):
     teacher_college = college_for_user(userman_path, teacher_id)
     student_college = college_for_user(userman_path, student_id)
@@ -112,6 +120,9 @@ class LdapInstance:
 
     def get_college_name(self, college_group):
         return college_name(self.userman_path, college_group)
+
+    def get_college_teams(self, college_group):
+        return college_teams(self.userman_path, college_group)
 
     def get_group_users(self, group):
         return group_members(self.userman_path, group)
