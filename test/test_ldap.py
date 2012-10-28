@@ -31,11 +31,13 @@ class TestAuth(unittest.TestCase):
         print teams
         self.assertTrue("team1" in teams)
         self.assertTrue("team2" in teams)
+        self.assertEqual(len(teams), 2)
 
     def test_get_college_teams_2(self):
         instance = LdapInstance("../nemesis/userman")
         teams = instance.get_college_teams("college-2")
         self.assertTrue("team3" in teams)
+        self.assertEqual(len(teams), 1)
 
 if __name__ == '__main__':
     unittest.main()
