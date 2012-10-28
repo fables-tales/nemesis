@@ -16,6 +16,32 @@ function populate_user(dict, userid) {
     current_email = dict["email"];
 }
 
+var teams = null
+
+function add_registration_field() {
+    build = "<tr class='register-row'>";
+    build += "<td><input name='first-name' type='text'></input></td>";
+    build += "<td><input name='last-name' type='text'></input></td>";
+    build += "<td><input name='email' type='text'></input></td>";
+
+    //build the select dropwodwn for teams
+    build += "<td><select name='sel'>";
+    for (var i = 0; i < teams.length; i++) {
+        var team = teams[i];
+        build +=      "<option value='" + team + "'>" + team + "</option>";
+    }
+    build += "</select></td>";
+    build += "</tr>";
+
+    //add the input to the table
+    $("#register-inputs").append(build);
+}
+
+function register_details(hash) {
+    hash["token"] = token
+    $.post("/user/register", hash);
+}
+
 function show_edit(userid) {
     $.get("user/" + userid, {"token":token}, function(response) {
         $("#college").hide();
@@ -29,6 +55,10 @@ function load_college_dialogue() {
     $.get("college", {"token":token}, function(resp) {
         hide_spinner();
         var obj = JSON.parse(resp);
+        if (teams == null) {
+            teams = obj["teams"];
+            add_registration_field();
+        }
         $("#college-name").text(obj["college_name"]);
         var build = "<ul>"
         for (var i = 0; i < obj["userids"].length; i++) {
@@ -51,6 +81,7 @@ function load_college_dialogue() {
 }
 function back() {
     $("#user").hide();
+    $("#register-users").hide();
     load_college_dialogue();
     current_userid = "";
 }
@@ -121,4 +152,30 @@ $(document).ready(function() {
     });
 
     $("#go").click(login);
+    $("#show-register").click(function() {
+        $("#college").hide();
+        $("#register-users").show();
+    });
+
+    $("#add-row").click(add_registration_field);
+    $("#send-register").click(function() {
+        var rows = $(".register-row")
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i]
+            var first_name = row.children[0].children[0].value
+            var last_name  = row.children[1].children[0].value
+            var email      = row.children[2].children[0].value
+            var team       = row.children[3].children[0].value
+            var hash = {"first_name":first_name,
+                        "last_name" :last_name,
+                        "email"     :email,
+                        "team"      :team}
+
+            if (first_name != "" && last_name != "" && email != "") {
+                register_details(hash);
+            }
+        }
+        back();
+    });
+
 });
