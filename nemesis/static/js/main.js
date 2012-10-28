@@ -92,7 +92,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#back").click(function() {
+    $(".back").click(function() {
         back();
     });
 
