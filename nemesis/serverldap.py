@@ -56,7 +56,7 @@ def college_teams(userman_path, college_group):
     p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
     lines = p.stdout.read().strip().split("\n")
     team_lines = [x for x in lines if x.find("team") != -1]
-    team_lines = [x.replace("\t - ", "") for x in lines]
+    team_lines = [x.replace("\t - ", "") for x in team_lines]
     return team_lines
 
 def is_teacher_of(userman_path, teacher_id, student_id):
