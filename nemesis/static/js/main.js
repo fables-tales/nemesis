@@ -9,6 +9,20 @@ function show_spinner() {
 function hide_spinner() {
 }
 
+var hash = window.location.hash
+
+function handlehash(hash) {
+    if (hash == "") {
+        back();
+    }
+}
+
+setInterval(function(){
+    if (window.location.hash != hash) {
+        hash = window.location.hash;
+        handlehash(hash)
+    }
+}, 100);
 
 function populate_user(dict, userid) {
     $("#user-name").text(dict["full_name"]);
@@ -39,7 +53,7 @@ function add_registration_field() {
 
 function register_details(hash) {
     hash["token"] = token
-    $.post("/user/register", hash);
+        $.post("/user/register", hash);
 }
 
 function show_edit(userid) {
@@ -82,6 +96,7 @@ function load_college_dialogue() {
 function back() {
     $("#user").hide();
     $("#register-users").hide();
+
     load_college_dialogue();
     current_userid = "";
 }
@@ -162,20 +177,20 @@ $(document).ready(function() {
         var rows = $(".register-row")
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i]
-            var first_name = row.children[0].children[0].value
-            var last_name  = row.children[1].children[0].value
-            var email      = row.children[2].children[0].value
-            var team       = row.children[3].children[0].value
-            var hash = {"first_name":first_name,
-                        "last_name" :last_name,
-                        "email"     :email,
-                        "team"      :team}
+        var first_name = row.children[0].children[0].value
+        var last_name  = row.children[1].children[0].value
+        var email      = row.children[2].children[0].value
+        var team       = row.children[3].children[0].value
+        var hash = {"first_name":first_name,
+            "last_name" :last_name,
+        "email"     :email,
+        "team"      :team}
 
-            if (first_name != "" && last_name != "" && email != "") {
-                register_details(hash);
-            }
+    if (first_name != "" && last_name != "" && email != "") {
+        register_details(hash);
+    }
         }
-        back();
+    back();
     });
 
 });
