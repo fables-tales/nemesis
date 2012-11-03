@@ -138,6 +138,7 @@ $(document).ready(function() {
             login();
         }
     });
+
     $("#username").focus(function() {
         text = $("#username").attr("value");
         if (text == "username") {
@@ -190,21 +191,24 @@ $(document).ready(function() {
     $("#send-register").click(function() {
         var rows = $(".register-row")
         for (var i = 0; i < rows.length; i++) {
-            var row = rows[i]
-        var first_name = row.children[0].children[0].value
-        var last_name  = row.children[1].children[0].value
-        var email      = row.children[2].children[0].value
-        var team       = row.children[3].children[0].value
-        var hash = {"first_name":first_name,
-            "last_name" :last_name,
-        "email"     :email,
-        "team"      :team}
+            var row = rows[i];
+            var first_name = row.children[0].children[0].value;
+            var last_name  = row.children[1].children[0].value;
+            var email      = row.children[2].children[0].value;
+            var team       = row.children[3].children[0].value;
+            var hash = {"first_name":first_name,
+                        "last_name" :last_name,
+                        "email"     :email,
+                        "team"      :team};
 
-    if (first_name != "" && last_name != "" && email != "") {
-        register_details(hash);
-    }
+            if (first_name != "" && last_name != "" && email != "") {
+                register_details(hash);
+                if (i == rows.length-1) {
+                    $("#msg").text("Users registered successfully!");
+                }
+            }
         }
-    back();
+        back();
     });
 
 });
