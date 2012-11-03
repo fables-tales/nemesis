@@ -19,6 +19,15 @@ function handlehash(hash) {
     if (hash == "college") {
         back();
     }
+    if (hash.indexOf("show-") != -1) {
+        var user = hash.slice(6,hash.length);
+        show_edit(user)
+    }
+
+    if (hash.indexOf("register-users") != -1) {
+        $("#college").hide();
+        $("#register-users").show();
+    }
 }
 
 setInterval(function(){
