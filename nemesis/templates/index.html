@@ -75,6 +75,10 @@
         #register-input-table {
             margin-bottom:20px;
         }
+
+        #user {
+            margin-top:10px;
+        }
     </style>
     <script type="text/javascript">
         var has_hash = document.URL.indexOf("#") != -1;
@@ -105,11 +109,20 @@
             <h1 id="college-name"></h1>
             <a href="#register-users" id="show-register">Register Users</a>
             <hr/>
+            <h3>Your users (click one to edit)</h3>
             <div id="college-users"></div>
+            <hr/>
+            <div id="msg">Messages will show here!</div>
         </div>
 
         <div class="hero-unit" id="user" style="display:none;">
             <a href="#college" class="back">Back</a>
+            <hr/>
+            <p>
+                Use this form to update a user's details if they're having
+                trouble logging in
+            </p>
+            <hr/>
             <h1 id="user-name"></h1>
             <div>
                 <label for="user-email">Email: </label>
