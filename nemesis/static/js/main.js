@@ -174,6 +174,7 @@ $(document).ready(function() {
             opts["token"] = token;
             $.post("user/" + current_userid, opts, function(resp) {
                 back();
+                $("#msg").text("User details updated successfully!");
             });
         }
 
