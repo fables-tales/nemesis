@@ -15,6 +15,10 @@ function handlehash(hash) {
     if (hash == "") {
         back();
     }
+
+    if (hash == "college") {
+        back();
+    }
 }
 
 setInterval(function(){
@@ -118,6 +122,7 @@ function login() {
 }
 
 $(document).ready(function() {
+    window.location.hash = ""
     $("#login").keyup(function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code == 13) {
