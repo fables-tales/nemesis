@@ -11,6 +11,7 @@ import helpers
 import random
 import os
 import sqlite3
+import subprocess
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,6 +38,12 @@ def get_username(token):
 @app.route("/")
 def index():
     return open(PATH + '/templates/index.html').read()
+
+@app.route("/site/sha")
+def sha():
+    p = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE)
+    p.wait()
+    return p.stdout.read()
 
 @app.route("/css/bootstrap.css")
 def bootstrap_css():
