@@ -9,6 +9,10 @@ function show_spinner() {
 function hide_spinner() {
 }
 
+if (window.location.hash != "") {
+    window.location.hash = ""
+}
+
 var hash = window.location.hash
 
 function handlehash(hash) {
@@ -131,7 +135,6 @@ function login() {
 }
 
 $(document).ready(function() {
-    window.location.hash = ""
     $("#login").keyup(function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code == 13) {
