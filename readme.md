@@ -3,6 +3,13 @@
 This is Nemesis, a new system for allowing team leaders running teams for the
 [Student Robotics](http://studentrobotics.org) competition to change their passwords.
 
+
+##Contributing
+
+Please file issues on GitHub. Not on the student robotics trac. Also please
+send me a GitHub pull request if you want to merge changes in. This allows
+for easy management in my brain
+
 ##Phippen, you ass, just let me hack on it
 
 Ok cool, run this (anywhere that isn't in a git repository), also this command
