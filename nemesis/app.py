@@ -41,7 +41,7 @@ def index():
 
 @app.route("/site/sha")
 def sha():
-    p = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE)
+    p = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, cwd=PATH)
     p.wait()
     return p.stdout.read()
 
