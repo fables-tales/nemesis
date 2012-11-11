@@ -92,15 +92,15 @@ function load_college_dialogue() {
             userid = obj["userids"][i];
             build += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + userid + "</a></li>";
         }
-    $("#college-users").html(build)
+        $("#college-users").html(build);
 
         for (var i = 0; i < obj["userids"].length; i++) {
             var userid = obj["userids"][i];
-            $("#user-" + userid).click(function() {
+            $("#user-" + userid).onclick = function() {
                 uid = this.id.split("-")[1];
                 current_userid = uid;
                 show_edit(uid);
-            });
+            }
         }
     $("#login").hide();
     $("#college").show();
