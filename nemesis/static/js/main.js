@@ -122,7 +122,7 @@ function login() {
     var hash = {"username":$("#username").attr("value"), "password":$("#password").attr("value")};
     $.post("auth", hash, function(resp) {
         token = JSON.parse(resp)["token"];
-        $("#error").text("login win");
+        $("#error").text("Login Successful");
         load_college_dialogue();
     }).error(function(fail) {
         obj = JSON.parse(fail.responseText);
