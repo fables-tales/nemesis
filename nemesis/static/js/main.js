@@ -130,6 +130,10 @@ function login() {
             $("#error").text("Username/password incorrect");
         } else if (obj["error"] == "not a teacher") {
             $("#error").text("You are not a teacher");
+        } else if (obj["error"] == "not in a college") {
+            $("#error").text("Your username is not associated with a college! Please contact us");
+        } else {
+            $("#error").text(obj["error"]);
         }
     });
 }
