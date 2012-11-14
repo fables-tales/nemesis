@@ -44,6 +44,7 @@ def college_for_user(userman_path, userid):
     for college in colleges:
         if userid in group_members(userman_path, college):
             return college
+    return None
 
 def college_name(userman_path, college_group):
     college_group = college_group.replace("college-", "")
