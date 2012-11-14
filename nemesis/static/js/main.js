@@ -48,7 +48,7 @@ function populate_user(dict, userid) {
     current_email = dict["email"];
 }
 
-var teams = null
+var teams = null;
 
 function add_registration_field() {
     build = "<tr class='register-row'>";
