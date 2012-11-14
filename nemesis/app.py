@@ -60,7 +60,7 @@ def auth():
         password = request.form["password"]
         instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
-            if instance.is_teacher(username):
+            if instance.is_teacher(username) and instance.get_college(username) is not None:
                 token = str(sha256(str(random.randint(0,1000000))).hexdigest())
                 auth_hash = {"token":token}
 
@@ -71,8 +71,10 @@ def auth():
                 cur.execute("INSERT INTO auth values (?,?)", (token, username))
                 c.commit()
                 return json.dumps(auth_hash)
-            else:
+            elif not instance.is_teacher(username):
                 return '{"error": "not a teacher"}', 403
+            elif instance.get_college(username) is None:
+                return '{"error": "not in a college"}', 403
         else:
             return '{"error": "invalid credentials"}', 403
     return '', 403
