@@ -71,7 +71,7 @@ function add_registration_field() {
 
 function register_details(hash) {
     hash["token"] = token
-        $.post("/user/register", hash);
+        $.post("user/register", hash);
 }
 
 function show_edit(userid) {
