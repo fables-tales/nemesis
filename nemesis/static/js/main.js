@@ -44,10 +44,11 @@ setInterval(function(){
 function populate_user(dict, userid) {
     $("#user-name").text(dict["full_name"]);
     $("#user-email").attr("value", dict["email"]);
+    current_userid = userid;
     current_email = dict["email"];
 }
 
-var teams = null
+var teams = null;
 
 function add_registration_field() {
     build = "<tr class='register-row'>";
@@ -70,7 +71,7 @@ function add_registration_field() {
 
 function register_details(hash) {
     hash["token"] = token
-        $.post("/user/register", hash);
+        $.post("user/register", hash);
 }
 
 function show_edit(userid) {
