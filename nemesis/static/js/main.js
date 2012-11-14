@@ -44,6 +44,7 @@ setInterval(function(){
 function populate_user(dict, userid) {
     $("#user-name").text(dict["full_name"]);
     $("#user-email").attr("value", dict["email"]);
+    current_userid = userid;
     current_email = dict["email"];
 }
 
