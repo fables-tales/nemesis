@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import helpers
 import csv
 
