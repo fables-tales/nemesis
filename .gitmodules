@@ -1,3 +1,3 @@
 [submodule "nemesis/userman"]
 	path = nemesis/userman
-	url = https://github.com/samphippen/userman.git
+	url = git://studentrobotics.org/userman.git
