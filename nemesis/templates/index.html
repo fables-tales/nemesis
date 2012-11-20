@@ -82,7 +82,7 @@
     </style>
     <script type="text/javascript">
         var has_hash = document.URL.indexOf("#") != -1;
-        if (document.URL[document.URL.length-1] != "/" && !has_hash) {
+        if (document.URL.charAt(document.URL.length-1) != "/" && !has_hash) {
             window.location = document.URL + "/"
         }
     </script>
