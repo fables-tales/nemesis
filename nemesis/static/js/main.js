@@ -1,5 +1,4 @@
 if (typeof(JSON) == "undefined") {
-    console.log("redefining parse")
     JSON = {"parse": function(x) { return eval("(" + x + ")")}}
 }
 
