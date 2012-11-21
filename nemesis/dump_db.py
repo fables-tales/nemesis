@@ -20,4 +20,5 @@ if __name__ == "__main__":
     with open("users.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
         for row in details:
+            row = [item.encode("utf-8") for  item in row]
             writer.writerow(row)
