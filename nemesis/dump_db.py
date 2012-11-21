@@ -13,13 +13,14 @@ if __name__ == "__main__":
         details.append(row)
         ids.add(row[0])
 
-    for id in ids:
-        cur.execute("UPDATE registrations SET processed='1' WHERE id=?", (id,))
-        conn.commit()
-
     with open("users.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
         for row in details:
-            for i in range(0,6):
+            row = list(row)
+            for i in range(1,7):
                 row[i] = row[i].encode("utf-8")
             writer.writerow(row)
+
+    for id in ids:
+        cur.execute("UPDATE registrations SET processed='1' WHERE id=?", (id,))
+        conn.commit()
