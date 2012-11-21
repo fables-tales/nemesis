@@ -1,3 +1,7 @@
+if (typeof(JSON) == "undefined") {
+    JSON = {"parse": function(x) { return eval("(" + x + ")")}}
+}
+
 var token = "";
 var current_email = "";
 var current_userid = "";
