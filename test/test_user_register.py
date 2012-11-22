@@ -58,7 +58,7 @@ class TestAuth(unittest.TestCase):
 
 
     def tearDown(self):
-        deauth = helpers.server_post("/deauth", {"token":self.auth_hash})
+        helpers.server_post("/deauth", {"token":self.auth_hash})
         helpers.delete_db()
 
 
