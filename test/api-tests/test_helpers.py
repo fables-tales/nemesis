@@ -4,7 +4,7 @@ import random
 import urllib
 import sys
 import os
-sys.path.insert(0,os.path.abspath('../nemesis/'))
+sys.path.insert(0,os.path.abspath('../../nemesis/'))
 import helpers
 
 

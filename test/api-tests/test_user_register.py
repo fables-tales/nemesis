@@ -36,7 +36,7 @@ class TestAuth(unittest.TestCase):
         local_hash = copy(self.user_hash)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        p = subprocess.Popen("../nemesis/dump_db.py")
+        p = subprocess.Popen("../../nemesis/dump_db.py")
         p.wait()
         users_csv = open("users.csv").read()
         self.assertTrue("bob" in users_csv)
@@ -48,7 +48,7 @@ class TestAuth(unittest.TestCase):
         local_hash = copy(self.user_hash_unicode)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        p = subprocess.Popen("../nemesis/dump_db.py")
+        p = subprocess.Popen("../../nemesis/dump_db.py")
         p.wait()
         users_csv = open("users.csv").read()
         self.assertTrue(u"b\u00F6b" in users_csv.decode("utf-8"))

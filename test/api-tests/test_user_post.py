@@ -48,7 +48,7 @@ class TestAuth(unittest.TestCase):
         args_hash["token"] = self.auth_hash
         args_hash["password"] = "abc" + str(random.randint(0,10000))
         resp = helpers.server_post("/user/student_coll2_2", args_hash)
-        instance = LdapInstance("../nemesis/userman")
+        instance = LdapInstance("../../nemesis/userman")
         bind_result = instance.bind("student_coll2_2", args_hash["password"])
         self.assertTrue(bind_result)
 
@@ -59,7 +59,7 @@ class TestAuth(unittest.TestCase):
         args_hash["password"] = "abc" + str(random.randint(0,10000))
         resp = helpers.server_post("/user/student_coll1_2", args_hash)
         self.assertEqual(resp.status, 403)
-        instance = LdapInstance("../nemesis/userman")
+        instance = LdapInstance("../../nemesis/userman")
         bind_result = instance.bind("student_coll2_2", args_hash["password"])
         self.assertFalse(bind_result)
 
