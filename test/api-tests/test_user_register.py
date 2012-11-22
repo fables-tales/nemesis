@@ -3,6 +3,7 @@ import json
 import test_helpers as helpers
 from copy import copy
 import subprocess
+import os
 
 
 class TestAuth(unittest.TestCase):
@@ -60,6 +61,7 @@ class TestAuth(unittest.TestCase):
     def tearDown(self):
         helpers.server_post("/deauth", {"token":self.auth_hash})
         helpers.delete_db()
+        os.system("rm -f users.csv")
 
 
 
