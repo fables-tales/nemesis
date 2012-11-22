@@ -14,7 +14,10 @@ class TestAuth(unittest.TestCase):
 
     def test_deauth_no_token_body(self):
         resp = helpers.server_post("/deauth", {})
-        self.assertEqual(resp.read(), "False")
+        if helpers.apache_mode():
+            self.assertEqual(resp.read(), '')
+        else:
+            self.assertEqual(resp.read(), "False")
 
     def test_deauth_invalid_token_code(self):
         auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
@@ -24,7 +27,10 @@ class TestAuth(unittest.TestCase):
     def test_deauth_invalid_token_body(self):
         auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
         resp = helpers.server_post("/deauth", auth_hash)
-        self.assertEqual(resp.read(), "False")
+        if helpers.apache_mode():
+            self.assertEqual(resp.read(), '')
+        else:
+            self.assertEqual(resp.read(), "False")
 
     def test_deauth_valid_token_code(self):
         resp_auth = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
@@ -37,7 +43,10 @@ class TestAuth(unittest.TestCase):
         value = resp_auth.read()
         auth_hash = json.loads(value)
         resp = helpers.server_post("/deauth", auth_hash)
-        self.assertEqual(resp.read(), "True")
+        if helpers.apache_mode():
+            self.assertEqual(resp.read(), '')
+        else:
+            self.assertEqual(resp.read(), "True")
 
 if __name__ == '__main__':
     unittest.main()

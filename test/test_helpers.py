@@ -7,6 +7,19 @@ import os
 sys.path.insert(0,os.path.abspath('../nemesis/'))
 import helpers
 
+
+def apache_mode():
+    return os.path.exists(".apachetest")
+
+def make_connection():
+    if not apache_mode():
+        return httplib.HTTPConnection("localhost:5000")
+    else:
+        return httplib.HTTPSConnection("localhost")
+
+def modify_endpoint(endpoint):
+    return "/userman" + endpoint if apache_mode() else endpoint
+
 def delete_db():
     conn = helpers.sqlite_connect()
     cur = conn.cursor()
@@ -20,7 +33,8 @@ def get_registrations():
     return list(cur)
 
 def server_post(endpoint, params=None):
-    conn = httplib.HTTPConnection("localhost:5000")
+    conn = make_connection()
+    endpoint = modify_endpoint(endpoint)
     headers = {"Content-type": "application/x-www-form-urlencoded",
                 "Accept": "text/plain"}
     if params != None:
@@ -33,7 +47,8 @@ def server_post(endpoint, params=None):
 
 
 def server_get(endpoint, params=None):
-    conn = httplib.HTTPConnection("localhost:5000")
+    conn = make_connection()
+    endpoint = modify_endpoint(endpoint)
     if params != None:
         url_params = urllib.urlencode(params)
         conn.request("GET", endpoint + "?" + url_params)

@@ -24,8 +24,8 @@ class TestAuth(unittest.TestCase):
         self.assertTrue("student_coll1_2" in obj["userids"])
 
         self.assertEqual(obj["college_name"], "college the first")
-        self.assertTrue("team1" in obj["teams"])
-        self.assertTrue("team2" in obj["teams"])
+        self.assertTrue("team-ABC" in obj["teams"])
+        self.assertTrue("team-DFE" in obj["teams"])
 
     def test_get_college_noauth(self):
         resp = helpers.server_get("/college")
