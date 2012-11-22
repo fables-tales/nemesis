@@ -32,12 +32,17 @@ def get_registrations():
     cur.execute("SELECT * FROM registrations")
     return list(cur)
 
+def unicode_encode(params_hash):
+    for key in params_hash:
+        params_hash[key] = params_hash[key].encode("utf-8")
+
 def server_post(endpoint, params=None):
     conn = make_connection()
     endpoint = modify_endpoint(endpoint)
     headers = {"Content-type": "application/x-www-form-urlencoded",
                 "Accept": "text/plain"}
     if params != None:
+        unicode_encode(params)
         url_params = urllib.urlencode(params)
         conn.request("POST", endpoint, url_params, headers)
     else:
