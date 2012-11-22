@@ -17,6 +17,11 @@ if __name__ == "__main__":
         writer = csv.writer(csvfile)
         for row in details:
             row = list(row)
+
+            #the format of the row is such that the first and last entries are
+            #integers and everything else is a string. Given that the strings
+            #come from user input they should be utf-8 encoded to make them
+            #work
             for i in range(1,7):
                 row[i] = row[i].encode("utf-8")
             writer.writerow(row)
