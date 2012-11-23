@@ -42,5 +42,14 @@ class testUserman(unittest.TestCase):
         self.assertTrue("#register-users" in self.browser.current_url)
         self.assertTrue(register_users_div.is_displayed())
 
+    def test_landingpage_user(self):
+        self.login()
+        user_link = self.browser.find_element_by_link_text("student_coll1_1")
+        user_link.click()
+        user_div = self.browser.find_element_by_id("user")
+        time.sleep(1)
+        self.assertTrue("#show-student_coll1_1" in self.browser.current_url)
+        self.assertTrue(user_div.is_displayed())
+
 if __name__ == '__main__':
     unittest.main()
