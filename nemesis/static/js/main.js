@@ -202,7 +202,10 @@ $(document).ready(function() {
 
     $("#add-row").click(add_registration_field);
     $("#send-register").click(function() {
-        var rows = $(".register-row")
+        var rows = $(".register-row");
+        $("#send-register").attr("disabled", "true");
+        var text = $("#send-register").text()
+        $("#send-register").text("Sending registrations...");
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             var first_name = row.children[0].children[0].value;
@@ -221,6 +224,8 @@ $(document).ready(function() {
                 }
             }
         }
+        $("#send-register").removeAttr("disabled");
+        $("#send-register").text(text);
         back();
     });
 
