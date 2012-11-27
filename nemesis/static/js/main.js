@@ -27,7 +27,7 @@ function hideWorking() {
 
 
 function show_spinner() {
-    working_timer = setInterval(showWorking, 100);
+    working_timer = setInterval(showWorking, 500);
 }
 
 function hide_spinner() {
