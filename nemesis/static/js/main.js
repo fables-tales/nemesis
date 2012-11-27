@@ -6,11 +6,35 @@ var token = "";
 var current_email = "";
 var current_userid = "";
 
-function show_spinner() {
 
+var working_timer = null;
+var working_count = 0;
+
+function showWorking() {
+    var text = "Working ";
+    $("#working-alert").show();
+    for (var i = 0; i < working_count % 4; i++) {
+        text += ".";
+    }
+
+    $("#working-alert").text(text);
+    working_count += 1;
+}
+
+function hideWorking() {
+    $("#working-alert").fadeOut();
+}
+
+
+function show_spinner() {
+    working_timer = setInterval(showWorking, 100);
 }
 
 function hide_spinner() {
+    working_count = 0;
+    clearInterval(working_timer);
+    hideWorking();
+
 }
 
 if (window.location.hash != "") {
@@ -79,17 +103,18 @@ function register_details(hash) {
 }
 
 function show_edit(userid) {
+    show_spinner();
     $.get("user/" + userid, {"token":token}, function(response) {
         $("#college").hide();
         populate_user(JSON.parse(response), userid);
         $("#user").show();
+        hide_spinner();
     });
 }
 
 function load_college_dialogue() {
     show_spinner();
     $.get("college", {"token":token}, function(resp) {
-        hide_spinner();
         var obj = JSON.parse(resp);
         if (teams == null) {
             teams = obj["teams"];
@@ -113,8 +138,10 @@ function load_college_dialogue() {
         }
     $("#login").hide();
     $("#college").show();
+    hide_spinner();
     });
 }
+
 function back() {
     $("#user").hide();
     $("#register-users").hide();
@@ -202,6 +229,7 @@ $(document).ready(function() {
 
     $("#add-row").click(add_registration_field);
     $("#send-register").click(function() {
+        show_spinner();
         var rows = $(".register-row");
         $("#send-register").attr("disabled", "true");
         var text = $("#send-register").text()
@@ -226,6 +254,7 @@ $(document).ready(function() {
         }
         $("#send-register").removeAttr("disabled");
         $("#send-register").text(text);
+        hide_spinner();
         back();
     });
 
