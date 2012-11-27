@@ -5,35 +5,14 @@ app = Flask(__name__)
 from hashlib import sha256
 from serverldap import LdapInstance
 
-from helpers import sqlite_connect
+from helpers import sqlite_connect, handle_authentication, get_username
 
 import helpers
 import random
 import os
-import sqlite3
 import subprocess
 
 PATH = os.path.dirname(os.path.abspath(__file__))
-
-
-def handle_authentication(args,userid=None):
-    if args.has_key("token"):
-        token = args["token"]
-        instance = LdapInstance(PATH + "/userman")
-        teacher_username = get_username(token)
-        teacher = instance.is_teacher(teacher_username)
-        if userid is not None:
-            return teacher and instance.is_teacher_of(teacher_username, userid)
-        else:
-            return teacher
-
-    return False
-
-def get_username(token):
-    c = sqlite_connect()
-    cur = c.cursor()
-    result = cur.execute("SELECT username FROM auth WHERE token=?", (token,))
-    return result.next()[0]
 
 @app.route("/")
 def index():
