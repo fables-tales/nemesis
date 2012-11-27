@@ -277,7 +277,7 @@ $(document).ready(function() {
             if (first_name != "" && last_name != "" && email != "") {
                 register_details(hash);
                 if (i == rows.length-1) {
-                    $("#msg").text("Users registered successfully!");
+                    $("#msg").text(rows.length + " users registered successfully!");
                 }
             }
         }
