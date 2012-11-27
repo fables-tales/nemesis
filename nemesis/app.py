@@ -2,13 +2,10 @@ from flask import Flask, request, url_for
 import json
 app = Flask(__name__)
 
-from hashlib import sha256
 from serverldap import LdapInstance
-
 from helpers import sqlite_connect, handle_authentication, get_username
 
 import helpers
-import random
 import os
 import subprocess
 
@@ -40,15 +37,7 @@ def auth():
         instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
             if instance.is_teacher(username) and instance.get_college(username) is not None:
-                token = str(sha256(str(random.randint(0,1000000))).hexdigest())
-                auth_hash = {"token":token}
-
-                c = sqlite_connect()
-                cur = c.cursor()
-                print token
-                cur.execute("DELETE FROM auth WHERE token=?", (token,))
-                cur.execute("INSERT INTO auth values (?,?)", (token, username))
-                c.commit()
+                auth_hash = {"token":helpers.make_token(username)}
                 return json.dumps(auth_hash)
             elif not instance.is_teacher(username):
                 return '{"error": "not a teacher"}', 403

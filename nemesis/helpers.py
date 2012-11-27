@@ -1,8 +1,22 @@
 import sqlite3
 import os
+import random
+
 from serverldap import LdapInstance
+from hashlib import sha256
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+
+
+def make_token(username):
+    token = str(sha256(str(random.randint(0,1000000))).hexdigest())
+    c = sqlite_connect()
+    cur = c.cursor()
+    cur.execute("DELETE FROM auth WHERE token=?", (token,))
+    cur.execute("INSERT INTO auth values (?,?)", (token, username))
+    c.commit()
+    return token
+
 
 def get_username(token):
     c = sqlite_connect()
