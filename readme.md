@@ -13,7 +13,7 @@ for easy management in my brain
 ##Phippen, you ass, just let me hack on it
 
 
-1. Get an srobo dev server [here](http://studentrobotics.org)
+1. Get an srobo dev server [here](http://github.com/samphippen/badger-vagrant)
 2. You've got nemesis in `/srv/nemesis`
 3. Run the rest-api tests by changing into `test/api-tests` and running
    `./apache_tests.sh`
