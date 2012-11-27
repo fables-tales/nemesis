@@ -1,15 +1,15 @@
-from flask import Flask, request, url_for
+import os
+import subprocess
 import json
-app = Flask(__name__)
 
 from serverldap import LdapInstance
 from helpers import sqlite_connect, handle_authentication, get_username
+from flask import Flask, request, url_for
 
 import helpers
-import os
-import subprocess
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__)
 
 @app.route("/")
 def index():
