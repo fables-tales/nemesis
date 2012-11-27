@@ -55,7 +55,7 @@ def deauth():
         token = request.form["token"]
         c = sqlite_connect()
         cur = c.cursor()
-        r = cur.execute("DELETE FROM auth WHERE token=?", (token,))
+        cur.execute("DELETE FROM auth WHERE token=?", (token,))
         c.commit()
 
         if c.total_changes == 1:
