@@ -51,7 +51,7 @@ class testUserman(unittest.TestCase):
         user_link = self.browser.find_element_by_link_text("student1 student")
         user_link.click()
         user_div = self.browser.find_element_by_id("user")
-        time.sleep(1)
+        time.sleep(3)
         self.assertTrue("#show-student_coll1_1" in self.browser.current_url)
         self.assertTrue(user_div.is_displayed())
 
