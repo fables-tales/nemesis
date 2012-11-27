@@ -112,6 +112,19 @@ function show_edit(userid) {
     });
 }
 
+
+function make_users_list(obj, html) {
+    $("#college-users").html(html);
+    for (var i = 0; i < obj["userids"].length; i++) {
+        var userid = obj["userids"][i];
+        $("#user-" + userid).onclick = function() {
+            uid = this.id.split("-")[1];
+            current_userid = uid;
+            show_edit(uid);
+        }
+    }
+}
+
 function load_college_dialogue() {
     show_spinner();
     $.get("college", {"token":token}, function(resp) {
@@ -122,23 +135,22 @@ function load_college_dialogue() {
         }
         $("#college-name").text(obj["college_name"]);
         var build = "<ul>"
+        var remaining = obj["userids"].length;
         for (var i = 0; i < obj["userids"].length; i++) {
             userid = obj["userids"][i];
-            build += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + userid + "</a></li>";
+            $.get("user/" + userid, {"token":token}, function(resp) {
+                var user_name = JSON.parse(resp)["full_name"];
+                build += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + user_name + "</a></li>";
+                remaining -= 1;
+                if (remaining == 0) {
+                    make_users_list(obj, build);
+                    hide_spinner();
+                    $("#login").hide();
+                    $("#college").show();
+                }
+            });
         }
-        $("#college-users").html(build);
 
-        for (var i = 0; i < obj["userids"].length; i++) {
-            var userid = obj["userids"][i];
-            $("#user-" + userid).onclick = function() {
-                uid = this.id.split("-")[1];
-                current_userid = uid;
-                show_edit(uid);
-            }
-        }
-    $("#login").hide();
-    $("#college").show();
-    hide_spinner();
     });
 }
 
