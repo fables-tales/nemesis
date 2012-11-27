@@ -6,7 +6,7 @@ import subprocess
 import os
 
 
-class TestAuth(unittest.TestCase):
+class TestUserRegister(unittest.TestCase):
 
     def setUp(self):
         resp_auth = helpers.server_post("/auth", {"username":"teacher_coll2", "password":"noway"})

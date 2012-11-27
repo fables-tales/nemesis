@@ -1,7 +1,7 @@
 import unittest
 from serverldap import LdapInstance, is_teacher_of
 
-class TestAuth(unittest.TestCase):
+class TestLdap(unittest.TestCase):
 
     def setUp(self):
         pass

@@ -4,7 +4,7 @@ import test_helpers as helpers
 import random
 from serverldap import LdapInstance
 
-class TestAuth(unittest.TestCase):
+class TestUserPost(unittest.TestCase):
 
     def setUp(self):
         resp_auth = helpers.server_post("/auth", {"username":"teacher_coll2", "password":"noway"})

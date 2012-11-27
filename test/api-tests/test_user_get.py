@@ -2,7 +2,7 @@ import unittest
 import json
 import test_helpers as helpers
 
-class TestAuth(unittest.TestCase):
+class TestUserGet(unittest.TestCase):
 
     def setUp(self):
         resp_auth = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})

@@ -4,7 +4,7 @@ import random
 import json
 import test_helpers as helpers
 
-class TestAuth(unittest.TestCase):
+class TestDeauth(unittest.TestCase):
     def setUp(self):
         pass
 
