@@ -106,10 +106,10 @@ def register_user():
         instance         = LdapInstance(PATH + "/userman")
         teacher_username = get_username(request.form["token"])
         college_group    = instance.get_college(teacher_username)
-        first_name       = request.form["first_name"]
-        last_name        = request.form["last_name"]
-        email            = request.form["email"]
-        team             = request.form["team"]
+        first_name       = request.form["first_name"].strip()
+        last_name        = request.form["last_name"].strip()
+        email            = request.form["email"].strip()
+        team             = request.form["team"].strip()
         helpers.register_user(teacher_username, college_group, first_name, last_name, email, team)
         return "", 200
     return "", 403
