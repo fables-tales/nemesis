@@ -4,7 +4,7 @@ import json
 
 from serverldap import LdapInstance
 from helpers import sqlite_connect, handle_authentication, get_username
-from flask import Flask, request, url_for
+from flask import Flask, request
 
 import helpers
 
