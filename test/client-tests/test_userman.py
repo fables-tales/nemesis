@@ -5,6 +5,9 @@ import time
 
 
 class testUserman(unittest.TestCase):
+    def tearDown(self):
+        helpers.end_browser()
+
     def setUp(self):
         b = helpers.get_browser()
         b.get("https://localhost/userman")
