@@ -113,7 +113,15 @@ function show_edit(userid) {
 }
 
 
-function make_users_list(obj, html) {
+function make_users_list(obj, list) {
+    sorted = list.sort(function(a,b) { return a.user_name < b.user_name });
+    html = "<ul>";
+    for (var i = 0; i < sorted.length; i++) {
+        var userid = list[i].userid;
+        var user_name = list[i].user_name;
+        html += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + user_name + "</a></li>";
+    }
+    html += "</ul>"
     $("#college-users").html(html);
     for (var i = 0; i < obj["userids"].length; i++) {
         var userid = obj["userids"][i];
@@ -125,6 +133,24 @@ function make_users_list(obj, html) {
     }
 }
 
+var remaining = null;
+var build = null;
+
+function build_user_details(userid, obj) {
+    $.get("user/" + userid, {"token":token}, function(resp) {
+        var user_name = JSON.parse(resp)["full_name"];
+        console.log(userid);
+        build.push({"userid":userid, "user_name":user_name})
+        remaining -= 1;
+        if (remaining == 0) {
+            make_users_list(obj, build);
+            hide_spinner();
+            $("#login").hide();
+            $("#college").show();
+        }
+    });
+}
+
 function load_college_dialogue() {
     show_spinner();
     $.get("college", {"token":token}, function(resp) {
@@ -134,21 +160,12 @@ function load_college_dialogue() {
             add_registration_field();
         }
         $("#college-name").text(obj["college_name"]);
-        var build = "<ul>"
-        var remaining = obj["userids"].length;
+        build = []
+        remaining = obj["userids"].length;
+        console.log(obj["userids"]);
         for (var i = 0; i < obj["userids"].length; i++) {
-            userid = obj["userids"][i];
-            $.get("user/" + userid, {"token":token}, function(resp) {
-                var user_name = JSON.parse(resp)["full_name"];
-                build += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + user_name + "</a></li>";
-                remaining -= 1;
-                if (remaining == 0) {
-                    make_users_list(obj, build);
-                    hide_spinner();
-                    $("#login").hide();
-                    $("#college").show();
-                }
-            });
+            var userid = obj["userids"][i];
+            build_user_details(userid, obj);
         }
 
     });
