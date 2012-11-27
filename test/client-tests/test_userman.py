@@ -22,7 +22,8 @@ class testUserman(unittest.TestCase):
 
         login_button = self.browser.find_element_by_id("go")
         login_button.click()
-        time.sleep(1)
+        print "login sleeping"
+        time.sleep(3)
 
     def test_landingpage_title(self):
         self.assertEqual(self.browser.title,"Student Robotics Userman")
