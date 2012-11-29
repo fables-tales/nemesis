@@ -10,12 +10,11 @@ class testUserman(unittest.TestCase):
     def reset_user_details(self):
         helpers.end_browser()
         self.browser = helpers.get_browser()
-        time.sleep(1)
         self.login()
         user_link = self.browser.find_element_by_id("user-student_coll1_1")
         user_link.click()
         print "user details sleep"
-        time.sleep(3)
+        time.sleep(2)
         print "user details sleep done"
 
         email_field = self.browser.find_element_by_id("user-email")
@@ -45,7 +44,7 @@ class testUserman(unittest.TestCase):
 
         login_button = self.browser.find_element_by_id("go")
         login_button.click()
-        time.sleep(4)
+        time.sleep(2.5)
 
     def test_landingpage_title(self):
         self.assertEqual(self.browser.title,"Student Robotics Userman")
@@ -104,7 +103,7 @@ class testUserman(unittest.TestCase):
         user_link = self.browser.find_element_by_id("user-student_coll1_1")
         user_link.click()
         print "."
-        time.sleep(3)
+        time.sleep(1)
         print "."
         self.assertTrue("#show-student_coll1_1" in self.browser.current_url)
 
@@ -124,7 +123,7 @@ class testUserman(unittest.TestCase):
         user_link = self.browser.find_element_by_id("user-student_coll1_1")
         user_link.click()
         print "."
-        time.sleep(4)
+        time.sleep(2)
         print "."
         email_field = self.browser.find_element_by_id("user-email")
         self.assertEqual(email_field.get_attribute("value"), "email2@email.com")
