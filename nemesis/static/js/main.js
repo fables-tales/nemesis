@@ -26,11 +26,11 @@ function hideWorking() {
 }
 
 
-function show_spinner() {
+function showSpinner() {
     working_timer = setInterval(showWorking, 500);
 }
 
-function hide_spinner() {
+function hideSpinner() {
     working_count = 0;
     clearInterval(working_timer);
     hideWorking();
@@ -43,7 +43,7 @@ if (window.location.hash != "") {
 
 var hash = window.location.hash
 
-function handlehash(hash) {
+function handleHash(hash) {
     if (hash == "") {
         back();
     }
@@ -53,7 +53,7 @@ function handlehash(hash) {
     }
     if (hash.indexOf("show-") != -1) {
         var user = hash.slice(6,hash.length);
-        show_edit(user)
+        showEdit(user)
     }
 
     if (hash.indexOf("register-users") != -1) {
@@ -65,11 +65,11 @@ function handlehash(hash) {
 setInterval(function(){
     if (window.location.hash != hash) {
         hash = window.location.hash;
-        handlehash(hash)
+        handleHash(hash)
     }
 }, 100);
 
-function populate_user(dict, userid) {
+function populateUser(dict, userid) {
     $("#user-name").text(dict["full_name"]);
     $("#user-email").attr("value", dict["email"]);
     current_userid = userid;
@@ -78,7 +78,7 @@ function populate_user(dict, userid) {
 
 var teams = null;
 
-function add_registration_field() {
+function addRegistrationField() {
     build = "<tr class='register-row'>";
     build += "<td><input name='first-name' type='text'></input></td>";
     build += "<td><input name='last-name' type='text'></input></td>";
@@ -97,23 +97,23 @@ function add_registration_field() {
     $("#register-inputs").append(build);
 }
 
-function register_details(hash) {
-    hash["token"] = token
-        $.post("user/register", hash);
+function registerDetails(hash) {
+    hash["token"] = token;
+    $.post("user/register", hash);
 }
 
-function show_edit(userid) {
-    show_spinner();
+function showEdit(userid) {
+    showSpinner();
     $.get("user/" + userid, {"token":token}, function(response) {
         $("#college").hide();
-        populate_user(JSON.parse(response), userid);
+        populateUser(JSON.parse(response), userid);
         $("#user").show();
-        hide_spinner();
+        hideSpinner();
     });
 }
 
 
-function make_users_list(obj, list) {
+function makeUsersList(obj, list) {
     sorted = list.sort(function(a,b) { return a.user_name < b.user_name });
     html = "<ul>";
     for (var i = 0; i < sorted.length; i++) {
@@ -128,7 +128,7 @@ function make_users_list(obj, list) {
         $("#user-" + userid).onclick = function() {
             uid = this.id.split("-")[1];
             current_userid = uid;
-            show_edit(uid);
+            showEdit(uid);
         }
     }
 }
@@ -136,36 +136,34 @@ function make_users_list(obj, list) {
 var remaining = null;
 var build = null;
 
-function build_user_details(userid, obj) {
+function buildUserDetails(userid, obj) {
     $.get("user/" + userid, {"token":token}, function(resp) {
         var user_name = JSON.parse(resp)["full_name"];
-        console.log(userid);
         build.push({"userid":userid, "user_name":user_name})
         remaining -= 1;
         if (remaining == 0) {
-            make_users_list(obj, build);
-            hide_spinner();
+            makeUsersList(obj, build);
+            hideSpinner();
             $("#login").hide();
             $("#college").show();
         }
     });
 }
 
-function load_college_dialogue() {
-    show_spinner();
+function loadCollegeDialogue() {
+    showSpinner();
     $.get("college", {"token":token}, function(resp) {
         var obj = JSON.parse(resp);
         if (teams == null) {
             teams = obj["teams"];
-            add_registration_field();
+            addRegistrationField();
         }
         $("#college-name").text(obj["college_name"]);
         build = []
         remaining = obj["userids"].length;
-        console.log(obj["userids"]);
         for (var i = 0; i < obj["userids"].length; i++) {
             var userid = obj["userids"][i];
-            build_user_details(userid, obj);
+            buildUserDetails(userid, obj);
         }
 
     });
@@ -174,8 +172,9 @@ function load_college_dialogue() {
 function back() {
     $("#user").hide();
     $("#register-users").hide();
+    window.location.hash = "#college";
 
-    load_college_dialogue();
+    loadCollegeDialogue();
     current_userid = "";
 }
 
@@ -184,7 +183,7 @@ function login() {
     $.post("auth", hash, function(resp) {
         token = JSON.parse(resp)["token"];
         $("#error").text("Login Successful");
-        load_college_dialogue();
+        loadCollegeDialogue();
     }).error(function(fail) {
         obj = JSON.parse(fail.responseText);
         if (obj["error"] == "invalid credentials") {
@@ -256,9 +255,9 @@ $(document).ready(function() {
         $("#register-users").show();
     });
 
-    $("#add-row").click(add_registration_field);
+    $("#add-row").click(addRegistrationField);
     $("#send-register").click(function() {
-        show_spinner();
+        showSpinner();
         var rows = $(".register-row");
         $("#send-register").attr("disabled", "true");
         var text = $("#send-register").text()
@@ -275,7 +274,7 @@ $(document).ready(function() {
                         "team"      :team};
 
             if (first_name != "" && last_name != "" && email != "") {
-                register_details(hash);
+                registerDetails(hash);
                 if (i == rows.length-1) {
                     $("#msg").text(rows.length + " users registered successfully!");
                 }
@@ -283,7 +282,7 @@ $(document).ready(function() {
         }
         $("#send-register").removeAttr("disabled");
         $("#send-register").text(text);
-        hide_spinner();
+        hideSpinner();
         back();
     });
 
