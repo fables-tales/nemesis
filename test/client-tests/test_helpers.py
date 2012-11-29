@@ -12,12 +12,12 @@ def get_browser():
     display = Display(visible=0, size=(800, 600))
     display.start()
 
-    browser = webdriver.Firefox()
+    browser = webdriver.Firefox(timeout=10)
+    browser.get("https://localhost/userman")
     return browser
 
 def end_browser():
     browser.quit()
-
     display.stop()
 
 def sqlite_connect():
