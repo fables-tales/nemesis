@@ -1,5 +1,6 @@
 from pyvirtualdisplay import Display
 from selenium import webdriver
+import sqlite3
 
 
 browser = None
@@ -18,3 +19,18 @@ def end_browser():
     browser.quit()
 
     display.stop()
+
+def sqlite_connect():
+    conn = sqlite3.connect("../../nemesis/db/nemesis.sqlite")
+    return conn
+
+def clear_database():
+    conn = sqlite_connect()
+    cur  = conn.cursor()
+    cur.execute("DELETE FROM registrations")
+    conn.commit()
+
+def registration_count():
+    conn = sqlite_connect()
+    cur  = conn.cursor()
+    return cur.execute("SELECT COUNT(*) FROM registrations").next()[0]
