@@ -9,7 +9,7 @@ class TestCollege(unittest.TestCase):
         self.auth_hash = json.loads(resp_auth.read())["token"]
 
     def tearDown(self):
-        deauth = helpers.server_post("/deauth", {"token":self.auth_hash})
+        helpers.server_post("/deauth", {"token":self.auth_hash})
 
     def test_get_college_code(self):
         resp = helpers.server_get("/college", {"token":self.auth_hash})
