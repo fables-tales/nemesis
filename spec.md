@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 1.0.0 [SemVer](http://semver.org/)
+##Version 1.0.1 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. It is assumed on most
 requests that a `token` parameter is required. The token must be an API token
@@ -79,6 +79,7 @@ If the response code is 200:
 
 * `userids`: a list of all the user ID's in that college. Example `['ab1']`.
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
+* `college_name`: the name of the college.
 
 
 ##GET /user/:userid
