@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 1.0.2 [SemVer](http://semver.org/)
+##Version 2.0.0 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. It is assumed on most
 requests that a `token` parameter is required. The token must be an API token
@@ -24,7 +24,7 @@ Authenticates users.
 ####Response code
 
 200 if the username and password match a user and password combination in LDAP
-403 otherwise.
+and the user is a team leader. 403 otherwise.
 
 ####Response body
 
