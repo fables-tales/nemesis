@@ -64,7 +64,7 @@ def deauth():
             deleted = False
 
     if app.debug:
-        return str(deleted), 200
+        return json.dumps({"deleted": str(deleted)}), 200
     else:
         return '',200
 
