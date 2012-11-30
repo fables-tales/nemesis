@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 1.0.1 [SemVer](http://semver.org/)
+##Version 1.0.2 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. It is assumed on most
 requests that a `token` parameter is required. The token must be an API token
@@ -155,5 +155,5 @@ Always 200.
 
 ####Response body
 
-**This response body is not a JSON object**.
-The current Git revision ID as a hash.
+**This response body is not a JSON object**. The current Git revision hash
+corresponding to the checked out and running version of the API service.
