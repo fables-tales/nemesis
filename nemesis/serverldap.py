@@ -77,6 +77,9 @@ class LdapInstance:
         self.conn.modify_s(bind_str, modlist)
 
 
+######INTERNAL CODE BELOW HERE.
+######YOU ALMOST CERTAINLY CARE MORE ABOUT THE STUFF ABOVE
+
 def encode_pass(p):
     h = hashlib.sha1(p)
     return "{SHA}%s" %( base64.b64encode( h.digest() ) )
