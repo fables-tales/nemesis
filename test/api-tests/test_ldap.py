@@ -22,12 +22,15 @@ class TestLdap(unittest.TestCase):
 
     def test_get_college_name(self):
         instance = LdapInstance("../../nemesis/userman")
-        self.assertEqual(instance.get_college_name("college-1"), "college the first")
-        self.assertEqual(instance.get_college_name("college-2"), "secondary college")
+        group = instance.get_college("teacher_coll1")
+        print group
+        self.assertEqual(group.name(), "college the first")
+        group = instance.get_college("teacher_coll2")
+        self.assertEqual(group.name(), "secondary college")
 
     def test_get_college_teams_1(self):
         instance = LdapInstance("../../nemesis/userman")
-        teams = instance.get_college_teams("college-1")
+        teams = instance.get_college("teacher_coll1").teams()
         print teams
         self.assertTrue("team-ABC" in teams)
         self.assertTrue("team-DFE" in teams)
@@ -35,7 +38,7 @@ class TestLdap(unittest.TestCase):
 
     def test_get_college_teams_2(self):
         instance = LdapInstance("../../nemesis/userman")
-        teams = instance.get_college_teams("college-2")
+        teams = instance.get_college("teacher_coll2").teams()
         self.assertTrue("team-QWZ" in teams)
         self.assertEqual(len(teams), 1)
 
