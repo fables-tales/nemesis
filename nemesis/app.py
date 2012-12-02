@@ -52,12 +52,12 @@ def deauth():
         cur.execute("DELETE FROM auth WHERE token=?", (token,))
         c.commit()
 
+
+    if app.debug:
         if c.total_changes == 1:
             deleted = True
         else:
             deleted = False
-
-    if app.debug:
         return json.dumps({"deleted": str(deleted)}), 200
     else:
         return '',200
