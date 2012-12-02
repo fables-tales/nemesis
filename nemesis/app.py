@@ -36,8 +36,7 @@ def auth():
         password = request.form["password"]
         instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
-            body, code = helpers.authentication_response(username)
-            return body, code
+            return helpers.authentication_response(username)
         else:
             return '{"error": "invalid credentials"}', 403
     return '', 403
