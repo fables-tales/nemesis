@@ -1,3 +1,3 @@
 #!/bin/bash
-cd test/client-tests && python test_userman.py
-cd ../api-tests && ./apache_tests.sh
+cd test/api-tests && ./apache_tests.sh
+cd ../client-tests && python test_userman.py
