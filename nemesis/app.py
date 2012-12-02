@@ -36,13 +36,8 @@ def auth():
         password = request.form["password"]
         instance = LdapInstance(PATH + "/userman")
         if instance.bind(username, password):
-            if instance.is_teacher(username) and instance.get_college(username) is not None:
-                auth_hash = {"token":helpers.make_token(username)}
-                return json.dumps(auth_hash)
-            elif not instance.is_teacher(username):
-                return '{"error": "not a teacher"}', 403
-            elif instance.get_college(username) is None:
-                return '{"error": "not in a college"}', 403
+            body, code = helpers.authentication_response(username)
+            return body, code
         else:
             return '{"error": "invalid credentials"}', 403
     return '', 403

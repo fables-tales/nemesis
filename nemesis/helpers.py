@@ -1,12 +1,22 @@
 import sqlite3
 import os
 import random
+import json
 
 from serverldap import LdapInstance
 from hashlib import sha256
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
+def authentication_response(username):
+    instance = LdapInstance(PATH + "/userman")
+    if instance.can_auth(username):
+        auth_hash = {"token":make_token(username)}
+        return json.dumps(auth_hash), 200
+    elif not instance.is_teacher(username):
+        return '{"error": "not a teacher"}', 403
+    elif instance.get_college(username) is None:
+        return '{"error": "not in a college"}', 403
 
 def make_token(username):
     token = str(sha256(str(random.randint(0,1000000))).hexdigest())
