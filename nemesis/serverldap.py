@@ -65,6 +65,20 @@ def is_teacher_of(userman_path, teacher_id, student_id):
     student_college = college_for_user(userman_path, student_id)
     return teacher_college == student_college
 
+class College:
+    def __init__(self, group_name, userman_path):
+        self.group_name = group_name
+        self.userman_path = userman_path
+
+    def name(self):
+        return college_name(self.userman_path, self.group_name)
+
+    def teams(self):
+        return college_teams(self.userman_path, self.group_name)
+
+    def users(self):
+        return group_members(self.userman_path, self.group_name)
+
 class LdapInstance:
     def __init__(self,userman_path="userman"):
         self.config = ConfigParser.SafeConfigParser()
@@ -97,7 +111,11 @@ class LdapInstance:
         return user_details(self.userman_path, userid)
 
     def get_college(self, userid):
-        return college_for_user(self.userman_path, userid)
+        college = college_for_user(self.userman_path, userid)
+        if college == None:
+            return None
+        else:
+            return College(college, self.userman_path)
 
     def is_teacher_of(self, teacherid, userid):
         return is_teacher_of(self.userman_path, teacherid, userid)
@@ -118,15 +136,6 @@ class LdapInstance:
         password = str(password)
         modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
         self.conn.modify_s(bind_str, modlist)
-
-    def get_college_name(self, college_group):
-        return college_name(self.userman_path, college_group)
-
-    def get_college_teams(self, college_group):
-        return college_teams(self.userman_path, college_group)
-
-    def get_group_users(self, group):
-        return group_members(self.userman_path, group)
 
 if __name__ == "__main__":
     assert LdapInstance().is_teacher("teacher_coll1") == True
