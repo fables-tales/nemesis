@@ -17,7 +17,7 @@ class TestDeauth(unittest.TestCase):
         if helpers.apache_mode():
             self.assertEqual(resp.read(), '')
         else:
-            self.assertEqual(resp.read(), "False")
+            self.assertEqual(resp.read(), '{"deleted": "False"}')
 
     def test_deauth_invalid_token_code(self):
         auth_hash = {"token":sha256(str(random.randint(0,1000000))).hexdigest()}
@@ -30,7 +30,7 @@ class TestDeauth(unittest.TestCase):
         if helpers.apache_mode():
             self.assertEqual(resp.read(), '')
         else:
-            self.assertEqual(resp.read(), "False")
+            self.assertEqual(resp.read(), '{"deleted": "False"}')
 
     def test_deauth_valid_token_code(self):
         resp_auth = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
@@ -46,7 +46,7 @@ class TestDeauth(unittest.TestCase):
         if helpers.apache_mode():
             self.assertEqual(resp.read(), '')
         else:
-            self.assertEqual(resp.read(), "True")
+            self.assertEqual(resp.read(), '{"deleted": "True"}')
 
 if __name__ == '__main__':
     unittest.main()
