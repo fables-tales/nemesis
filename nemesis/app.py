@@ -44,21 +44,17 @@ def auth():
 
 @app.route("/deauth", methods=["POST"])
 def deauth():
-    deleted = False
+    count = 0
     if request.form.has_key("token"):
         token = request.form["token"]
         c = sqlite_connect()
         cur = c.cursor()
         cur.execute("DELETE FROM auth WHERE token=?", (token,))
         c.commit()
-
+        count = c.total_changes
 
     if app.debug:
-        if c.total_changes == 1:
-            deleted = True
-        else:
-            deleted = False
-        return json.dumps({"deleted": str(deleted)}), 200
+        return helpers.deauth_debug_response(count)
     else:
         return '',200
 

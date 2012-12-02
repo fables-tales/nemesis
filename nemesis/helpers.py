@@ -18,6 +18,14 @@ def authentication_response(username):
     elif instance.get_college(username) is None:
         return '{"error": "not in a college"}', 403
 
+def deauth_debug_response(total_deleted_tokens):
+    if total_deleted_tokens == 1:
+        deleted = True
+    else:
+        deleted = False
+
+    return json.dumps({"deleted": str(deleted)}), 200
+
 def make_token(username):
     token = str(sha256(str(random.randint(0,1000000))).hexdigest())
     c = sqlite_connect()
