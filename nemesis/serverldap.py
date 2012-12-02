@@ -23,7 +23,7 @@ class LdapInstance:
         self.config = ConfigParser.SafeConfigParser()
         self.userman_path = userman_path
         self.config.readfp(open(userman_path + "/sr/config.ini"))
-        self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
+        self._ldap_connect()
         self.bound = False
 
     def is_teacher(self, username):
@@ -41,7 +41,7 @@ class LdapInstance:
             return False
 
     def manager_bind(self):
-        self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
+        self._ldap_connect()
         bind_str = "cn=%s,o=sr" % self.config.get('ldap', 'username')
         password = self.config.get("ldap", "password")
         return self.conn.simple_bind_s(bind_str, password)
@@ -75,6 +75,10 @@ class LdapInstance:
         password = str(password)
         modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
         self.conn.modify_s(bind_str, modlist)
+
+    def _ldap_connect(self):
+        self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
+
 
 
 ######INTERNAL CODE BELOW HERE.
