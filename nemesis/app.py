@@ -113,13 +113,10 @@ def college_list():
         instance = LdapInstance(PATH + "/userman")
         teacher_username = get_username(request.args["token"])
         college = instance.get_college(teacher_username)
-        college_name  = college.name()
-        college_users = college.users()
-        college_teams = college.teams()
         obj = {}
-        obj["college_name"] = college_name
-        obj["userids"] = college_users
-        obj["teams"] = college_teams
+        obj["college_name"] = college.name()
+        obj["userids"]      = college.users()
+        obj["teams"]        = college.teams()
         return json.dumps(obj), 200
 
     return "{}", 403
