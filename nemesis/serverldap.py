@@ -4,67 +4,6 @@ import subprocess
 import hashlib
 import base64
 
-
-def encode_pass(p):
-    h = hashlib.sha1(p)
-    return "{SHA}%s" %( base64.b64encode( h.digest() ) )
-
-def run_userman_task(task, userman_path):
-    process = task
-    p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
-    p.wait()
-    retcode = p.returncode
-    if retcode != 0:
-        raise "A userman task failed" + str(task)
-    return p
-
-def get_teachers(userman_path):
-    p = run_userman_task(["./userman", "group", "members", "teachers"], userman_path)
-    return p.stdout.read().strip().split(" ")
-
-
-def user_details(userman_path, userid):
-    p = run_userman_task(["./userman", "user", "info", userid], userman_path)
-    lines = p.stdout.read().strip().split("\n")
-    results = {}
-    for line in lines:
-        key,value = line.split(": ")
-        results[key] = value
-
-    return results
-
-def group_members(userman_path, group):
-    p = run_userman_task(["./userman", "group", "members", group], userman_path)
-    return p.stdout.read().strip().split(" ")
-
-def college_for_user(userman_path, userid):
-    p = run_userman_task(["./userman", "group", "list"], userman_path)
-    groups = p.stdout.read().strip().split("\n")
-    colleges = [x for x in groups if x.find("college-") != -1]
-    for college in colleges:
-        if userid in group_members(userman_path, college):
-            return college
-    return None
-
-def college_name(userman_path, college_group):
-    college_group = college_group.replace("college-", "")
-    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
-    name = " ".join(p.stdout.read().strip().split("\n")[0].split(" ")[1:])
-    return name
-
-def college_teams(userman_path, college_group):
-    college_group = college_group.replace("college-", "")
-    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
-    lines = p.stdout.read().strip().split("\n")
-    team_lines = [x for x in lines if x.find("team") != -1]
-    team_lines = [x.replace("\t - ", "") for x in team_lines]
-    return team_lines
-
-def is_teacher_of(userman_path, teacher_id, student_id):
-    teacher_college = college_for_user(userman_path, teacher_id)
-    student_college = college_for_user(userman_path, student_id)
-    return teacher_college == student_college
-
 class College:
     def __init__(self, group_name, userman_path):
         self.group_name = group_name
@@ -136,6 +75,67 @@ class LdapInstance:
         password = str(password)
         modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
         self.conn.modify_s(bind_str, modlist)
+
+
+def encode_pass(p):
+    h = hashlib.sha1(p)
+    return "{SHA}%s" %( base64.b64encode( h.digest() ) )
+
+def run_userman_task(task, userman_path):
+    process = task
+    p = subprocess.Popen(process, stdout=subprocess.PIPE, cwd=userman_path)
+    p.wait()
+    retcode = p.returncode
+    if retcode != 0:
+        raise "A userman task failed" + str(task)
+    return p
+
+def get_teachers(userman_path):
+    p = run_userman_task(["./userman", "group", "members", "teachers"], userman_path)
+    return p.stdout.read().strip().split(" ")
+
+
+def user_details(userman_path, userid):
+    p = run_userman_task(["./userman", "user", "info", userid], userman_path)
+    lines = p.stdout.read().strip().split("\n")
+    results = {}
+    for line in lines:
+        key,value = line.split(": ")
+        results[key] = value
+
+    return results
+
+def group_members(userman_path, group):
+    p = run_userman_task(["./userman", "group", "members", group], userman_path)
+    return p.stdout.read().strip().split(" ")
+
+def college_for_user(userman_path, userid):
+    p = run_userman_task(["./userman", "group", "list"], userman_path)
+    groups = p.stdout.read().strip().split("\n")
+    colleges = [x for x in groups if x.find("college-") != -1]
+    for college in colleges:
+        if userid in group_members(userman_path, college):
+            return college
+    return None
+
+def college_name(userman_path, college_group):
+    college_group = college_group.replace("college-", "")
+    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
+    name = " ".join(p.stdout.read().strip().split("\n")[0].split(" ")[1:])
+    return name
+
+def college_teams(userman_path, college_group):
+    college_group = college_group.replace("college-", "")
+    p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
+    lines = p.stdout.read().strip().split("\n")
+    team_lines = [x for x in lines if x.find("team") != -1]
+    team_lines = [x.replace("\t - ", "") for x in team_lines]
+    return team_lines
+
+def is_teacher_of(userman_path, teacher_id, student_id):
+    teacher_college = college_for_user(userman_path, teacher_id)
+    student_college = college_for_user(userman_path, student_id)
+    return teacher_college == student_college
 
 if __name__ == "__main__":
     assert LdapInstance().is_teacher("teacher_coll1") == True
