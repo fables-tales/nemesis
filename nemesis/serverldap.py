@@ -76,6 +76,9 @@ class LdapInstance:
         modlist = [(ldap.MOD_REPLACE, "userPassword", encode_pass(password))]
         self.conn.modify_s(bind_str, modlist)
 
+    def can_auth(self, username):
+        return self.is_teacher(username) and self.get_college(username) is not None
+
     def _ldap_connect(self):
         self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
 
