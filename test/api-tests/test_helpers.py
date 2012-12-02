@@ -13,7 +13,7 @@ def apache_mode():
 
 def make_connection():
     if not apache_mode():
-        return httplib.HTTPConnection("localhost:5000")
+        return httplib.HTTPConnection("0.0.0.0:5000")
     else:
         return httplib.HTTPSConnection("localhost")
 
