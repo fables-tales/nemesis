@@ -2,11 +2,11 @@ import os
 import subprocess
 import json
 
-from serverldap import LdapInstance
-from helpers import sqlite_connect, handle_authentication, get_username
+from lib.serverldap import LdapInstance
+from lib.helpers import sqlite_connect, handle_authentication, get_username
 from flask import Flask, request
 
-import helpers
+import lib.helpers as helpers
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)

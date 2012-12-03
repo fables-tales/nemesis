@@ -6,7 +6,7 @@ import json
 from serverldap import LdapInstance
 from hashlib import sha256
 
-PATH = os.path.dirname(os.path.abspath(__file__))
+PATH = os.path.dirname(os.path.abspath(__file__)) + "/../"
 
 def authentication_response(username):
     instance = LdapInstance(PATH + "/userman")

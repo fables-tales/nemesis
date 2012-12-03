@@ -14,6 +14,7 @@ class TestUserRegister(unittest.TestCase):
         self.user_hash = {"first_name": "bob", "last_name":"monkey", "email":"mail@mail.com", "team":"team1"}
         self.user_hash_unicode = {"first_name": u"b\u00F6b", "last_name":"monkey", "email":"mail@mail.com", "team":"team1"}
         self.user_hash_trailing = {"first_name": "    space     ", "last_name":"win", "email":"mail@mail.com", "team":"team1"}
+        os.system("rm -f users.csv")
 
     def dump_db(self):
         p = subprocess.Popen("../../nemesis/scripts/dump_db.py")
@@ -72,7 +73,7 @@ class TestUserRegister(unittest.TestCase):
     def tearDown(self):
         helpers.server_post("/deauth", {"token":self.auth_hash})
         helpers.delete_db()
-        os.system("rm -f ../../nemesis/users.csv")
+        os.system("rm -f users.csv")
 
 
 

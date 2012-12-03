@@ -2,7 +2,7 @@ import unittest
 import json
 import test_helpers as helpers
 import random
-from serverldap import LdapInstance
+from lib.serverldap import LdapInstance
 
 class TestUserPost(unittest.TestCase):
 

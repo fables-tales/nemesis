@@ -1,5 +1,5 @@
 import unittest
-from serverldap import LdapInstance, is_teacher_of
+from lib.serverldap import LdapInstance, is_teacher_of
 
 class TestLdap(unittest.TestCase):
 

@@ -5,7 +5,7 @@ import urllib
 import sys
 import os
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
-import helpers
+import lib.helpers as helpers
 
 
 def apache_mode():

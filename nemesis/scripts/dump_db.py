@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/../")
 
-import helpers
+import lib.helpers as helpers
 import csv
 
 if __name__ == "__main__":
