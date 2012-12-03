@@ -15,6 +15,11 @@ class TestUserRegister(unittest.TestCase):
         self.user_hash_unicode = {"first_name": u"b\u00F6b", "last_name":"monkey", "email":"mail@mail.com", "team":"team1"}
         self.user_hash_trailing = {"first_name": "    space     ", "last_name":"win", "email":"mail@mail.com", "team":"team1"}
 
+    def dump_db(self):
+        p = subprocess.Popen("../../nemesis/scripts/dump_db.py")
+        p.wait()
+        return open("users.csv").read()
+
     def test_no_authentication(self):
         result = helpers.server_post("/user/register", self.user_hash)
         self.assertEqual(result.status, 403)
@@ -37,9 +42,7 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        p = subprocess.Popen("../../nemesis/dump_db.py")
-        p.wait()
-        users_csv = open("users.csv").read()
+        users_csv = self.dump_db()
         self.assertTrue("bob" in users_csv)
         self.assertTrue("monkey" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
@@ -49,9 +52,7 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash_unicode)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        p = subprocess.Popen("../../nemesis/dump_db.py")
-        p.wait()
-        users_csv = open("users.csv").read()
+        users_csv = self.dump_db()
         self.assertTrue(u"b\u00F6b" in users_csv.decode("utf-8"))
         self.assertTrue("monkey" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
@@ -61,9 +62,7 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash_trailing)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        p = subprocess.Popen("../../nemesis/dump_db.py")
-        p.wait()
-        users_csv = open("users.csv").read()
+        users_csv = self.dump_db()
         self.assertEqual("space", users_csv.split("\n")[0].split(",")[3])
         self.assertTrue("win" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
@@ -73,7 +72,7 @@ class TestUserRegister(unittest.TestCase):
     def tearDown(self):
         helpers.server_post("/deauth", {"token":self.auth_hash})
         helpers.delete_db()
-        os.system("rm -f users.csv")
+        os.system("rm -f ../../nemesis/users.csv")
 
 
 
