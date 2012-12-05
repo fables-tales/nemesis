@@ -2,13 +2,76 @@ if (JSON === "undefined") {
     JSON = {"parse": function (x) { return eval("(" + x + ")");}}
 }
 
+var templateExpander = (function () {
+    return function (selector) {
+        var getTemplate = function () {
+            return $(selector).text();
+        };
+
+        this.injectTemplate = function (options) {
+            return getTemplate().replace(":{", options);
+        };
+    };
+})();
+
+var ErrorHandler = (function () {
+    return function () {
+        this.decodeError = function (code) {
+            var result = {
+                "invalid credentials": "Username/password incorrect",
+                "not a teacher"      : "You are not a teacher",
+                "not in a college"   : "Your username is not associated with a college! Please contact us",
+            };
+
+            return result[code] || code;
+        };
+    };
+})();
+
+var WorkingDialogue = (function () {
+    return function () {
+        var working_timer = null;
+        var working_count = 0;
+        var $dialogue = null;
+
+        this.respondToReady = function () {
+            $dialogue = $("#working-alert");
+        };
+
+        var showWorking = function () {
+            var text = "Working ";
+            var i;
+
+            $dialogue.show();
+            for (i = 0; i < working_count % 4; i++) {
+                text += ".";
+            }
+            $dialogue.text(text);
+            working_count += 1;
+        }
+
+        var hideWorking = function () {
+            $dialogue.fadeOut();
+        }
+
+
+        this.showSpinner = function () {
+            working_timer = setInterval(showWorking, 500);
+        }
+
+        this.hideSpinner = function () {
+            working_count = 0;
+            clearInterval(working_timer);
+            hideWorking();
+        }
+    };
+})();
+
+var workingDialogue = new WorkingDialogue();
+
 var token = "";
 var current_email = "";
 var current_userid = "";
-
-
-var working_timer = null;
-var working_count = 0;
 
 var teams = null;
 
@@ -16,39 +79,78 @@ if (window.location.hash !== "") {
     window.location.hash = "";
 }
 
+var Registration = (function() {
+    return function() {
+        var state = {};
+        this.add = function (name, value) {
+            state[name] = value;
+        };
+
+        this.isValid = function () {
+            return hash.first_name !== "" &&
+                   hash.last_name !== "" &&
+                   hash.email !== ""
+        };
+
+        this.getState = function () {
+            return state;
+        };
+    };
+})();
+
+var Registrations = (function () {
+    return function () {
+
+        var rows = function () {
+            return $(".register-row");
+        };
+
+        var registrationFromRow = function (row) {
+            var obj = new Registration();
+            $(row).find(":input").each(function(i,e) {
+                var $e = $(e);
+                obj.add($e.attr("name"), $e.val());
+            });
+
+            return obj;
+        };
+        var registerDetails = function (registration) {
+            var hash = registration.getState();
+            hash.token = token;
+            $.post("user/register", hash);
+        }
+
+        this.sendUserRegistrations = function () {
+            var i;
+            workingDialogue.showSpinner();
+            $(this).attr("disabled", "true");
+            var text = $("#send-register").text();
+            $(this).text("Sending registrations...");
+            for (i = 0; i < rows().length; i++) {
+                var row = rows()[i]
+                var registration = registrationFromRow(row);
+
+                if (registration.isValid()) {
+                    registerDetails(registration);
+                    if (i === rows.length - 1) {
+                        $("#msg").text(rows.length + " users registered successfully!");
+                    }
+                }
+            }
+
+            $(this).removeAttr("disabled");
+            $(this).text(text);
+            workingDialogue.hideSpinner();
+            back();
+        }
+    };
+})();
+
+
 var hash = window.location.hash;
 
-function showWorking() {
-    var text = "Working ";
-    var i;
-
-    $("#working-alert").show();
-    for (i = 0; i < working_count % 4; i++) {
-        text += ".";
-    }
-
-    $("#working-alert").text(text);
-    working_count += 1;
-}
-
-function hideWorking() {
-    $("#working-alert").fadeOut();
-}
-
-
-function showSpinner() {
-    working_timer = setInterval(showWorking, 500);
-}
-
-function hideSpinner() {
-    working_count = 0;
-    clearInterval(working_timer);
-    hideWorking();
-
-}
-
 function loadCollegeDialogue() {
-    showSpinner();
+    workingDialogue.showSpinner();
     $.get("college", {"token": token}, function (resp) {
         var obj = JSON.parse(resp);
         var i;
@@ -112,36 +214,25 @@ function populateUser(dict, userid) {
 
 function addRegistrationField() {
     var i;
-    build = "<tr class='register-row'>";
-    build += "<td><input name='first-name' type='text'></input></td>";
-    build += "<td><input name='last-name' type='text'></input></td>";
-    build += "<td><input name='email' type='text'></input></td>";
-
-    //build the select dropwodwn for teams
-    build += "<td><select name='sel'>";
+    var build = "";
     for (i = 0; i < teams.length; i++) {
         var team = teams[i];
-        build +=      "<option value='" + team + "'>" + team + "</option>";
+        build += "<option value='" + team + "'>" + team + "</option>";
     }
-    build += "</select></td>";
-    build += "</tr>";
+
+    var completeRow = new templateExpander("#register-field").injectTemplate(build);
 
     //add the input to the table
-    $("#register-inputs").append(build);
-}
-
-function registerDetails(hash) {
-    hash.token = token;
-    $.post("user/register", hash);
+    $("#register-inputs").append(completeRow);
 }
 
 function showEdit(userid) {
-    showSpinner();
+    workingDialogue.showSpinner();
     $.get("user/" + userid, {"token": token}, function (response) {
         $("#college").hide();
         populateUser(JSON.parse(response), userid);
         $("#user").show();
-        hideSpinner();
+        workingDialogue.hideSpinner();
     });
 }
 
@@ -184,7 +275,7 @@ function buildUserDetails(userid, obj) {
         remaining -= 1;
         if (remaining === 0) {
             makeUsersList(obj, build);
-            hideSpinner();
+            workingDialogue.hideSpinner();
             $("#login").hide();
             $("#college").show();
         }
@@ -192,27 +283,24 @@ function buildUserDetails(userid, obj) {
 }
 
 function login() {
-    var hash = {"username": $("#username").attr("value"),
-                "password": $("#password").attr("value")};
+    var hash = {
+        "username": $("#username").attr("value"),
+        "password": $("#password").attr("value")
+    };
+
     $.post("auth", hash, function (resp) {
         token = JSON.parse(resp).token;
         $("#error").text("Login Successful");
         loadCollegeDialogue();
     }).error(function (fail) {
         obj = JSON.parse(fail.responseText);
-        if (obj.error === "invalid credentials") {
-            $("#error").text("Username/password incorrect");
-        } else if (obj.error === "not a teacher") {
-            $("#error").text("You are not a teacher");
-        } else if (obj.error === "not in a college") {
-            $("#error").text("Your username is not associated with a college! Please contact us");
-        } else {
-            $("#error").text(obj.error);
-        }
+        $("#error").text(new ErrorHandler().decodeError(obj.error))
     });
 }
 
 $(document).ready(function () {
+    workingDialogue.respondToReady();
+
     $("#login").keyup(function (e) {
         var code = e.keyCode;
         if (code === 13) {
@@ -270,35 +358,6 @@ $(document).ready(function () {
     });
 
     $("#add-row").click(addRegistrationField);
-    $("#send-register").click(function () {
-        var i;
-        showSpinner();
-        var rows = $(".register-row");
-        $("#send-register").attr("disabled", "true");
-        var text = $("#send-register").text();
-        $("#send-register").text("Sending registrations...");
-        for (i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var first_name = row.children[0].children[0].value;
-            var last_name  = row.children[1].children[0].value;
-            var email      = row.children[2].children[0].value;
-            var team       = row.children[3].children[0].value;
-            var hash = {"first_name": first_name,
-                        "last_name" : last_name,
-                        "email"     : email,
-                        "team"      : team};
-
-            if (first_name !== "" && last_name !== "" && email !== "") {
-                registerDetails(hash);
-                if (i === rows.length - 1) {
-                    $("#msg").text(rows.length + " users registered successfully!");
-                }
-            }
-        }
-        $("#send-register").removeAttr("disabled");
-        $("#send-register").text(text);
-        hideSpinner();
-        back();
-    });
+    $("#send-register").click(new Registrations().sendUserRegistrations);
 
 });
