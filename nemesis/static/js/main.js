@@ -132,8 +132,8 @@ var Registrations = (function () {
 
                 if (registration.isValid()) {
                     registerDetails(registration);
-                    if (i === rows.length - 1) {
-                        $("#msg").text(rows.length + " users registered successfully!");
+                    if (i === rows().length - 1) {
+                        $("#msg").text(rows().length + " users registered successfully!");
                     }
                 }
             }
