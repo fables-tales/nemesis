@@ -291,6 +291,7 @@ function login() {
     }).error(function (fail) {
         obj = JSON.parse(fail.responseText);
         $("#error").text(new ErrorHandler().decodeError(obj.error))
+        $("#password").attr("value", "");
     });
 }
 
