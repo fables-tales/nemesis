@@ -14,7 +14,7 @@ class testUserman(unittest.TestCase):
         user_link = self.browser.find_element_by_id("user-student_coll1_1")
         user_link.click()
         print "user details sleep"
-        time.sleep(2)
+        time.sleep(4)
         print "user details sleep done"
 
         email_field = self.browser.find_element_by_id("user-email")
@@ -27,7 +27,7 @@ class testUserman(unittest.TestCase):
 
         set_button = self.browser.find_element_by_id("set")
         set_button.click()
-        time.sleep(2)
+        time.sleep(4)
 
     def setUp(self):
         helpers.clear_database()
@@ -88,9 +88,10 @@ class testUserman(unittest.TestCase):
 
         register_button = self.browser.find_element_by_id("send-register")
         register_button.click()
-        time.sleep(4)
+        time.sleep(7)
 
         msg_div = self.browser.find_element_by_id("msg")
+        print self.browser.current_url
 
         self.assertTrue("#college" in self.browser.current_url)
         self.assertEqual(msg_div.text, "1 users registered successfully!")
