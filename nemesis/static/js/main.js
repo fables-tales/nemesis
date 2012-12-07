@@ -150,7 +150,13 @@ var Registrations = (function () {
         var registerDetails = function (registration) {
             var hash = registration.getState();
             hash.token = token;
-            $.post("user/register", hash);
+            $.post("user/register", hash).error(function() {
+                var build = "A registration error occured. ";
+                build += "Please reregister all the registrations and contact ";
+                build += "Jeremy Morse (<a href='mailto:jmorse@studentrobotics.org'>";
+                build += "jmorse@studentrobotics.org</a>).";
+                $("#msg").html(build);
+            });
         };
 
         this.sendUserRegistrations = function () {
