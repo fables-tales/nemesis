@@ -21,14 +21,6 @@ def sha():
     p.wait()
     return p.stdout.read()
 
-@app.route("/css/bootstrap.css")
-def bootstrap_css():
-    return open(PATH + "/static/css/bootstrap.css").read()
-
-@app.route("/js/main.js")
-def javascript():
-    return open(PATH + "/static/js/main.js").read()
-
 @app.route("/auth", methods=["POST"])
 def auth():
     if request.form.has_key("username") and request.form.has_key("password"):
