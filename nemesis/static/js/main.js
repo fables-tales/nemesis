@@ -127,13 +127,19 @@ var Registration = (function () {
 var Registrations = (function () {
     return function () {
 
+        var that = this;
+
         var rows = function () {
             return $(".register-row");
         };
 
+        this.inputs = function (selector) {
+            return rows().find(selector);
+        };
+
         var registrationFromRow = function (row) {
             var obj = new Registration();
-            $(row).find(":input").each(function (i, e) {
+            that.inputs(":input").each(function (i, e) {
                 var $e = $(e);
                 obj.add($e.attr("name"), $e.val());
             });
@@ -353,6 +359,10 @@ $(document).ready(function () {
     $("#show-register").click(function () {
         $("#college").hide();
         $("#register-users").show();
+
+        new Registrations().inputs(":text").each(function (i,e) {
+            $(e).attr("value", "");
+        });
     });
 
     $("#add-row").click(addRegistrationField);
