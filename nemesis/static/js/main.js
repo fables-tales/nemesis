@@ -1,4 +1,4 @@
-var templateExpander = (function () {
+var TemplateExpander = (function () {
     return function (selector) {
         var getTemplate = function () {
             return $(selector).text();
@@ -8,142 +8,7 @@ var templateExpander = (function () {
             return getTemplate().replace(":{", options);
         };
     };
-})();
-
-var ErrorHandler = (function () {
-    return function () {
-        this.decodeError = function (code) {
-            var result = {
-                "invalid credentials": "Username/password incorrect",
-                "not a teacher"      : "You are not a team leader",
-                "not in a college"   : "Your username is not associated with a college! Please contact us"
-            };
-
-            return result[code] || code;
-        };
-    };
-})();
-
-var WorkingDialogue = (function () {
-    return function () {
-        var working_timer = null;
-        var working_count = 0;
-        var $dialogue = null;
-
-        this.respondToReady = function () {
-            $dialogue = $("#working-alert");
-        };
-
-        var showWorking = function () {
-            var text = "Working ";
-            var i;
-
-            $dialogue.show();
-            for (i = 0; i < working_count % 4; i++) {
-                text += ".";
-            }
-            $dialogue.text(text);
-            working_count += 1;
-        }
-
-        var hideWorking = function () {
-            $dialogue.fadeOut();
-        }
-
-
-        this.showSpinner = function () {
-            working_timer = setInterval(showWorking, 500);
-        }
-
-        this.hideSpinner = function () {
-            working_count = 0;
-            clearInterval(working_timer);
-            hideWorking();
-        }
-    };
-})();
-
-var workingDialogue = new WorkingDialogue();
-
-var token = "";
-var current_email = "";
-var current_userid = "";
-
-var teams = null;
-
-if (window.location.hash !== "") {
-    window.location.hash = "";
-}
-
-var Registration = (function() {
-    return function() {
-        var state = {};
-        this.add = function (name, value) {
-            state[name] = value;
-        };
-
-        this.isValid = function () {
-            return hash.first_name !== "" &&
-                   hash.last_name !== "" &&
-                   hash.email !== ""
-        };
-
-        this.getState = function () {
-            return state;
-        };
-    };
-})();
-
-var Registrations = (function () {
-    return function () {
-
-        var rows = function () {
-            return $(".register-row");
-        };
-
-        var registrationFromRow = function (row) {
-            var obj = new Registration();
-            $(row).find(":input").each(function(i,e) {
-                var $e = $(e);
-                obj.add($e.attr("name"), $e.val());
-            });
-
-            return obj;
-        };
-        var registerDetails = function (registration) {
-            var hash = registration.getState();
-            hash.token = token;
-            $.post("user/register", hash);
-        }
-
-        this.sendUserRegistrations = function () {
-            var i;
-            workingDialogue.showSpinner();
-            $(this).attr("disabled", "true");
-            var text = $("#send-register").text();
-            $(this).text("Sending registrations...");
-            for (i = 0; i < rows().length; i++) {
-                var row = rows()[i]
-                var registration = registrationFromRow(row);
-
-                if (registration.isValid()) {
-                    registerDetails(registration);
-                    if (i === rows().length - 1) {
-                        $("#msg").text(rows().length + " users registered successfully!");
-                    }
-                }
-            }
-
-            $(this).removeAttr("disabled");
-            $(this).text(text);
-            workingDialogue.hideSpinner();
-            back();
-        }
-    };
-})();
-
-
-var hash = window.location.hash;
+}());
 
 function loadCollegeDialogue() {
     workingDialogue.showSpinner();
@@ -174,6 +39,142 @@ function back() {
     loadCollegeDialogue();
     current_userid = "";
 }
+
+var ErrorHandler = (function () {
+    return function () {
+        this.decodeError = function (code) {
+            var result = {
+                "invalid credentials": "Username/password incorrect",
+                "not a teacher"      : "You are not a team leader",
+                "not in a college"   : "Your username is not associated with a college! Please contact us"
+            };
+
+            return result[code] || code;
+        };
+    };
+}());
+
+var WorkingDialogue = (function () {
+    return function () {
+        var working_timer = null;
+        var working_count = 0;
+        var $dialogue = null;
+
+        this.respondToReady = function () {
+            $dialogue = $("#working-alert");
+        };
+
+        var showWorking = function () {
+            var text = "Working ";
+            var i;
+
+            $dialogue.show();
+            for (i = 0; i < working_count % 4; i++) {
+                text += ".";
+            }
+            $dialogue.text(text);
+            working_count += 1;
+        };
+
+        var hideWorking = function () {
+            $dialogue.fadeOut();
+        };
+
+
+        this.showSpinner = function () {
+            working_timer = setInterval(showWorking, 500);
+        };
+
+        this.hideSpinner = function () {
+            working_count = 0;
+            clearInterval(working_timer);
+            hideWorking();
+        };
+    };
+}());
+
+var workingDialogue = new WorkingDialogue();
+
+var token = "";
+var current_email = "";
+var current_userid = "";
+
+var teams = null;
+
+if (window.location.hash !== "") {
+    window.location.hash = "";
+}
+
+var Registration = (function () {
+    return function () {
+        var state = {};
+        this.add = function (name, value) {
+            state[name] = value;
+        };
+
+        this.isValid = function () {
+            return state.first_name !== "" &&
+                   state.last_name !== "" &&
+                   state.email !== "";
+        };
+
+        this.getState = function () {
+            return state;
+        };
+    };
+}());
+
+var Registrations = (function () {
+    return function () {
+
+        var rows = function () {
+            return $(".register-row");
+        };
+
+        var registrationFromRow = function (row) {
+            var obj = new Registration();
+            $(row).find(":input").each(function (i, e) {
+                var $e = $(e);
+                obj.add($e.attr("name"), $e.val());
+            });
+
+            return obj;
+        };
+
+        var registerDetails = function (registration) {
+            var hash = registration.getState();
+            hash.token = token;
+            $.post("user/register", hash);
+        };
+
+        this.sendUserRegistrations = function () {
+            var i;
+            workingDialogue.showSpinner();
+            $(this).attr("disabled", "true");
+            var text = $("#send-register").text();
+            $(this).text("Sending registrations...");
+            for (i = 0; i < rows().length; i++) {
+                var row = rows()[i];
+                var registration = registrationFromRow(row);
+
+                if (registration.isValid()) {
+                    registerDetails(registration);
+                    if (i === rows().length - 1) {
+                        $("#msg").text(rows().length + " users registered successfully!");
+                    }
+                }
+            }
+
+            $(this).removeAttr("disabled");
+            $(this).text(text);
+            workingDialogue.hideSpinner();
+            back();
+        };
+    };
+}());
+
+
+var hash = window.location.hash;
 
 function handleHash(hash) {
     if (hash === "") {
@@ -216,7 +217,7 @@ function addRegistrationField() {
         build += "<option value='" + team + "'>" + team + "</option>";
     }
 
-    var completeRow = new templateExpander("#register-field").injectTemplate(build);
+    var completeRow = new TemplateExpander("#register-field").injectTemplate(build);
 
     //add the input to the table
     $("#register-inputs").append(completeRow);
@@ -290,7 +291,7 @@ function login() {
         loadCollegeDialogue();
     }).error(function (fail) {
         obj = JSON.parse(fail.responseText);
-        $("#error").text(new ErrorHandler().decodeError(obj.error))
+        $("#error").text(new ErrorHandler().decodeError(obj.error));
         $("#password").attr("value", "");
     });
 }
