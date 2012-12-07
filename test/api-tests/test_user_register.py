@@ -18,8 +18,8 @@ class TestUserRegister(unittest.TestCase):
 
     def dump_db(self):
         p = subprocess.Popen("../../nemesis/scripts/dump_db.py")
-        p.wait()
-        return open("users.csv").read()
+        code = p.wait()
+        return open("users.csv").read(), code
 
     def test_no_authentication(self):
         result = helpers.server_post("/user/register", self.user_hash)
@@ -43,7 +43,7 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        users_csv = self.dump_db()
+        users_csv,code = self.dump_db()
         self.assertTrue("bob" in users_csv)
         self.assertTrue("monkey" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
@@ -53,7 +53,7 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash_unicode)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        users_csv = self.dump_db()
+        users_csv, code = self.dump_db()
         self.assertTrue(u"b\u00F6b" in users_csv.decode("utf-8"))
         self.assertTrue("monkey" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
@@ -63,11 +63,19 @@ class TestUserRegister(unittest.TestCase):
         local_hash = copy(self.user_hash_trailing)
         local_hash["token"] = self.auth_hash
         helpers.server_post("/user/register", local_hash)
-        users_csv = self.dump_db()
+        users_csv, code = self.dump_db()
         self.assertEqual("space", users_csv.split("\n")[0].split(",")[3])
         self.assertTrue("win" in users_csv)
         self.assertTrue("mail@mail.com" in users_csv)
         self.assertTrue("team1" in users_csv)
+
+    def test_dump_db_twice(self):
+        local_hash = copy(self.user_hash_trailing)
+        local_hash["token"] = self.auth_hash
+        helpers.server_post("/user/register", local_hash)
+        self.dump_db()
+        csv, code = self.dump_db()
+        self.assertEqual(code, 1)
 
 
     def tearDown(self):
