@@ -1,7 +1,3 @@
-if (JSON === "undefined") {
-    JSON = {"parse": function (x) { return eval("(" + x + ")");}}
-}
-
 var templateExpander = (function () {
     return function (selector) {
         var getTemplate = function () {
