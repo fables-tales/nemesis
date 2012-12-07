@@ -15,7 +15,7 @@ var ErrorHandler = (function () {
         this.decodeError = function (code) {
             var result = {
                 "invalid credentials": "Username/password incorrect",
-                "not a teacher"      : "You are not a teacher",
+                "not a teacher"      : "You are not a team leader",
                 "not in a college"   : "Your username is not associated with a college! Please contact us"
             };
 
