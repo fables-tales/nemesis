@@ -47,6 +47,7 @@ class testUserman(unittest.TestCase):
         time.sleep(2.5)
 
     def test_landingpage_title(self):
+        time.sleep(1)
         self.assertEqual(self.browser.title,"Student Robotics Userman")
         college = self.browser.find_element_by_id("college")
         self.assertFalse(college.is_displayed())
