@@ -57,7 +57,9 @@ class LdapInstance:
             return College(college, self.userman_path)
 
     def is_teacher_of(self, teacherid, userid):
-        return is_teacher_of(self.userman_path, teacherid, userid)
+        c1 = self.get_college(teacherid)
+        c2 = self.get_college(userid)
+        return c1.group_name == c2.group_name
 
     def set_user_attribute(self, user_id, attribute, new_value):
         self.manager_bind()
@@ -125,15 +127,6 @@ def group_members(userman_path, group):
     p = run_userman_task(["./userman", "group", "members", group], userman_path)
     return p.stdout.read().strip().split(" ")
 
-def college_for_user(userman_path, userid):
-    p = run_userman_task(["./userman", "group", "list"], userman_path)
-    groups = p.stdout.read().strip().split("\n")
-    colleges = [x for x in groups if x.find("college-") != -1]
-    for college in colleges:
-        if userid in group_members(userman_path, college):
-            return college
-    return None
-
 def college_name(userman_path, college_group):
     college_group = college_group.replace("college-", "")
     p = run_userman_task(["./userman", "college", "info", college_group], userman_path)
@@ -148,10 +141,6 @@ def college_teams(userman_path, college_group):
     team_lines = [x.replace("\t - ", "") for x in team_lines]
     return team_lines
 
-def is_teacher_of(userman_path, teacher_id, student_id):
-    teacher_college = college_for_user(userman_path, teacher_id)
-    student_college = college_for_user(userman_path, student_id)
-    return teacher_college == student_college
 
 if __name__ == "__main__":
     assert LdapInstance().is_teacher("teacher_coll1") == True

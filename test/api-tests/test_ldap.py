@@ -1,5 +1,5 @@
 import unittest
-from lib.serverldap import LdapInstance, is_teacher_of
+from lib.serverldap import LdapInstance
 
 class TestLdap(unittest.TestCase):
 
@@ -10,7 +10,7 @@ class TestLdap(unittest.TestCase):
         self.assertTrue(LdapInstance("../../nemesis/userman").is_teacher("teacher_coll1"))
 
     def test_is_teacher_of_teacher(self):
-        self.assertTrue(is_teacher_of("../../nemesis/userman", "teacher_coll1", "student_coll1_1"))
+        self.assertTrue(LdapInstance("../../nemesis/userman").is_teacher_of("teacher_coll1", "student_coll1_1"))
 
     def test_manager_bind(self):
         self.assertTrue(LdapInstance("../../nemesis/userman").manager_bind())
