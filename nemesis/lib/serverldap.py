@@ -50,7 +50,7 @@ class LdapInstance:
         return user_details(self.userman_path, userid)
 
     def get_college(self, userid):
-        college = college_for_user(self.userman_path, userid)
+        college = self._ldap_query_college_for_user(userid)
         if college == None:
             return None
         else:
@@ -81,6 +81,12 @@ class LdapInstance:
 
     def _ldap_connect(self):
         self.conn = ldap.initialize("ldap://%s/" % self.config.get('ldap', 'host'))
+
+    def _ldap_query_college_for_user(self, userid):
+        self.manager_bind()
+        print "(&(memberUid=" + userid + ")(cn=college*)",
+        query = self.conn.search_s("ou=groups,o=sr", ldap.SCOPE_SUBTREE, "(&(memberUid=" + userid + ")(cn=college*))", ["cn"])
+        return query[0][1]["cn"][0]
 
 
 
