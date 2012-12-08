@@ -86,9 +86,11 @@ class LdapInstance:
 
     def _ldap_query_college_for_user(self, userid):
         self.manager_bind()
-        print "(&(memberUid=" + userid + ")(cn=college*)",
         query = self.conn.search_s("ou=groups,o=sr", ldap.SCOPE_SUBTREE, "(&(memberUid=" + userid + ")(cn=college*))", ["cn"])
-        return query[0][1]["cn"][0]
+        if len(query) == 1:
+            return query[0][1]["cn"][0]
+        else:
+            return None
 
 
 
