@@ -37,5 +37,9 @@ class TestAuth(unittest.TestCase):
         resp = helpers.server_post("/auth", {"username":"student_coll1_1", "password":"cows"})
         self.assertEqual(resp.read(), '{"error": "not a teacher"}')
 
+    def test_weird_case(self):
+        resp = helpers.server_post("/auth", {"username":"bacon", "password":"bacon"})
+        self.assertEqual(resp.status, 403)
+
 if __name__ == '__main__':
     unittest.main()
