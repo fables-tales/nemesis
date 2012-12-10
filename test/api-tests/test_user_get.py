@@ -18,6 +18,7 @@ class TestUserGet(unittest.TestCase):
     def test_user_get_valid_teacher_body(self):
         resp = helpers.server_get("/user/student_coll1_1", {"token":self.auth_hash})
         body = resp.read()
+        print body
         hash = json.loads(body)
         self.assertEqual(hash["full_name"], "student1 student")
         self.assertEqual(hash["email"], "student1@teacher.com")
