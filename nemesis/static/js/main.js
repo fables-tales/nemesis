@@ -82,13 +82,16 @@ var WorkingDialogue = (function () {
 
 
         this.showSpinner = function () {
-            working_timer = setInterval(showWorking, 500);
+            if (working_timer === null) {
+                working_timer = setInterval(showWorking, 500);
+            }
         };
 
         this.hideSpinner = function () {
             working_count = 0;
             clearInterval(working_timer);
             hideWorking();
+            working_timer = null;
         };
     };
 }());
@@ -193,7 +196,7 @@ function handleHash(hash) {
         back();
     }
 
-    if (hash === "college") {
+    if (hash === "#college") {
         back();
     }
     if (hash.indexOf("show-") !== -1) {
