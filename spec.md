@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-2 [SemVer](http://semver.org/)
+##Version 3.0.0-3 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. It is assumed on most
 requests that a `token` parameter is required. The token must be an API token
@@ -120,11 +120,13 @@ user into the registration queue.
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
 * `email`: the user's email address.
+* `college`: the college to register the user to.
 * `team`: the team to register the user to.
 
 ####Response code
 
-200 if the user is authenticated and a team leader or blueshirt, otherwise 403.
+200 if the user is authenticated and a team leader or blueshirt and the team is
+one associated with the college, otherwise 403.
 
 ####Response body
 
