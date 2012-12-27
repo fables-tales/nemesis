@@ -56,7 +56,7 @@ No parameters other than the authentication token.
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+200 if the user is authenticated and a member of the college, otherwise 403.
 
 ####Response body
 
@@ -67,9 +67,9 @@ If the response code is 200 the object contains:
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
 * `college_name`: the name of the college.
 
-##GET /user/:userid
+##GET /user/:username
 
-Gets information about the user specified in the URL parameter `userid`.
+Gets information about the user specified in the URL parameter `username`.
 
 ####Parameters
 
@@ -77,7 +77,9 @@ No parameters other than the authentication token.
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+200 if the user is authenticated and is the user specified by `username` or a
+blueshirt or teacher in the same college as the user specified by `username`,
+otherwise 403.
 
 ####Response body
 
