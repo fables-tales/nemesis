@@ -127,21 +127,3 @@ user into the registration queue.
 ####Response body
 
 The response body is unspecified and should not be used.
-
-
-##GET /site/sha
-
-Gets the current Git revision of the running site.
-
-####Parameters
-
-No parameters at all, this endpoint is not authenticated.
-
-####Response code
-
-Always 200.
-
-####Response body
-
-**This response body is not a JSON object**. The current Git revision hash
-corresponding to the checked out and running version of the API service.
