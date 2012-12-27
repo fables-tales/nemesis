@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-1 [SemVer](http://semver.org/)
+##Version 3.0.0-2 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. It is assumed on most
 requests that a `token` parameter is required. The token must be an API token
@@ -18,11 +18,11 @@ they do not authenticate a user.
 
 There are three user roles in nemesis:
 
-* teacher
+* team leader
 * blueshirt
 * student
 
-Teachers and blueshirts may perform all operations on students in colleges they
+Team leaders and blueshirts may perform all operations on students in colleges they
 are associated with. Students may read details about their college and
 read/write their own details
 
@@ -63,7 +63,7 @@ No parameters other than the authentication token.
 If the response code is 200 the object contains:
 
 * `userids`: a list of all the user ID's in that college. Example `['ab1']`.
-             **Note**: this list includes teachers and students, but not blueshirts.
+             **Note**: this list includes team leaders and students, but not blueshirts.
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
 * `college_name`: the name of the college.
 
@@ -78,7 +78,7 @@ No parameters other than the authentication token.
 ####Response code
 
 200 if the user is authenticated and is the user specified by `username` or a
-blueshirt or teacher in the same college as the user specified by `username`,
+blueshirt or team leader in the same college as the user specified by `username`,
 otherwise 403.
 
 ####Response body
@@ -124,7 +124,7 @@ user into the registration queue.
 
 ####Response code
 
-200 if the user is authenticated and a teacher or blueshirt, otherwise 403.
+200 if the user is authenticated and a team leader or blueshirt, otherwise 403.
 
 ####Response body
 
