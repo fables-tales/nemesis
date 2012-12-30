@@ -22,9 +22,12 @@ There are three user roles in nemesis:
 * blueshirt
 * student
 
-Team leaders and blueshirts may perform all operations on students in colleges they
+Team leaders may perform all operations on students in colleges they
 are associated with. Students may read details about their college and
-read/write their own details
+read/write their own details. Blueshirts may read/write their own details and
+register students to colleges that they are associated with. One may be a team
+leader and a blueshirt simultaneously, if so the team leader status takes
+precedence.
 
 ##GET /colleges
 
@@ -63,7 +66,9 @@ No parameters other than the authentication token.
 If the response code is 200 the object contains:
 
 * `userids`: a list of all the user ID's in that college. Example `['ab1']`.
-             **Note**: this list includes team leaders and students, but not blueshirts.
+             If the user is a team leader it will include **all** the student
+             users in that college. If the user is a blueshirt or student it
+             will only include that user.
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
 * `college_name`: the name of the college.
 
@@ -77,8 +82,8 @@ No parameters other than the authentication token.
 
 ####Response code
 
-200 if the user is authenticated and is the user specified by `username` or a
-blueshirt or team leader in the same college as the user specified by `username`,
+200 if the user is authenticated and is the user specified by `username` or the
+user is a team leader in the same college as the user specified by `username`,
 otherwise 403.
 
 ####Response body
@@ -102,8 +107,8 @@ Updates information about the user specified in the URL parameter `username`.
 
 ####Response code
 
-200 if the user is authenticated and can modify the user with userid, otherwise
-403.
+200 if the user is the user specified by `username` or the user is a team
+leader in the same college as the user specified by `username`, otherwise 403.
 
 ####Response body
 
