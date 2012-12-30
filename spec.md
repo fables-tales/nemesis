@@ -107,7 +107,8 @@ Updates information about the user specified in the URL parameter `username`.
 
 ####Response code
 
-The same as the response code for `GET /user/:username`.
+The same as the response code for `GET /user/:username`. No update is performed
+if 403.
 
 ####Response body
 
