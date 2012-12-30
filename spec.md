@@ -83,8 +83,8 @@ No parameters other than the authentication token.
 ####Response code
 
 200 if the user is authenticated and is the user specified by `username` or the
-user is a team leader in the same college as the user specified by `username`,
-otherwise 403.
+user is a team leader in the same college as the user specified by `username`
+and the user specified by `username` is not a blueshirt, otherwise 403.
 
 ####Response body
 
@@ -107,8 +107,7 @@ Updates information about the user specified in the URL parameter `username`.
 
 ####Response code
 
-200 if the user is the user specified by `username` or the user is a team
-leader in the same college as the user specified by `username`, otherwise 403.
+The same as the response code for `GET /user/:username`.
 
 ####Response body
 
