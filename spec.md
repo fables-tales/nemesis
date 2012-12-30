@@ -115,7 +115,7 @@ if 403.
 The response body is unspecified and should not be used.
 
 
-##POST /user/register
+##POST /registrations
 
 Used to register new users. Specifically posting to this endpoint inserts one
 user into the registration queue.
