@@ -1,7 +1,7 @@
 var TemplateExpander = (function () {
     return function (selector) {
         var getTemplate = function () {
-            return $(selector).text();
+            return $(selector).html();
         };
 
         this.injectTemplate = function (options) {
