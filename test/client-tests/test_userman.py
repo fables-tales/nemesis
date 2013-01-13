@@ -70,7 +70,7 @@ class testUserman(unittest.TestCase):
 
     def test_landingpage_user(self):
         self.login()
-        user_link = self.browser.find_element_by_link_text("student1 student")
+        user_link = self.browser.find_element_by_link_text("student1 student (student_coll1_1)")
         user_link.click()
         user_div = self.browser.find_element_by_id("user")
         time.sleep(3)

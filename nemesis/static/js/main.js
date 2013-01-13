@@ -265,7 +265,7 @@ function makeUsersList(obj, list) {
     for (i = 0; i < sorted.length; i++) {
         userid = list[i].userid;
         var user_name = list[i].user_name;
-        html += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + user_name + "</a></li>";
+        html += "<li><a class='user' id='user-" + userid + "' href='#show-" + userid + "'>" + user_name + " (" + userid + ")" + "</a></li>";
     }
 
     html += "</ul>";
