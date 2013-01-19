@@ -24,6 +24,9 @@ if __name__ == "__main__":
             details.append(row)
             ids.add(row[0])
 
+        # Make created files have no 'group' or 'other' access.
+        os.umask(0177)
+
         with open(TARGET_FILENAME, "w") as csvfile:
             writer = csv.writer(csvfile)
             for row in details:
