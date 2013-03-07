@@ -5,7 +5,7 @@ import urllib
 import sys
 import os
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
-import lib.helpers as helpers
+import helpers as helpers
 
 
 def apache_mode():
@@ -49,7 +49,9 @@ def server_post(endpoint, params=None):
     else:
         conn.request("POST", endpoint)
 
-    return conn.getresponse()
+    resp = conn.getresponse()
+    data = resp.read()
+    return resp, data
 
 
 def server_get(endpoint, params=None):
@@ -61,7 +63,8 @@ def server_get(endpoint, params=None):
     else:
         conn.request("GET", endpoint)
 
-    return conn.getresponse()
+    resp = conn.getresponse()
+    return resp
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
