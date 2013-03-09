@@ -68,6 +68,28 @@ def set_user_details(userid):
 
     return '{}', 403
 
+@app.route("/colleges", methods=["GET"])
+def user_colleges():
+    requesting_user = User.from_flask_request(request)
+    if requesting_user.is_authenticated():
+        college_names = [str(x) for x in requesting_user.colleges]
+        return json.dumps({"colleges":college_names}), 200
+    else:
+        return "{}", 403
+
+@app.route("/colleges/<collegeid>", methods=["GET"])
+def college_info(collegeid):
+    c = College(collegeid)
+    requesting_user = User.from_flask_request(request)
+    if c in requesting_user.colleges:
+        response = {}
+        response["name"] = c.name
+        response["users"] = [m.username for m in c.users if requesting_user.can_administrate(m)]
+        response["teams"] = [t.name for t in c.teams]
+        return json.dumps(response), 200
+    else:
+        return "{}", 403
+
 if __name__ == "__main__":
     app.debug = True
     app.run(host='0.0.0.0')
