@@ -9,7 +9,7 @@ import json
 import helpers
 
 from flask import Flask, request
-from libnemesis import User
+from libnemesis import User, College
 
 app = Flask(__name__)
 
@@ -29,7 +29,9 @@ def register_user():
     requesting_user = User.from_flask_request(request)
     if requesting_user.can_register_users:
         teacher_username = requesting_user.username
-        college_group    = requesting_user.colleges[0].name
+        college_group    = request.form["college"].strip()
+        if College(college_group) not in requesting_user.colleges:
+            return "{}", 403
         first_name       = request.form["first_name"].strip()
         last_name        = request.form["last_name"].strip()
         email            = request.form["email"].strip()
@@ -40,7 +42,6 @@ def register_user():
                 last_name,
                 email,
                 team)
-        print "here"
         return "{}", 200
     return "{}", 403
 
@@ -57,10 +58,10 @@ def set_user_details(userid):
     requesting_user = User.from_flask_request(request)
     if requesting_user.can_administrate(userid):
         instance = User.create_user(userid)
-        if request.form.has_key("new-email"):
-            instance.set_email(request.form["email"])
-        if request.form.has_key("new-password"):
-            instance.set_password(request.form["password"])
+        if request.form.has_key("new_email"):
+            instance.set_email(request.form["new_email"])
+        if request.form.has_key("new_password"):
+            instance.set_password(request.form["new_password"])
 
         instance.save()
         return '{}', 200
