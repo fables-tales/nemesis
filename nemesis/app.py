@@ -50,7 +50,7 @@ def user_details(userid):
     requesting_user = User.from_flask_request(request)
     if requesting_user.can_administrate(userid):
         user = User.create_user(userid)
-        return json.dumps(user.details_dictionary()), 200
+        return json.dumps(user.details_dictionary), 200
     return '{}', 403
 
 @app.route("/user/<userid>", methods=["POST"])
