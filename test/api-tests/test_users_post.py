@@ -67,3 +67,24 @@ def test_post_sets_password():
     u = User("student_coll1_1")
     u.set_password(old_password)
     u.save()
+
+def test_post_sets_first_last_name():
+    old_first = "student1i"
+    old_last  = "student"
+
+    params = {"username":"blueshirt",
+              "password":"blueshirt",
+              "new_first_name":"asdf",
+              "new_last_name":"cheese",
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+    details_dict = User("student_coll1_1").details_dictionary
+
+    assert details_dict["first_name"] == "asdf"
+    assert details_dict["last_name"] == "cheese"
+    u = User("student_coll1_1")
+    u.set_first_name(old_first)
+    u.set_last_name(old_last)
+    u.save()
