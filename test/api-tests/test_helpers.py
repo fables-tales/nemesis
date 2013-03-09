@@ -13,7 +13,6 @@ def apache_mode():
 
 def make_connection():
     if not apache_mode():
-        print "not apache mode!"
         return httplib.HTTPConnection("127.0.0.1",5000)
     else:
         return httplib.HTTPSConnection("localhost")
@@ -64,7 +63,8 @@ def server_get(endpoint, params=None):
         conn.request("GET", endpoint)
 
     resp = conn.getresponse()
-    return resp
+    data = resp.read()
+    return resp, data
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
