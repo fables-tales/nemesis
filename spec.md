@@ -24,13 +24,13 @@ The term "can administrate" in this document is used to determine whether or
 not a user is capable of administrating another user. The conditions for this
 are as follows:
 
-* If the authenticated user is a teacher in the same college as the user to
+* If the authenticated user is a team leader in the same college as the user to
   be accessed they may access/modify information about that user so long as
   that user is not a blueshirt.
 * If the authenticated user is a blueshirt in the same college as the user to
   be accessed they may access/modify information about that user so long as
   that user is not a blueshirt.
-* An authenticated user can administrate iteslf
+* An authenticated user can administrate itself
 
 ##GET /colleges
 
