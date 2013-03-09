@@ -1,3 +1,4 @@
+import json
 import test_helpers
 import sys
 
@@ -32,3 +33,14 @@ def test_user_get_other_can_view():
     r,data = test_helpers.server_get("/user/student_coll1_1", params)
     assert r.status == 200
     assert data.find("student_coll1_1") != -1
+
+def test_user_colleges():
+    params = {"username":"blueshirt",
+              "password":"blueshirt",
+              }
+
+    r,data = test_helpers.server_get("/user/blueshirt", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert "college-1" in data[u"colleges"]

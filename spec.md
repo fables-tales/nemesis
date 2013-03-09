@@ -81,7 +81,7 @@ Gets information about the user specified in the URL parameter `username`.
 
 ####Parameters
 
-No parameters other than the authentication token.
+No parameters
 
 ####Response code
 
@@ -96,6 +96,7 @@ If the response code is 200:
 * `username`: the user's username.
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
+* `colleges`: a list of the colleges that the user is in.
 
 
 ##POST /user/:username
