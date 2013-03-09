@@ -82,14 +82,17 @@ def colleges():
 def college_info(collegeid):
     c = College(collegeid)
     requesting_user = User.from_flask_request(request)
-    if c in requesting_user.colleges:
+    if User.authentication_attempted_and_failed(request):
+        return "{}", 403
+    else:
         response = {}
         response["name"] = c.name
-        response["users"] = [m.username for m in c.users if requesting_user.can_administrate(m)]
         response["teams"] = [t.name for t in c.teams]
+
+        if c in requesting_user.colleges:
+            response["users"] = [m.username for m in c.users if requesting_user.can_administrate(m)]
+
         return json.dumps(response), 200
-    else:
-        return "{}", 403
 
 if __name__ == "__main__":
     app.debug = True

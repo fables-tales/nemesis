@@ -4,7 +4,10 @@ import json
 def test_college_no_user():
     params = {}
     r, data = test_helpers.server_get("/colleges/college-1", params)
-    assert r.status == 403
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert "users" not in data.keys()
 
 def test_college_valid_user():
     params = {"username":"student_coll1_1",
@@ -21,6 +24,13 @@ def test_college_valid_user():
     assert len(resp["teams"]) == 2
     assert sorted(resp["teams"]) == sorted(["team-ABC", "team-DFE"])
 
+def test_college_403_bad_creds():
+    params = {"username":"student_coll1_1",
+              "password":"thisiswrong"}
+
+    r, data = test_helpers.server_get("/colleges/college-1", params)
+
+    assert r.status == 403
 
 def test_college_teacher_cant_see_blueshirt():
 

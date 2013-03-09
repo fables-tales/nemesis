@@ -57,18 +57,21 @@ Gives information about the college matching the `id` url parameter
 
 ####Parameters
 
-No parameters other than the authentication parameters (username and password)
+No parameters are necessary, more information will be given however if a valid
+username and password are given.
 
 ####Response code
 
-200 if the user is authenticated and a member of the college, otherwise 403.
+200 if no username or password is given, 200 if the given username and password
+are valid, else 403
 
 ####Response body
 
 If the response code is 200 the object contains:
 
-* `users`: A list of userids in that college that the authenticated user can
-           administrate. Example `['abc1']`.
+* `users`: A list of usernames in that college that the authenticated user can
+           administrate. Example `['abc1']`. Only given if authentication has
+           happened and the user is a member of this college.
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
 * `college_name`: the name of the college.
 
