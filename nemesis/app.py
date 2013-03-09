@@ -75,13 +75,8 @@ def set_user_details(userid):
     return '{}', 403
 
 @app.route("/colleges", methods=["GET"])
-def user_colleges():
-    requesting_user = User.from_flask_request(request)
-    if requesting_user.is_authenticated():
-        college_names = [str(x) for x in requesting_user.colleges]
-        return json.dumps({"colleges":college_names}), 200
-    else:
-        return "{}", 403
+def colleges():
+    return json.dumps({"colleges":College.all_college_names()})
 
 @app.route("/colleges/<collegeid>", methods=["GET"])
 def college_info(collegeid):

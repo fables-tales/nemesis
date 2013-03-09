@@ -34,22 +34,21 @@ are as follows:
 
 ##GET /colleges
 
-Give a list of colleges the authenticated user is associated with.
+Gives a list of all colleges
 
 ####Parameters
 
-No parameters other than the authentication parameters (username and password)
+None
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+200
 
 ####Response body
 
-If the response code is 200 the object contains:
+The object contains:
 
-* `colleges`: a list of all the college ids the authenticated user is
-  associated with.
+* `colleges`: a list of all the college ids
 
 
 ##GET /colleges/:id
