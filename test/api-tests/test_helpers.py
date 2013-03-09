@@ -14,7 +14,7 @@ def apache_mode():
 def make_connection():
     if not apache_mode():
         print "not apache mode!"
-        return httplib.HTTPConnection("localhost",5000)
+        return httplib.HTTPConnection("127.0.0.1",5000)
     else:
         return httplib.HTTPSConnection("localhost")
 
