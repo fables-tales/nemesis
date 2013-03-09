@@ -36,6 +36,8 @@ def register_user():
         last_name        = request.form["last_name"].strip()
         email            = request.form["email"].strip()
         team             = request.form["team"].strip()
+        if team not in [t.name for t in requesting_user.teams]:
+            return "{}", 403
         helpers.register_user(teacher_username,
                 college_group,
                 first_name,
@@ -62,6 +64,10 @@ def set_user_details(userid):
             instance.set_email(request.form["new_email"])
         if request.form.has_key("new_password"):
             instance.set_password(request.form["new_password"])
+        if request.form.has_key("new_first_name"):
+            instance.set_first_name(request.form["new_first_name"])
+        if request.form.has_key("new_last_name"):
+            instance.set_last_name(request.form["new_last_name"])
 
         instance.save()
         return '{}', 200
