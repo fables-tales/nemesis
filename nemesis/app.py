@@ -44,7 +44,7 @@ def register_user():
                 last_name,
                 email,
                 team)
-        return "{}", 200
+        return "{}", 202
     return "{}", 403
 
 @app.route("/user/<userid>", methods=["GET"])

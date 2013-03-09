@@ -15,7 +15,7 @@ def test_registration_user_and_form():
               "college":"college-1"}
 
     r,data = test_helpers.server_post("/registrations", params)
-    assert r.status == 200
+    assert r.status == 202
     assert len(test_helpers.get_registrations()) == 1
     test_helpers.delete_db()
 

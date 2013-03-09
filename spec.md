@@ -134,8 +134,9 @@ user into the registration queue.
 
 ####Response code
 
-200 if the user is authenticated and a team leader or blueshirt and the team is
-one associated with the college and the user is in the college, otherwise 403.
+202 if the authenticated user is a member of the specified college and the
+specified college has the specified team and the authenticated user is a
+blueshirt or a team leader. Otherwise 403.
 
 ####Response body
 
