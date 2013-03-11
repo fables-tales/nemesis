@@ -72,6 +72,7 @@ None
 ####Response code
 
 200 if the user authenticates successfully and is a member of the college,
+200 if the user authenticates successfully and is a blueshirt
 else 403.
 
 ####Response body

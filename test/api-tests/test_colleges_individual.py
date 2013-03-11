@@ -57,3 +57,13 @@ def test_college_teacher_can_see_students_and_self():
     assert "teacher_coll1" in set(resp["users"])
     assert "student_coll1_1" in set(resp["users"])
     assert "student_coll1_2" in set(resp["users"])
+
+def test_college_blueshirt_can_see_any_college():
+    params = {"username":"blueshirt",
+              "password":"blueshirt"}
+
+    r, data = test_helpers.server_get("/colleges/college-2", params)
+
+    assert r.status == 200
+    resp = json.loads(data)
+    assert "users" not in resp.keys()

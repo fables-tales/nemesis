@@ -92,11 +92,12 @@ def colleges():
 def college_info(collegeid):
     ah = AuthHelper(request)
     c = College(collegeid)
-    if ah.auth_will_succeed and c in ah.user.colleges:
+    if ah.auth_will_succeed and c in ah.user.colleges or ah.user.is_blueshirt:
         response = {}
         response["name"] = c.name
         response["teams"] = [t.name for t in c.teams]
-        response["users"] = [m.username for m in c.users if ah.user.can_administrate(m)]
+        if c in ah.user.colleges:
+            response["users"] = [m.username for m in c.users if ah.user.can_administrate(m)]
 
         return json.dumps(response), 200
 
