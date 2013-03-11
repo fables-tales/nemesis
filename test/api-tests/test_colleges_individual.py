@@ -6,8 +6,7 @@ def test_college_no_user():
     r, data = test_helpers.server_get("/colleges/college-1", params)
     data = json.loads(data)
 
-    assert r.status == 200
-    assert "users" not in data.keys()
+    assert r.status == 403
 
 def test_college_valid_user():
     params = {"username":"student_coll1_1",
