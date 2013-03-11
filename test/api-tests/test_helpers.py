@@ -1,4 +1,5 @@
 import httplib
+import base64
 import unittest
 import random
 import urllib
@@ -42,6 +43,11 @@ def server_post(endpoint, params=None):
     headers = {"Content-type": "application/x-www-form-urlencoded",
                 "Accept": "text/plain"}
     if params != None:
+        if params.has_key("username") and params.has_key("password"):
+            base64string = base64.encodestring('%s:%s' % (params["username"], params["password"])).replace('\n', '')
+            headers["Authorization"] = "Basic %s" % base64string
+            del params["username"]
+            del params["password"]
         unicode_encode(params)
         url_params = urllib.urlencode(params)
         conn.request("POST", endpoint, url_params, headers)
@@ -56,9 +62,15 @@ def server_post(endpoint, params=None):
 def server_get(endpoint, params=None):
     conn = make_connection()
     endpoint = modify_endpoint(endpoint)
+    headers = {}
     if params != None:
+        if params.has_key("username") and params.has_key("password"):
+            base64string = base64.encodestring('%s:%s' % (params["username"], params["password"])).replace('\n', '')
+            headers["Authorization"] = "Basic %s" % base64string
+            del params["username"]
+            del params["password"]
         url_params = urllib.urlencode(params)
-        conn.request("GET", endpoint + "?" + url_params)
+        conn.request("GET", endpoint, url_params, headers)
     else:
         conn.request("GET", endpoint)
 
