@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-4 [SemVer](http://semver.org/)
+##Version 3.0.0-5 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -9,10 +9,20 @@ form `:something` represent URL parameters.
 All response bodies are JSON objects, and their keys are explained in the
 response body sections of each endpoint's specification.
 
-All requests take a `username` and `password` parameter. These are used to
-perform authentication, and the response code will always be `403` if they do
-not authenticate a user in ldap. The response body is an empty JSON object if
-they do not authenticate a user.
+All requests use http basic authentication to check if a user can authenticate
+to an endpoint. If authentication details are missing or invalid then the
+response of the request will be status code 403 with a json object containing
+the key `authentication_errors` with a list of error codes in them. The error
+codes are currently:
+
+* `NO_USERNAME` if no username was provided
+* `NO_PASSWORD` if no password was provided
+* `NO_SUCH_USER` if no user exists with the provided username
+* `WRONG_PASSWORD` if the user exists but the password is wrong
+
+A 403 response from nemesis with no `authentication_errors` field represents
+an authorization problem (the user authenticated successfully but is not
+permitted to interact with the resource)
 
 There are three user roles in nemesis:
 
@@ -42,7 +52,7 @@ None
 
 ####Response code
 
-200
+200 if the user authenticates successfully and is a blueshirt, else 403
 
 ####Response body
 
@@ -57,13 +67,12 @@ Gives information about the college matching the `id` url parameter
 
 ####Parameters
 
-No parameters are necessary, more information will be given however if a valid
-username and password are given.
+None
 
 ####Response code
 
-200 if no username or password is given, 200 if the given username and password
-are valid, else 403
+200 if the user authenticates successfully and is a member of the college,
+else 403.
 
 ####Response body
 
@@ -85,7 +94,7 @@ No parameters
 
 ####Response code
 
-200 if the the authentication parameters are valid and the authenticated user
+200 if the user authenticates successfully and the authenticated user
 can administrate the user specified by `:username`. 403 otherwise.
 
 ####Response body
@@ -117,7 +126,8 @@ if 403.
 
 ####Response body
 
-The response body is unspecified and should not be used.
+The usual authentication error conditions apply, any other response data is
+unspecified and should not be used.
 
 ##POST /registrations
 
@@ -140,4 +150,5 @@ blueshirt or a team leader. Otherwise 403.
 
 ####Response body
 
-The response body is unspecified and should not be used.
+The usual authentication error conditions apply, any other response data is
+unspecified and should not be used.
