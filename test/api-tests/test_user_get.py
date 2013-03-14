@@ -44,3 +44,12 @@ def test_user_colleges():
 
     assert r.status == 200
     assert "college-1" in data[u"colleges"]
+
+def test_user_get_blueshirt_wrong_password():
+    params = {"username":"blueshirt",
+              "password":"a",
+              }
+
+    r,data = test_helpers.server_get("/user/blueshirt", params)
+
+    assert r.status == 403
