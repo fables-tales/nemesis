@@ -31,5 +31,17 @@ var College = function() {
                 });
             });
         };
+
+        this.reload_users = function(callback) {
+            var k = this.users.length;
+            $.each(this.users, function(i, user) {
+                user.fetch(function() {
+                    k -= 1;
+                    if (k == 0) {
+                        callback();
+                    }
+                });
+            });
+        };
     };
 }();
