@@ -11,7 +11,7 @@ $(document).ready(function() {
     }
     var av = new AuthView($("#login-error"));
     cv = new CollegeListView($("#data-college-list"))
-    ev = new EditView($("#data-edit-user"));
+    ev = new EditView($("#data-edit-user"), cv.refresh);
     rv = new RegisterView($("#data-register-users"));
     wv = new WorkingView($("#messages"));
     $("#login").submit(function() {
@@ -41,6 +41,11 @@ $(document).ready(function() {
     hashChangeEventListener = setInterval("hashChangeEventHandler()", 50);
 });
 
+$(document).on("click", ".add-row", function(){
+    rv.add_row(college_name_from_hash());
+});
+
+
 function hashChangeEventHandler() {
     var newHash = location.hash.split('#')[1];
 
@@ -57,11 +62,24 @@ function handle_hash() {
     if (location.hash.substring(1,5) == "edit") {
         var username = location.hash.substring(6,location.hash.length);
         rv.hide();
+        wv.start("Loading user");
         ev.show(username);
         cv.set_active(username);
     } else if (location.hash.substring(1,4) == "reg") {
-        var college_name = location.hash.substring(5,location.hash.length);
-        rv.show(college_name);
-        cv.set_register_active(college_name);
+        rv.show(college_name_from_hash());
+        cv.set_register_active(college_name_from_hash());
     }
 }
+
+function college_name_from_hash() {
+    return location.hash.substring(5,location.hash.length);
+}
+
+setTimeout(function() {
+    cv.set_all_inactive();
+    if (location.hash.substring(1,5) == "edit") {
+        cv.set_active(username);
+    } else if (location.hash.substring(1,4) == "reg") {
+        cv.set_register_active(college_name_from_hash());
+    }
+}, 100);
