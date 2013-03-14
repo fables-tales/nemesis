@@ -1,8 +1,12 @@
 var CollegeListView = function() {
     return function(jquery_node) {
         var node = jquery_node;
+        var colleges = [];
+        var that = this;
+        var current_username;
 
         this.render_colleges = function(college_list) {
+            colleges = college_list;
             var college_template = TemplateExpander.template("college");
             var user_template    = TemplateExpander.template("user_link");
             var register_template = TemplateExpander.template("register_link");
@@ -23,14 +27,33 @@ var CollegeListView = function() {
         this.set_active = function(username) {
             this.set_all_inactive();
             $("." + username).addClass("active");
+            current_username = username;
         };
 
         this.set_all_inactive = function() {
             $(".active").removeClass("active");
+            current_username = null;
         };
 
         this.set_register_active = function(college_name) {
             $("#" + college_name + " .register").addClass("active");
+            current_username = null;
+        };
+
+        this.refresh = function() {
+            var count = colleges.length;
+            var u = current_username;
+            $(colleges).each(function(i, college) {
+                college.reload_users(function() {
+                    count -= 1;
+                    if (count == 0) {
+                        that.render_colleges(colleges);
+                        if (u) {
+                            that.set_active(u);
+                        }
+                    }
+                });
+            });
         };
     };
 }();
