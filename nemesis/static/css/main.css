@@ -5,3 +5,11 @@
 #login-error {
     margin-right:1em;
 }
+
+.capitalize {
+    text-transform:capitalize;
+}
+
+select {
+    width:110px;
+}
