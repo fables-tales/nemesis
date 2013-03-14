@@ -3,6 +3,7 @@ var lastHash = "";
 var ev = null;
 var cv = null;
 var rv = null;
+var wv = null;
 
 $(document).ready(function() {
     if (location.hash.length >= 1) {
@@ -12,7 +13,9 @@ $(document).ready(function() {
     cv = new CollegeListView($("#data-college-list"))
     ev = new EditView($("#data-edit-user"));
     rv = new RegisterView($("#data-register-users"));
+    wv = new WorkingView($("#messages"));
     $("#login").submit(function() {
+        wv.start("Logging in...");
         current_user = new User($("#username").val())
         console.log(current_user.username);
         current_user.login($("#password").val(), function(user) {
@@ -28,9 +31,11 @@ $(document).ready(function() {
                 });
             }
             $("#login").hide();
+            wv.end("Login succeeded");
         },
         function(response) {
             av.display_auth_error(response["authentication_errors"]);
+            wv.hide();
         });
         return false;
     });
