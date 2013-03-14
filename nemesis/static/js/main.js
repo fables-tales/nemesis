@@ -17,9 +17,7 @@ $(document).ready(function() {
     $("#login").submit(function() {
         wv.start("Logging in...");
         current_user = new User($("#username").val())
-        console.log(current_user.username);
         current_user.login($("#password").val(), function(user) {
-            console.log(user);
             var waiting_colleges = user.colleges.length;
             for (var i = 0; i < user.colleges.length; i++) {
                 var college = user.colleges[i];
@@ -53,7 +51,6 @@ function hashChangeEventHandler() {
 }
 
 function handle_hash() {
-    console.log("hash changed");
     ev.hide();
     rv.hide();
     cv.set_all_inactive();
