@@ -12,8 +12,6 @@ var EditView = function() {
         this.refresh_view = function() {
             my_user.fetch(function(user) {
                 var text = TemplateExpander.template("user_edit").render_with({"user":user});
-                console.log(text);
-                console.log(jquerynode);
                 jquerynode.html(text);
                 jquerynode.show();
                 wv.end("Loaded user successfully!");
