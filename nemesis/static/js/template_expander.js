@@ -25,9 +25,12 @@ var Template = function() {
                     }
                 }
             }
-            console.log("out render_with");
             return build;
         };
+
+        this.render = function() {
+            return this.render_with({});
+        },
 
         this.map_over = function(key, values) {
             var build = [];

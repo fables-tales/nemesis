@@ -41,7 +41,6 @@ var User = function() {
 
         var set_header = function() {
             var tok = that.username + ':' + password;
-            console.log(tok);
             var hash = Base64.encode(tok);
             $.ajaxSetup({
                 headers: {
