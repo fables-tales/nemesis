@@ -14,11 +14,9 @@ var College = function() {
                     response = JSON.parse(response);
                 }
 
-                console.log(response);
                 that.english_name = response.name;
                 that.teams = response.teams;
                 user_requests = response.users.length;
-                console.log(user_requests);
                 that.users = $.map(response.users, function(v) {
                     u = new User(v);
                     u.fetch(function() {
