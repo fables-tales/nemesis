@@ -38,7 +38,7 @@ def register_user():
             last_name        = request.form["last_name"].strip()
             email            = request.form["email"].strip()
             team             = request.form["team"].strip()
-            if team not in [t.name for t in requesting_user.teams]:
+            if team not in [t.name for t in College(college_group).teams]:
                 return json.dumps({"error":"BAD_TEAM"}), 403
             helpers.register_user(teacher_username,
                     college_group,
