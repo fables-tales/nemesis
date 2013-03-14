@@ -6,8 +6,14 @@
         <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap.css"></link>
         <link type="text/css" rel="stylesheet" href="static/bootstrap/css/bootstrap-responsive.css"></link>
         <link type="text/css" rel="stylesheet" href="static/css/main.css"></link>
+        <script type="text/javascript">
+
+            if (location.pathname.charAt(location.pathname.length-1) != "/") {
+                window.location = "/userman/"
+            }
+
+        </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type="text/javascript" src="static/js/hashchange.js"></script>
         <script type="text/javascript" src="static/js/json2.js"></script>
         <script type="text/javascript" src="static/js/base64.js"></script>
         <script type="text/javascript" src="static/js/user.js"></script>
@@ -16,6 +22,7 @@
         <script type="text/javascript" src="static/js/edit_view.js"></script>
         <script type="text/javascript" src="static/js/register_view.js"></script>
         <script type="text/javascript" src="static/js/college_list_view.js"></script>
+        <script type="text/javascript" src="static/js/working_view.js"></script>
         <script type="text/javascript" src="static/js/template_expander.js"></script>
         <script type="text/javascript" src="static/js/main.js"></script>
     </head>
@@ -35,14 +42,15 @@
                         <button type="submit" class="btn">Log in</button>
                     </form>
                     <p id="login-error" class="navbar-text pull-right"></p>
+                    <p id="messages" class="navbar-text pull-right"></p>
                 </div>
             </div>
         </div>
         <div class="container hide-before-login show-after-login" id="content">
             <div class="row">
-                <div class="span4" id="data-college-list">
+                <div class="span3" id="data-college-list">
                 </div>
-                <div class="span8">
+                <div class="span9">
                     <div id="data-edit-user">
                     </div>
                     <div id="data-register-users">
@@ -53,7 +61,7 @@
         <div class="templates">
             <script type="text/template" id="college">
                 <div id="{college.canonical_name}">
-                    <h3>{college.english_name}</h3>
+                    <h4 class="capitalize">{college.english_name}</h4>
                     <ul class="nav nav-pills nav-stacked">
                         {users}
                         <hr/>
@@ -66,41 +74,46 @@
             </script>
 
             <script type="text/template" id="register_link">
-                <li class="register"><a href="#reg-{college.canonical_name}">Register Users</a></li>
+                <li class="register"><a href="#reg-{college.canonical_name}"><i class="icon-pencil"></i> Register Users</a></li>
             </script>
 
             <script type="text/template" id="user_edit">
                 <h2>Edit User</h2>
-                <form id="update-user">
-                    <fieldset>
-                        <label>First Name</label>
-                        <input type="text" value="{user.first_name}">
-                        <label>Last Name</label>
-                        <input type="text" value="{user.last_name}">
-                        <label>Email</label>
-                        <input type="text" value="{user.email}">
-                        <label>Password</label>
-                        <input type="password">
-                        <hr>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </fieldset>
-                </form>
+                <fieldset id="update-user">
+                    <label>First Name</label>
+                    <input type="text" value="{user.first_name}" name="new_first_name">
+                    <label>Last Name</label>
+                    <input type="text" value="{user.last_name}" name="new_last_name">
+                    <label>Email</label>
+                    <input type="text" value="{user.email}" name="new_email">
+                    <label>Password</label>
+                    <input type="password" name="new_password">
+                    <hr>
+                    <button type="submit" class="btn btn-primary" id="edit-submit">Submit</button>
+                </fieldset>
             </script>
             <script type="text/template" id="register">
-                <h2>Register users to {college.english_name}</h2>
-                <table>
+                <h2>Register users to <span class="capitalize">{college.english_name}</span></h2>
+                <table id="data-register-table">
                     <tr>
-                        <th>First Name</th><th>Second Name</th><th>Email</th>
-                    </tr>
-                    <tr>
-                        <fieldset>
-                            <td><input type="text"></td>
-                            <td><input type="text"></td>
-                            <td><input type="text"></td>
-                        </fieldset>
+                        <th>First Name</th>
+                        <th>Second Name</th>
+                        <th>Email</th>
+                        <th>Team</th>
                     </tr>
                 </table>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" id="register-submit">Submit</button>
+                <button class="btn add-row">Add Row</button>
+            </script>
+            <script type="text/template" id="register-row">
+                <tr>
+                    <fieldset>
+                        <td><input type="text" name="first_name"></td>
+                        <td><input type="text" name="last_name"></td>
+                        <td><input type="text" name="email"></td>
+                        <td>{team_select}</td>
+                    </fieldset>
+                </tr>
             </script>
         </div>
     </body>
