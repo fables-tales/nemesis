@@ -3,7 +3,6 @@ var AuthView = function() {
         var node = jquery_node;
 
         this.display_auth_error = function(auth_errors_list) {
-            console.log(human_readable_error(auth_errors_list));
             node.text(human_readable_error(auth_errors_list));
         }
 
