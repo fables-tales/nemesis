@@ -6,6 +6,7 @@ var College = function() {
         this.canonical_name = college_name;
         this.english_name = "";
         this.users = [];
+        this.teams = [];
 
         this.fetch = function(callback) {
             $.get("colleges/" + this.canonical_name, function(response) {
@@ -15,6 +16,7 @@ var College = function() {
 
                 console.log(response);
                 that.english_name = response.name;
+                that.teams = response.teams;
                 user_requests = response.users.length;
                 console.log(user_requests);
                 that.users = $.map(response.users, function(v) {
