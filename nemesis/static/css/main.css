@@ -1,0 +1,15 @@
+#content {
+    margin-top:90px;
+}
+
+#login-error {
+    margin-right:1em;
+}
+
+.capitalize {
+    text-transform:capitalize;
+}
+
+select {
+    width:110px;
+}
