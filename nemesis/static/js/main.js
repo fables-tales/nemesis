@@ -6,6 +6,9 @@ var rv = null;
 var wv = null;
 
 $(document).ready(function() {
+    $.ajaxSetup({
+            cache: false
+    });
     if (location.hash.length >= 1) {
         location.hash = "";
     }
