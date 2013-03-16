@@ -1,36 +1,55 @@
-import unittest
 import json
-import test_helpers as helpers
+import test_helpers
+import sys
 
-class TestUserGet(unittest.TestCase):
+sys.path.append("../../nemesis/libnemesis")
+from libnemesis import User
 
-    def setUp(self):
-        resp_auth = helpers.server_post("/auth", {"username":"teacher_coll1", "password":"facebees"})
-        self.auth_hash = json.loads(resp_auth.read())["token"]
+def test_user_get_no_user():
+    params = {}
+    r,data = test_helpers.server_get("/user/student_coll1_1", params)
+    assert r.status == 403
 
-    def tearDown(self):
-        deauth = helpers.server_post("/deauth", {"token":self.auth_hash})
+def test_user_get_wrong_user():
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
 
-    def test_user_get_valid_teacher_code(self):
-        resp = helpers.server_get("/user/student_coll1_1", {"token":self.auth_hash})
-        self.assertEqual(resp.status, 200)
+    r,data = test_helpers.server_get("/user/student_coll1_1", params)
+    assert r.status == 403
 
-    def test_user_get_valid_teacher_body(self):
-        resp = helpers.server_get("/user/student_coll1_1", {"token":self.auth_hash})
-        body = resp.read()
-        print body
-        hash = json.loads(body)
-        self.assertEqual(hash["full_name"], "student1 student")
-        self.assertEqual(hash["email"], "student1@teacher.com")
+def test_user_get_self():
+    params = {"username":"student_coll1_1",
+              "password":"cows"}
+    r,data = test_helpers.server_get("/user/student_coll1_1", params)
+    assert r.status == 200
+    assert data.find("student_coll1_1") != -1
 
+def test_user_get_other_can_view():
+    params = {"username":"blueshirt",
+              "password":"blueshirt",
+              }
 
-    def test_user_get_valid_teacher_no_user(self):
-        resp = helpers.server_get("/user/wqoifjwqfie", {"token":self.auth_hash})
-        self.assertNotEqual(resp.status, 200)
+    r,data = test_helpers.server_get("/user/student_coll1_1", params)
+    assert r.status == 200
+    assert data.find("student_coll1_1") != -1
 
-    def test_user_get_valid_teacher_wrong_college_code(self):
-        resp = helpers.server_get("/user/student_coll2_1", {"token":self.auth_hash})
-        self.assertEqual(resp.status, 403)
+def test_user_colleges():
+    params = {"username":"blueshirt",
+              "password":"blueshirt",
+              }
 
-if __name__ == '__main__':
-    unittest.main()
+    r,data = test_helpers.server_get("/user/blueshirt", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert "college-1" in data[u"colleges"]
+
+def test_user_get_blueshirt_wrong_password():
+    params = {"username":"blueshirt",
+              "password":"a",
+              }
+
+    r,data = test_helpers.server_get("/user/blueshirt", params)
+
+    assert r.status == 403

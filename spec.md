@@ -1,126 +1,136 @@
 #Nemesis REST API spec
 
-##Version 2.0.0 [SemVer](http://semver.org/)
+##Version 3.0.0-5 [SemVer](http://semver.org/)
 
-This document explains all the Nemesis API endpoints. It is assumed on most
-requests that a `token` parameter is required. The token must be an API token
-returned by the `/auth` endpoint. The production version of this API runs on
-http://studentrobotics.org/userman. URL components of the form `:something`
-represent URL parameters.
+This document explains all the Nemesis API endpoints. The production version of
+this API runs on http://studentrobotics.org/userman. URL components are of the
+form `:something` represent URL parameters.
 
 All response bodies are JSON objects, and their keys are explained in the
 response body sections of each endpoint's specification.
 
+All requests use http basic authentication to check if a user can authenticate
+to an endpoint. If authentication details are missing or invalid then the
+response of the request will be status code 403 with a json object containing
+the key `authentication_errors` with a list of error codes in them. The error
+codes are currently:
 
-##POST /auth
+* `NO_USERNAME` if no username was provided
+* `NO_PASSWORD` if no password was provided
+* `NO_SUCH_USER` if no user exists with the provided username
+* `WRONG_PASSWORD` if the user exists but the password is wrong
 
-Authenticates users.
+A 403 response from nemesis with no `authentication_errors` field represents
+an authorization problem (the user authenticated successfully but is not
+permitted to interact with the resource)
 
-####Parameters
+There are three user roles in nemesis:
 
-* `username`: the username of the user trying to authenticate.
-* `password`: the password of the user trying to authenticate.
+* team leader
+* blueshirt
+* student
 
-####Response code
+The term "can administrate" in this document is used to determine whether or
+not a user is capable of administrating another user. The conditions for this
+are as follows:
 
-200 if the username and password match a user and password combination in LDAP
-and the user is a team leader. 403 otherwise.
+* If the authenticated user is a team leader in the same college as the user to
+  be accessed they may access/modify information about that user so long as
+  that user is not a blueshirt.
+* If the authenticated user is a blueshirt in the same college as the user to
+  be accessed they may access/modify information about that user so long as
+  that user is not a blueshirt.
+* An authenticated user can administrate itself
 
-####Response body
+##GET /colleges
 
-If the response code is 200:
-
-* `token`: an authentication token for the rest of the Nemesis API.
-
-If the response code is 403:
-
-* `error`: a string error code explaining the error to to the user, one of:
-    * `not a teacher`: given if the user is not a teacher.
-    * `invalid credentials`: given if the user's credentials are wrong.
-
-
-##POST /deauth
-
-Deauthenticates existing authentication tokens.
-
-####Parameters
-
-* `token`: an authentication token for the rest of the Nemesis API.
-
-####Response code
-
-Always 200.
-
-####Response body
-
-If the API is in debug mode:
-
-* `deleted`: `true` if the token existed and has been deleted, `false`
-  otherwise.
-
-If the API is in production mode the response body is always empty.
-
-
-##GET /college
-
-Gets information about the currently authenticated user's college.
+Gives a list of all colleges
 
 ####Parameters
 
-No parameters other than the authentication token.
+None
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+200 if the user authenticates successfully and is a blueshirt, else 403
 
 ####Response body
 
-If the response code is 200:
+The object contains:
 
-* `userids`: a list of all the user ID's in that college. Example `['ab1']`.
+* `colleges`: a list of all the college ids
+
+
+##GET /colleges/:id
+
+Gives information about the college matching the `id` url parameter
+
+####Parameters
+
+None
+
+####Response code
+
+200 if the user authenticates successfully and is a member of the college,
+200 if the user authenticates successfully and is a blueshirt
+else 403.
+
+####Response body
+
+If the response code is 200 the object contains:
+
+* `users`: A list of usernames in that college that the authenticated user can
+           administrate. Example `['abc1']`. Only given if authentication has
+           happened and the user is a member of this college.
 * `teams`: a list of all the teams in that college. Example `['team-ABC']`.
 * `college_name`: the name of the college.
 
+##GET /user/:username
 
-##GET /user/:userid
-
-Gets information about the user specified in the URL parameter `userid`.
+Gets information about the user specified in the URL parameter `username`.
 
 ####Parameters
 
-No parameters other than the authentication token.
+No parameters
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+200 if the user authenticates successfully and the authenticated user
+can administrate the user specified by `:username`. 403 otherwise.
 
 ####Response body
 
 If the response code is 200:
 
-* `full_name`: the user's full name.
 * `email`: the user's email address.
+* `username`: the user's username.
+* `first_name`: the user's first name.
+* `last_name`: the user's last name.
+* `colleges`: a list of the colleges that the user is in.
 
 
-##POST /user/:userid
+##POST /user/:username
 
-Updates information about the user specified in the URL parameter `userid`.
+Updates information about the user specified in the URL parameter `username`.
 
 ####Parameters
 
-* `email` optional: the new email address for the user.
-* `password` optional: the new password for the user.
+* `new_email` optional: the new email address for the user.
+* `new_password` optional: the new password for the user.
+* `new_first_name` optional: the new first name for the user.
+* `new_last_name` optional: the new last name for the user.
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+The same as the response code for `GET /user/:username`. No update is performed
+if 403.
 
 ####Response body
 
-The response body is unspecified and should not be used.
+The usual authentication error conditions apply, any other response data is
+unspecified and should not be used.
 
-
-##POST /user/register
+##POST /registrations
 
 Used to register new users. Specifically posting to this endpoint inserts one
 user into the registration queue.
@@ -130,30 +140,16 @@ user into the registration queue.
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
 * `email`: the user's email address.
+* `college`: the college to register the user to.
 * `team`: the team to register the user to.
 
 ####Response code
 
-200 if the user is authenticated, otherwise 403.
+202 if the authenticated user is a member of the specified college and the
+specified college has the specified team and the authenticated user is a
+blueshirt or a team leader. Otherwise 403.
 
 ####Response body
 
-The response body is unspecified and should not be used.
-
-
-##GET /site/sha
-
-Gets the current Git revision of the running site.
-
-####Parameters
-
-No parameters at all, this endpoint is not authenticated.
-
-####Response code
-
-Always 200.
-
-####Response body
-
-**This response body is not a JSON object**. The current Git revision hash
-corresponding to the checked out and running version of the API service.
+The usual authentication error conditions apply, any other response data is
+unspecified and should not be used.

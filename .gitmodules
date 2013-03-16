@@ -1,3 +1,3 @@
-[submodule "nemesis/userman"]
-	path = nemesis/userman
-	url = git://studentrobotics.org/userman.git
+[submodule "nemesis/libnemesis"]
+	path = nemesis/libnemesis
+	url = https://github.com/samphippen/libnemesis

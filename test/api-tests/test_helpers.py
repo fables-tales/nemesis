@@ -1,11 +1,12 @@
 import httplib
+import base64
 import unittest
 import random
 import urllib
 import sys
 import os
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
-import lib.helpers as helpers
+import helpers as helpers
 
 
 def apache_mode():
@@ -13,8 +14,7 @@ def apache_mode():
 
 def make_connection():
     if not apache_mode():
-        print "not apache mode!"
-        return httplib.HTTPConnection("localhost",5000)
+        return httplib.HTTPConnection("127.0.0.1",5000)
     else:
         return httplib.HTTPSConnection("localhost")
 
@@ -43,25 +43,40 @@ def server_post(endpoint, params=None):
     headers = {"Content-type": "application/x-www-form-urlencoded",
                 "Accept": "text/plain"}
     if params != None:
+        if params.has_key("username") and params.has_key("password"):
+            base64string = base64.encodestring('%s:%s' % (params["username"], params["password"])).replace('\n', '')
+            headers["Authorization"] = "Basic %s" % base64string
+            del params["username"]
+            del params["password"]
         unicode_encode(params)
         url_params = urllib.urlencode(params)
         conn.request("POST", endpoint, url_params, headers)
     else:
         conn.request("POST", endpoint)
 
-    return conn.getresponse()
+    resp = conn.getresponse()
+    data = resp.read()
+    return resp, data
 
 
 def server_get(endpoint, params=None):
     conn = make_connection()
     endpoint = modify_endpoint(endpoint)
+    headers = {}
     if params != None:
+        if params.has_key("username") and params.has_key("password"):
+            base64string = base64.encodestring('%s:%s' % (params["username"], params["password"])).replace('\n', '')
+            headers["Authorization"] = "Basic %s" % base64string
+            del params["username"]
+            del params["password"]
         url_params = urllib.urlencode(params)
-        conn.request("GET", endpoint + "?" + url_params)
+        conn.request("GET", endpoint, url_params, headers)
     else:
         conn.request("GET", endpoint)
 
-    return conn.getresponse()
+    resp = conn.getresponse()
+    data = resp.read()
+    return resp, data
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
