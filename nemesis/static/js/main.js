@@ -32,6 +32,7 @@ $(document).ready(function() {
                 });
             }
             $("#login").hide();
+            $("#login-error").hide();
             wv.end("Login succeeded");
         },
         function(response) {
