@@ -39,8 +39,8 @@ def test_post_blueshirt_own_student():
 
 def test_post_sets_email():
     old_email = User("student_coll1_1").email
-    params = {"username":"blueshirt",
-              "password":"blueshirt",
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
               "new_email":"new-emailexample.com",
               }
 
@@ -80,7 +80,7 @@ def test_post_sets_first_last_name():
 
     r,data = test_helpers.server_post("/user/student_coll1_1", params)
     assert r.status == 200
-    details_dict = User("student_coll1_1").details_dictionary
+    details_dict = User("student_coll1_1").details_dictionary_for(User.create_user("student_coll1_1", "cows"))
 
     assert details_dict["first_name"] == "asdf"
     assert details_dict["last_name"] == "cheese"
