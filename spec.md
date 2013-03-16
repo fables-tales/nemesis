@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-5 [SemVer](http://semver.org/)
+##Version 3.0.0-6 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -102,7 +102,9 @@ can administrate the user specified by `:username`. 403 otherwise.
 
 If the response code is 200:
 
-* `email`: the user's email address.
+* `email`: the user's email address. Only given if the authenticated user
+           is the user specified by :username or the authenticated user
+           is a teacher of the user specified by :username.
 * `username`: the user's username.
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
@@ -115,7 +117,10 @@ Updates information about the user specified in the URL parameter `username`.
 
 ####Parameters
 
-* `new_email` optional: the new email address for the user.
+* `new_email` optional: the new email address for the user. An update of the
+  email is only performed if the authenticated user is the user specified by
+:username or the authenticated user is a teacher of the user specified by
+:username.
 * `new_password` optional: the new password for the user.
 * `new_first_name` optional: the new first name for the user.
 * `new_last_name` optional: the new last name for the user.
