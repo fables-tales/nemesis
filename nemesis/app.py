@@ -66,7 +66,7 @@ def set_user_details(userid):
     ah = AuthHelper(request)
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         instance = User.create_user(userid)
-        if request.form.has_key("new_email"):
+        if request.form.has_key("new_email") and not ah.user.is_blueshirt:
             instance.set_email(request.form["new_email"])
         if request.form.has_key("new_password"):
             instance.set_password(request.form["new_password"])
