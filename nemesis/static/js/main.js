@@ -78,9 +78,10 @@ function college_name_from_hash() {
     return location.hash.substring(5,location.hash.length);
 }
 
-setTimeout(function() {
+setInterval(function() {
     cv.set_all_inactive();
     if (location.hash.substring(1,5) == "edit") {
+        var username = location.hash.substring(6,location.hash.length);
         cv.set_active(username);
     } else if (location.hash.substring(1,4) == "reg") {
         cv.set_register_active(college_name_from_hash());
