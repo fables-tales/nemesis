@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-6 [SemVer](http://semver.org/)
+##Version 3.0.0-7 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -17,7 +17,6 @@ codes are currently:
 
 * `NO_USERNAME` if no username was provided
 * `NO_PASSWORD` if no password was provided
-* `NO_SUCH_USER` if no user exists with the provided username
 * `WRONG_PASSWORD` if the user exists but the password is wrong
 
 A 403 response from nemesis with no `authentication_errors` field represents
