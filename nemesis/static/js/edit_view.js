@@ -14,6 +14,11 @@ var EditView = function() {
                 var text = TemplateExpander.template("user_edit").render_with({"user":user});
                 jquerynode.html(text);
                 jquerynode.show();
+                if (user.email === undefined) {
+                    $("#data-email").hide();
+                } else {
+                    $("#data-email").show();
+                }
                 wv.end("Loaded user successfully!");
                 $("#edit-submit").click(function() {
                     that.submit_form();
