@@ -57,7 +57,7 @@ def user_details(userid):
     ah = AuthHelper(request)
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user = User.create_user(userid)
-        return json.dumps(user.details_dictionary), 200
+        return json.dumps(user.details_dictionary_for(ah.user)), 200
     else:
         return ah.auth_error_json, 403
 
