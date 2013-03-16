@@ -7,7 +7,7 @@ var AuthView = function() {
         }
 
         var human_readable_error = function(auth_errors_list) {
-            var reasons = {"NO_SUCH_USER":"There is no user with this username",
+            var reasons = {
                        "WRONG_PASSWORD":"Password incorrect"}
 
             var result = "";
