@@ -96,8 +96,9 @@ def college_info(collegeid):
         response = {}
         response["name"] = c.name
         response["teams"] = [t.name for t in c.teams]
-        if c in ah.user.colleges:
-            response["users"] = [m.username for m in c.users if ah.user.can_administrate(m)]
+        au = ah.user
+        if c in au.colleges:
+            response["users"] = [m.username for m in c.users if au.can_administrate(m)]
 
         return json.dumps(response), 200
 
