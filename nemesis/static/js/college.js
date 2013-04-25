@@ -9,6 +9,7 @@ var College = function() {
         this.teams = [];
 
         this.fetch = function(callback) {
+            wv.start("Loading users");
             $.get("colleges/" + this.canonical_name, function(response) {
                 if (typeof(response) == "string") {
                     response = JSON.parse(response);
@@ -17,6 +18,7 @@ var College = function() {
                 that.english_name = response.name;
                 that.teams = response.teams;
                 user_requests = response.users.length;
+                wv.start("Fetching users");
                 that.users = $.map(response.users, function(v) {
                     u = new User(v);
                     u.fetch(function() {
@@ -24,6 +26,7 @@ var College = function() {
                         if (user_requests == 0) {
                             Colleges[that.canonical_name] = that;
                             callback(that);
+                            wv.hide();
                         }
                     });
 

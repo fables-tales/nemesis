@@ -34,6 +34,7 @@ $(document).ready(function() {
             $("#login").hide();
             $("#login-error").hide();
             wv.end("Login succeeded");
+            wv.start("Loading college information");
         },
         function(response) {
             av.display_auth_error(response["authentication_errors"]);
