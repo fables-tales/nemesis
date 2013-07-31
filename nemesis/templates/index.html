@@ -70,7 +70,7 @@
                 </div>
             </script>
             <script type="text/template" id="user_link">
-                <li class="{user.username}"><a href="#edit-{user.username}"><i class="icon-user"></i> {user.first_name} {user.last_name}</a></li>
+                <li class="{user.username}"><a href="#edit-{user.username}"><i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
             </script>
 
             <script type="text/template" id="register_link">
@@ -78,7 +78,7 @@
             </script>
 
             <script type="text/template" id="user_edit">
-                <h2>Edit User</h2>
+                <h2>Edit User <span class="username">{user.username}</span></h2>
                 <fieldset id="update-user">
                     <label>First Name</label>
                     <input type="text" value="{user.first_name}" name="new_first_name">
