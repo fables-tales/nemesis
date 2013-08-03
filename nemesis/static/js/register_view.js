@@ -19,15 +19,7 @@ var RegisterView = function() {
         };
 
         this.make_team_select = function(college) {
-            build = "<select name='team'>";
-
-            for (var i = 0 ; i < college.teams.length; i++) {
-                var team = college.teams[i];
-                build += "<option value='" + team + "'>" + team + "</option>";
-            }
-
-            build += "</select>";
-            return build;
+            return make_select('team', college.teams);
         };
 
         this.add_row = function(canonical_name) {

@@ -3,15 +3,17 @@ var EditView = function() {
         var jquerynode = jquerynode;
         var that = this;
         var my_user;
+        var requesting_user;
 
-        this.show = function(username) {
-            my_user = new User(username);
+        this.show = function(target_username, requesting_user_) {
+            my_user = new User(target_username);
+            requesting_user = requesting_user_;
             this.refresh_view();
         };
 
         this.refresh_view = function() {
             my_user.fetch(function(user) {
-                var text = TemplateExpander.template("user_edit").render_with({"user":user});
+                var text = TemplateExpander.template("user_edit").render_with({"user":user, "team_select":that.make_team_select(user)});
                 jquerynode.html(text);
                 jquerynode.show();
                 if (user.email === undefined) {
@@ -26,6 +28,10 @@ var EditView = function() {
 
                 refresh_callback();
             });
+        };
+
+        this.make_team_select = function(user) {
+            return make_select('new_team', requesting_user.teams, user.teams[0]);
         };
 
         this.hide = function() {
@@ -49,6 +55,8 @@ var EditView = function() {
                 var $e = $(element);
                 details[$e.attr("name")] = $e.val();
             });
+
+            details['new_team'] = $("#update-user select[name=new_team]").val();
 
             return details;
         };
