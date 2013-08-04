@@ -79,7 +79,7 @@ def set_user_details(userid):
             user_to_update.set_last_name(request.form["new_last_name"])
         if request.form.has_key("new_team"):
             team = request.form["new_team"]
-            if not user_to_update.is_blueshirt and team in [t.name for t in ah.user.teams]:
+            if (not user_to_update.is_blueshirt) and team in [t.name for t in ah.user.teams]:
                 user_to_update.set_team(team)
 
         user_to_update.save()
