@@ -3,11 +3,11 @@ var EditView = function() {
         var jquerynode = jquerynode;
         var that = this;
         var my_user;
-        var requesting_user;
+        var my_requesting_user;
 
-        this.show = function(target_username, requesting_user_) {
+        this.show = function(target_username, requesting_user) {
             my_user = new User(target_username);
-            requesting_user = requesting_user_;
+            my_requesting_user = requesting_user;
             this.refresh_view();
         };
 
@@ -34,7 +34,7 @@ var EditView = function() {
         };
 
         this.make_team_select = function(user) {
-            return TemplateExpander.make_select('new_team', requesting_user.teams, user.teams[0]);
+            return TemplateExpander.make_select('new_team', my_requesting_user.teams, user.teams[0]);
         };
 
         this.hide = function() {
