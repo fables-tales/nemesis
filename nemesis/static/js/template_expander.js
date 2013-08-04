@@ -1,6 +1,18 @@
 var TemplateExpander = {
     "template" : function(template_name) {
         return new Template($("#" + template_name).html());
+    },
+    "make_select" : function(name, options, selected) {
+        build = "<select name='" + name + "'>";
+
+        for (var i = 0 ; i < options.length; i++) {
+            var opt = options[i];
+            var selectAttr = selected == opt ? "' selected='selected" : '';
+            build += "<option value='" + opt + selectAttr + "'>" + opt + "</option>";
+        }
+
+        build += "</select>";
+        return build;
     }
 };
 

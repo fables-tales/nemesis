@@ -19,7 +19,7 @@ var RegisterView = function() {
         };
 
         this.make_team_select = function(college) {
-            return make_select('team', college.teams);
+            return TemplateExpander.make_select('team', college.teams);
         };
 
         this.add_row = function(canonical_name) {

@@ -50,19 +50,6 @@ $(document).on("click", ".add-row", function(){
     rv.add_row(college_name_from_hash());
 });
 
-function make_select(name, options, selected) {
-    build = "<select name='" + name + "'>";
-
-    for (var i = 0 ; i < options.length; i++) {
-        var opt = options[i];
-        var selectAttr = selected == opt ? "' selected='selected" : '';
-        build += "<option value='" + opt + selectAttr + "'>" + opt + "</option>";
-    }
-
-    build += "</select>";
-    return build;
-};
-
 function hashChangeEventHandler() {
     var newHash = location.hash.split('#')[1];
 

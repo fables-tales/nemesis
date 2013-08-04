@@ -34,7 +34,7 @@ var EditView = function() {
         };
 
         this.make_team_select = function(user) {
-            return make_select('new_team', requesting_user.teams, user.teams[0]);
+            return TemplateExpander.make_select('new_team', requesting_user.teams, user.teams[0]);
         };
 
         this.hide = function() {
