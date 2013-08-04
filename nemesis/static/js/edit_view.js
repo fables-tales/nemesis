@@ -13,7 +13,10 @@ var EditView = function() {
 
         this.refresh_view = function() {
             my_user.fetch(function(user) {
-                var text = TemplateExpander.template("user_edit").render_with({"user":user, "team_select":that.make_team_select(user)});
+                var template = TemplateExpander.template("user_edit");
+                var opts = {"user":user,
+                     "team_select":that.make_team_select(user)};
+                var text = template.render_with(opts);
                 jquerynode.html(text);
                 jquerynode.show();
                 if (user.email === undefined) {
