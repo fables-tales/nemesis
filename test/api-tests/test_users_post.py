@@ -88,3 +88,70 @@ def test_post_sets_first_last_name():
     u.set_first_name(old_first)
     u.set_last_name(old_last)
     u.save()
+
+def test_post_blueshirt_cant_set_team():
+    old_team = "team-ABC"
+    new_team = "team-DFE"
+
+    params = {"username":"blueshirt",
+              "password":"blueshirt",
+              "new_team":new_team,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    u = User("student_coll1_1")
+    teams = [t.name for t in u.teams]
+    assert [old_team] == teams
+
+def test_post_teacher_sets_team():
+    old_team = "team-ABC"
+    new_team = "team-DFE"
+
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "new_team":new_team,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    u = User("student_coll1_1")
+    teams = [t.name for t in u.teams]
+    assert [new_team] == teams
+
+    u.set_team(old_team)
+    u.save()
+
+def test_post_teacher_cant_set_nonexistent_team():
+    old_team = "team-ABC"
+    new_team = "team-PPP" # doesn't exist
+
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "new_team":new_team,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    u = User("student_coll1_1")
+    teams = [t.name for t in u.teams]
+    assert [old_team] == teams
+
+def test_post_teacher_cant_set_other_team():
+    old_team = "team-ABC"
+    new_team = "team-QWZ" # exists, but this teacher doesn't own it
+
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "new_team":new_team,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    u = User("student_coll1_1")
+    teams = [t.name for t in u.teams]
+    assert [old_team] == teams
