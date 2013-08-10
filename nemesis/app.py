@@ -68,17 +68,17 @@ def user_details(userid):
 def set_user_details(userid):
     ah = AuthHelper(request)
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
-        instance = User.create_user(userid)
+        user_to_update = User.create_user(userid)
         if request.form.has_key("new_email") and not ah.user.is_blueshirt:
-            instance.set_email(request.form["new_email"])
+            user_to_update.set_email(request.form["new_email"])
         if request.form.has_key("new_password"):
-            instance.set_password(request.form["new_password"])
+            user_to_update.set_password(request.form["new_password"])
         if request.form.has_key("new_first_name"):
-            instance.set_first_name(request.form["new_first_name"])
+            user_to_update.set_first_name(request.form["new_first_name"])
         if request.form.has_key("new_last_name"):
-            instance.set_last_name(request.form["new_last_name"])
+            user_to_update.set_last_name(request.form["new_last_name"])
 
-        instance.save()
+        user_to_update.save()
         return '{}', 200
     else:
         return ah.auth_error_json, 403

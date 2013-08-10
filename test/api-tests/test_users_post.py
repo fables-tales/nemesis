@@ -29,6 +29,14 @@ def test_post_teacher_own_student():
     r,data = test_helpers.server_post("/user/student_coll1_1", params)
     assert r.status == 200
 
+def test_post_teacher_other_student():
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    status = r.status
+    assert status == 403
+
 def test_post_blueshirt_own_student():
     params = {"username":"blueshirt",
               "password":"blueshirt",
