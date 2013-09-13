@@ -50,7 +50,6 @@ $(document).on("click", ".add-row", function(){
     rv.add_row(college_name_from_hash());
 });
 
-
 function hashChangeEventHandler() {
     var newHash = location.hash.split('#')[1];
 
@@ -68,7 +67,7 @@ function handle_hash() {
         var username = location.hash.substring(6,location.hash.length);
         rv.hide();
         wv.start("Loading user");
-        ev.show(username);
+        ev.show(username, current_user);
         cv.set_active(username);
     } else if (location.hash.substring(1,4) == "reg") {
         rv.show(college_name_from_hash());

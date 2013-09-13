@@ -16,6 +16,7 @@ var User = function() {
                     response = JSON.parse(response);
                 }
                 that.colleges = $.map(response["colleges"], function(v, i) { return new College(v);});
+                that.teams = response.teams;
                 success_callback(that);
             }).error(function(response) {
                 response = response.responseText;
@@ -35,6 +36,8 @@ var User = function() {
                 that.first_name = response.first_name;
                 that.last_name = response.last_name;
                 that.email = response.email;
+                that.colleges = response.colleges;
+                that.teams = response.teams;
                 callback(that);
             });
         };
