@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.0.0-7 [SemVer](http://semver.org/)
+##Version 3.1.0 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -108,6 +108,7 @@ If the response code is 200:
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
 * `colleges`: a list of the colleges that the user is in.
+* `teams`: a list of the teams that the user is in.
 
 
 ##POST /user/:username
@@ -120,6 +121,11 @@ Updates information about the user specified in the URL parameter `username`.
   email is only performed if the authenticated user is the user specified by
 :username or the authenticated user is a teacher of the user specified by
 :username.
+* `new_team` optional: the new team for the user. An update of the team
+  is only performed if:
+  * the authenticated user is a teacher of the user specified by :username,
+  * and the authenticated user is a member of the new team,
+  * and the user specified by :username is not a blueshirt.
 * `new_password` optional: the new password for the user.
 * `new_first_name` optional: the new first name for the user.
 * `new_last_name` optional: the new last name for the user.
