@@ -36,6 +36,7 @@ var User = function() {
                 that.first_name = response.first_name;
                 that.last_name = response.last_name;
                 that.email = response.email;
+                that.new_email = response.new_email;
                 that.colleges = response.colleges;
                 that.teams = response.teams;
                 callback(that);
