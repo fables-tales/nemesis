@@ -123,6 +123,21 @@ def test_email_changed_in_user_get():
 
     assert user_new_email == new_email
 
+@with_setup(setUp, test_helpers.delete_db)
+def test_user_get_checks_same_email():
+    username = "student_coll1_1"
+    new_email = User(username).email
+    helpers.new_email(username, new_email, 'bees')
+
+    params = {"username":username,
+              "password":"cows"}
+    r,data = test_helpers.server_get("/user/student_coll1_1", params)
+    assert r.status == 200, data
+
+    user_info = json.loads(data)
+    assert not user_info.has_key('new_email'), \
+        "Should not have a new_email key when the new one and the current one match"
+
 @with_setup(setUp)
 def test_verify_needs_request():
     r,data = test_helpers.server_get("/verify/nope@srobo.org/bees")

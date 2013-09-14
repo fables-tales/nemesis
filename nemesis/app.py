@@ -65,7 +65,9 @@ def user_details(userid):
         details = user.details_dictionary_for(ah.user)
         email_change_rq = helpers.get_change_email_request(username = userid)
         if email_change_rq is not None:
-            details['new_email'] = email_change_rq['new_email']
+            new_email = email_change_rq['new_email']
+            if new_email != details['email']:
+                details['new_email'] = new_email
         return json.dumps(details), 200
     else:
         return ah.auth_error_json, 403
