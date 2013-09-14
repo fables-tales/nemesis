@@ -7,3 +7,7 @@ sqlite3 db/nemesis.sqlite "CREATE table IF NOT EXISTS registrations (id INTEGER 
                                                                      email            VARCHAR(256),\
                                                                      team             VARCHAR(256),\
                                                                      processed        INTEGER DEFAULT 0);"
+sqlite3 db/nemesis.sqlite "CREATE table IF NOT EXISTS email_changes (username         VARCHAR(256) UNIQUE PRIMARY KEY,\
+                                                                     new_email        VARCHAR(256),\
+                                                                     request_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\
+                                                                     verify_code      VARCHAR(256));"

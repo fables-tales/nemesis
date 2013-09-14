@@ -6,9 +6,11 @@ sys.path.append(PATH + "/libnemesis/")
 
 import subprocess
 import json
+
+import mailer
 import helpers
 
-from flask import Flask, request
+from flask import Flask, request, url_for
 from libnemesis import User, College, AuthHelper
 
 app = Flask(__name__)
@@ -60,9 +62,28 @@ def user_details(userid):
     ah = AuthHelper(request)
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user = User.create_user(userid)
-        return json.dumps(user.details_dictionary_for(ah.user)), 200
+        details = user.details_dictionary_for(ah.user)
+        email_change_rq = helpers.get_change_email_request(username = userid)
+        if email_change_rq is not None:
+            details['new_email'] = email_change_rq['new_email']
+        return json.dumps(details), 200
     else:
         return ah.auth_error_json, 403
+
+def request_new_email(user, new_email):
+    userid = user.username
+
+    if user.email == new_email:
+        helpers.clear_new_email_request(userid)
+        return
+
+    verify_code = helpers.create_verify_code(userid, new_email)
+    helpers.new_email(userid, new_email, verify_code)
+
+    url = url_for('verify_email', email=new_email, code=verify_code, _external=True)
+    email_vars = { 'name': user.first_name,
+                   'url': url }
+    mailer.email_template(new_email, 'change_email', email_vars)
 
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
@@ -70,7 +91,8 @@ def set_user_details(userid):
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user_to_update = User.create_user(userid)
         if request.form.has_key("new_email") and not ah.user.is_blueshirt:
-            user_to_update.set_email(request.form["new_email"])
+            new_email = request.form["new_email"]
+            request_new_email(user_to_update, new_email)
         if request.form.has_key("new_password"):
             user_to_update.set_password(request.form["new_password"])
         if request.form.has_key("new_first_name"):
@@ -111,6 +133,31 @@ def college_info(collegeid):
 
     else:
         return ah.auth_error_json, 403
+
+@app.route("/verify/<email>/<code>", methods=["GET"])
+def verify_email(email, code):
+    """
+    Verifies to the system that an email address exists, and assigns it to a user.
+    Expected to be used only by users clicking links in email-verfication emails.
+    Not part of the documented API.
+    """
+
+    change_request = helpers.get_change_email_request(new_email = email)
+
+    if change_request is None:
+        return "No such change request", 404
+
+    if not helpers.is_email_request_valid(change_request):
+        return "Request not valid", 410
+
+    if change_request['verify_code'] != code:
+        return "Invalid verification code", 403
+
+    u = User(change_request['username'])
+    u.set_email(change_request['new_email'])
+    u.save()
+
+    return "Email address successfully changed", 200
 
 if __name__ == "__main__":
     app.debug = True

@@ -45,21 +45,6 @@ def test_post_blueshirt_own_student():
     r,data = test_helpers.server_post("/user/student_coll1_1", params)
     assert r.status == 200
 
-def test_post_sets_email():
-    old_email = User("student_coll1_1").email
-    params = {"username":"teacher_coll1",
-              "password":"facebees",
-              "new_email":"new-emailexample.com",
-              }
-
-    r,data = test_helpers.server_post("/user/student_coll1_1", params)
-    assert r.status == 200
-    assert User("student_coll1_1").email == "new-emailexample.com"
-
-    u = User("student_coll1_1")
-    u.set_email(old_email)
-    u.save()
-
 def test_post_sets_password():
     old_password = "cows"
 
