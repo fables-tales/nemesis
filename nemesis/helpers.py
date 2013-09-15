@@ -25,21 +25,13 @@ def is_email_request_valid(request):
     is_young_enuogh = rq_age < datetime.timedelta(days = 2)
     return is_young_enuogh
 
-def get_change_email_request(username = None, new_email = None):
-    if username is None and new_email is None:
-        raise Exception("You must specify a means to select a change")
-    elif new_email is None:
-        where = 'username'
-        value = username
-    else:
-        where = 'new_email'
-        value = new_email
+def get_change_email_request(username):
 
-    prep_statement = "SELECT username, new_email, request_time, verify_code FROM email_changes WHERE " + where + "=?"
+    prep_statement = "SELECT username, new_email, request_time, verify_code FROM email_changes WHERE username=?"
 
     conn = sqlite_connect()
     cur = conn.cursor()
-    cur.execute(prep_statement, (value,))
+    cur.execute(prep_statement, (username,))
     row = cur.fetchone()
     if row is None:
         return None

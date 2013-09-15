@@ -105,13 +105,6 @@ class TestHelpers(unittest.TestCase):
         assert rq['new_email'] == 'nope@srobo.org'
         assert rq['verify_code'] == 'bibble'
 
-    def test_change_email_e(self):
-        helpers.new_email('abc', 'nope@srobo.org', 'bibble')
-        rq = helpers.get_change_email_request(new_email = 'nope@srobo.org')
-        assert rq['username'] == 'abc'
-        assert rq['new_email'] == 'nope@srobo.org'
-        assert rq['verify_code'] == 'bibble'
-
     def test_re_change_email_u(self):
         helpers.new_email('abc', 'nope@srobo.org', 'bibble')
         helpers.new_email('abc', 'thing@srobo.org', 'bibble')
@@ -120,20 +113,6 @@ class TestHelpers(unittest.TestCase):
         assert rq['username'] == 'abc'
         assert rq['new_email'] == 'thing@srobo.org'
         assert rq['verify_code'] == 'bibble'
-
-    def test_re_change_email_e(self):
-        helpers.new_email('abc', 'nope@srobo.org', 'bibble')
-        helpers.new_email('abc', 'thing@srobo.org', 'bibble')
-        rq = helpers.get_change_email_request(new_email = 'nope@srobo.org')
-        assert rq is None
-
-        rq = helpers.get_change_email_request(new_email = 'thing@srobo.org')
-        assert rq['username'] == 'abc'
-        assert rq['new_email'] == 'thing@srobo.org'
-        assert rq['verify_code'] == 'bibble'
-
-    def test_email_request_needs_argument(self):
-        self.assertRaises(Exception, helpers.get_change_email_request)
 
     def test_email_request_age(self):
         rq = { 'request_time': datetime.datetime.now() }

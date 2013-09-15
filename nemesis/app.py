@@ -82,7 +82,7 @@ def request_new_email(user, new_email):
     verify_code = helpers.create_verify_code(userid, new_email)
     helpers.new_email(userid, new_email, verify_code)
 
-    url = url_for('verify_email', email=new_email, code=verify_code, _external=True)
+    url = url_for('verify_email', username=userid, code=verify_code, _external=True)
     email_vars = { 'name': user.first_name,
                    'url': url }
     mailer.email_template(new_email, 'change_email', email_vars)
@@ -136,15 +136,15 @@ def college_info(collegeid):
     else:
         return ah.auth_error_json, 403
 
-@app.route("/verify/<email>/<code>", methods=["GET"])
-def verify_email(email, code):
+@app.route("/verify/<username>/<code>", methods=["GET"])
+def verify_email(username, code):
     """
     Verifies to the system that an email address exists, and assigns it to a user.
     Expected to be used only by users clicking links in email-verfication emails.
     Not part of the documented API.
     """
 
-    change_request = helpers.get_change_email_request(new_email = email)
+    change_request = helpers.get_change_email_request(username)
 
     if change_request is None:
         return "No such change request", 404

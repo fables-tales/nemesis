@@ -78,10 +78,6 @@ def test_email_change_request():
     assert req_u is not None
     assert req_u['new_email'] == new_email
 
-    req_e = helpers.get_change_email_request(new_email = new_email)
-    assert req_e is not None
-    assert req_e['username'] == username
-
 @with_setup(setUp, remove_emails)
 def test_email_change_request_reset():
     """ Test that change requests via POST at /user/ are handled correclty. """
@@ -140,7 +136,7 @@ def test_user_get_checks_same_email():
 
 @with_setup(setUp)
 def test_verify_needs_request():
-    r,data = test_helpers.server_get("/verify/nope@srobo.org/bees")
+    r,data = test_helpers.server_get("/verify/nope/bees")
     status = r.status
     assert status == 404, data
 
@@ -148,7 +144,7 @@ def test_verify_needs_request():
 def test_verify_wrong_code():
     helpers.new_email('abc', 'nope@srobo.org', 'wrong')
 
-    r,data = test_helpers.server_get("/verify/nope@srobo.org/bees")
+    r,data = test_helpers.server_get("/verify/abc/bees")
     status = r.status
     assert status == 403, data
 
@@ -162,7 +158,7 @@ def test_verify_outdated_request():
     cur.execute(statement, arguments)
     conn.commit()
 
-    r,data = test_helpers.server_get("/verify/nope@srobo.org/bees")
+    r,data = test_helpers.server_get("/verify/abc/bees")
     status = r.status
     assert status == 410, data
 
@@ -174,7 +170,7 @@ def test_verify_success():
 
     helpers.new_email('student_coll1_1', new_email, 'bees')
 
-    r,data = test_helpers.server_get("/verify/" + new_email + "/bees")
+    r,data = test_helpers.server_get("/verify/" + username + "/bees")
     status = r.status
     assert status == 200, data
 
