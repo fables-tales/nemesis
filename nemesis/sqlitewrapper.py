@@ -1,5 +1,6 @@
 
 import helpers
+import mailer
 
 class UsernameKeyedSqliteThing(object):
 
@@ -83,3 +84,12 @@ class PendingUser(UsernameKeyedSqliteThing):
 
     def __init__(self, username, connector = None):
         super(PendingUser, self).__init__(username, connector)
+
+    def send_welcome_email(self, first_name, activation_url):
+        email_vars = { 'name': first_name,
+                   'username': self.username,
+                      'email': self.email,
+             'activation_url': activation_url
+                     }
+
+        mailer.email_template(self.email, 'new_user', email_vars)

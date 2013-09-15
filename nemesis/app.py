@@ -12,6 +12,7 @@ import helpers
 
 from flask import Flask, request, url_for
 from libnemesis import User, College, AuthHelper
+from sqlitewrapper import PendingUser
 
 app = Flask(__name__)
 
@@ -45,12 +46,20 @@ def register_user():
             if team not in [t.name for t in College(college_group).teams]:
                 return json.dumps({"error":"BAD_TEAM"}), 403
 
-            helpers.register_user(teacher_username,
-                    college_group,
-                    first_name,
-                    last_name,
-                    email,
-                    team)
+            u = User.create_new_user(requesting_user, college_group, first_name, last_name)
+            verify_code = helpers.create_verify_code(u.username, email)
+
+            pu = PendingUser(u.username)
+            pu.teacher_username = teacher_username
+            pu.college = college_group
+            pu.email = email
+            pu.team = team
+            pu.verify_code = verify_code
+            pu.save()
+
+            url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
+            pu.send_welcome_email(first_name, url)
+
             return "{}", 202
         else:
             return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
@@ -135,6 +144,17 @@ def college_info(collegeid):
 
     else:
         return ah.auth_error_json, 403
+
+@app.route("/activate/<username>/<code>", methods=["GET"])
+def activate_account(username, code):
+    """
+    Verifies to the system that an email address exists, and assigns it to a user.
+    Expected to be used only by users clicking links in email-verfication emails.
+    Not part of the documented API.
+    """
+
+    return "nope", 403
+
 
 @app.route("/verify/<username>/<code>", methods=["GET"])
 def verify_email(username, code):
