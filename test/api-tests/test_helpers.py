@@ -1,6 +1,8 @@
 
 import datetime
+import glob
 import httplib
+import json
 import base64
 import unittest
 import random
@@ -80,6 +82,31 @@ def server_get(endpoint, params=None):
     resp = conn.getresponse()
     data = resp.read()
     return resp, data
+
+def remove_emails():
+    for f in all_emails():
+        os.remove(f)
+
+def root():
+   root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+   return root
+
+def all_emails():
+    pattern = os.path.join(root(), 'nemesis/mail-*.sent-mail')
+    files = glob.glob(pattern)
+    return files
+
+def last_email():
+    files = all_emails()
+    assert len(files) == 1
+    with open(files[0], 'r') as f:
+        mail_data = json.load(f)
+        return mail_data
+
+def template(name):
+    file_path = os.path.join(root(), 'nemesis/templates', name)
+    with open(file_path, 'r') as f:
+        return f.readlines()
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):

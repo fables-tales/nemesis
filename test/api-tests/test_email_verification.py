@@ -1,9 +1,7 @@
 
 import datetime
-import glob
 from nose.tools import with_setup
 import json
-import os.path
 import sys
 import time
 import unittest
@@ -21,35 +19,10 @@ def setUp():
         # Can't run these tests if the web server isn't local
         raise unittest.SkipTest
     else:
-        remove_emails()
-        test_helpers.delete_db
+        test_helpers.remove_emails()
+        test_helpers.delete_db()
 
-def remove_emails():
-    for f in all_emails():
-        os.remove(f)
-
-def root():
-   root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-   return root
-
-def all_emails():
-    pattern = os.path.join(root(), 'nemesis/mail-*.sent-mail')
-    files = glob.glob(pattern)
-    return files
-
-def last_email():
-    files = all_emails()
-    assert len(files) == 1
-    with open(files[0], 'r') as f:
-        mail_data = json.load(f)
-        return mail_data
-
-def template(name):
-    file_path = os.path.join(root(), 'nemesis/templates', name)
-    with open(file_path, 'r') as f:
-        return f.readlines()
-
-@with_setup(setUp, remove_emails)
+@with_setup(setUp, test_helpers.remove_emails)
 def test_email_change_request():
     """ Test that change requests via POST at /user/ are handled correclty. """
     username = "student_coll1_1"
@@ -65,9 +38,9 @@ def test_email_change_request():
     user = User(username)
     assert user.email == old_email
 
-    template_lines = template('change_email.txt')
+    template_lines = test_helpers.template('change_email.txt')
 
-    email_data = last_email()
+    email_data = test_helpers.last_email()
     assert email_data['subject'] in template_lines[0]
     assert email_data['toaddr'] == new_email
     msg = email_data['msg']
@@ -78,7 +51,7 @@ def test_email_change_request():
     assert req_u is not None
     assert req_u['new_email'] == new_email
 
-@with_setup(setUp, remove_emails)
+@with_setup(setUp, test_helpers.remove_emails)
 def test_email_change_request_reset():
     """ Test that change requests via POST at /user/ are handled correclty. """
     username = "student_coll1_1"
@@ -97,7 +70,7 @@ def test_email_change_request_reset():
     user = User(username)
     assert user.email == old_email
 
-    all_mails = all_emails()
+    all_mails = test_helpers.all_emails()
     assert len(all_mails) == 0
 
     req_u = helpers.get_change_email_request(username = username)
