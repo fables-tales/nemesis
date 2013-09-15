@@ -9,9 +9,12 @@ import random
 import urllib
 import sys
 import os
+
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
 import helpers as helpers
 
+sys.path.append("../../nemesis/libnemesis")
+from libnemesis import srusers
 
 def apache_mode():
     return os.path.exists(".apachetest")
@@ -82,6 +85,14 @@ def server_get(endpoint, params=None):
     resp = conn.getresponse()
     data = resp.read()
     return resp, data
+
+def remove_user(name):
+    """A setup helper"""
+    def helper():
+        u = srusers.user(name)
+        if u.in_db:
+            u.delete()
+    return helper
 
 def remove_emails():
     for f in all_emails():

@@ -3,12 +3,13 @@ from nose.tools import with_setup
 import sys
 
 import test_helpers
+from test_helpers import remove_user
 
 sys.path.append("../../nemesis")
 from sqlitewrapper import PendingUser
 
 sys.path.append("../../nemesis/libnemesis")
-from libnemesis import User, srusers
+from libnemesis import User
 
 NEW_USER_FNAME = 'register'
 NEW_USER_LNAME = 'this.user'
@@ -16,13 +17,6 @@ NEW_USER_LNAME = 'this.user'
 def setUp():
     test_helpers.remove_emails()
     test_helpers.delete_db()
-
-def remove_user(name):
-    def helper():
-        u = srusers.user(name)
-        if u.in_db:
-            u.delete()
-    return helper
 
 def test_registration_no_user():
     r,data = test_helpers.server_post("/registrations")
