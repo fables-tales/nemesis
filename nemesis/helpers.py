@@ -46,15 +46,15 @@ def get_change_email_request(username):
 
 def new_email(username, new_email, verify_code):
     if get_change_email_request(username = username) is not None:
-        prep_statement = "UPDATE email_changes SET new_email=?, verify_code=?, request_time=CURRENT_TIMESTAMP WHERE username=?";
+        prep_statement = "UPDATE email_changes SET new_email=?, verify_code=?, request_time=CURRENT_TIMESTAMP WHERE username=?"
         _exec(prep_statement, (new_email, verify_code, username))
     else:
-        prep_statement = "INSERT INTO email_changes (username, new_email, verify_code) VALUES (?,?,?)";
+        prep_statement = "INSERT INTO email_changes (username, new_email, verify_code) VALUES (?,?,?)"
         _exec(prep_statement, (username, new_email, verify_code))
 
 def clear_new_email_request(username):
     if get_change_email_request(username = username) is not None:
-        prep_statement = "DELETE FROM email_changes WHERE username=?";
+        prep_statement = "DELETE FROM email_changes WHERE username=?"
         _exec(prep_statement, (username, ))
 
 def create_verify_code(username, new_email):
