@@ -105,6 +105,7 @@ def last_email():
 
 def template(name):
     file_path = os.path.join(root(), 'nemesis/templates', name)
+    assert os.path.exists(file_path), "Cannot open a template that doesn't exist."
     with open(file_path, 'r') as f:
         return f.readlines()
 
