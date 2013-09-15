@@ -62,6 +62,13 @@ class UsernameKeyedSqliteThing(object):
     def in_db(self):
         return self._in_db
 
+    def delete(self):
+        if not self.in_db:
+            raise Exception( "Cannot remove pending user '%s' - not in database!" % (self.username,) )
+
+        self._exec("DELETE FROM " + self._db_table + " WHERE username=?", (self.username,))
+        self._in_db = False
+
     def save(self):
         missing = self._missing_props()
         if len(missing) > 0:

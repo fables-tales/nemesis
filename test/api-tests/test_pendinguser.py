@@ -63,6 +63,17 @@ def test_update():
     pu = PendingUser('abc')
     assert pu.team == new_team
 
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
+def test_delete():
+    test_creation()
+
+    pu = PendingUser('abc')
+    pu.delete()
+    assert not pu.in_db
+
+    pu = PendingUser('abc')
+    assert not pu.in_db
+
 @raises(AttributeError)
 def test_invalid_property():
     pu = PendingUser('abc')
