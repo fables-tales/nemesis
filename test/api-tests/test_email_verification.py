@@ -15,12 +15,8 @@ sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
 
 def setUp():
-    if test_helpers.apache_mode():
-        # Can't run these tests if the web server isn't local
-        raise unittest.SkipTest
-    else:
-        test_helpers.remove_emails()
-        test_helpers.delete_db()
+    test_helpers.remove_emails()
+    test_helpers.delete_db()
 
 @with_setup(setUp, test_helpers.remove_emails)
 def test_email_change_request():
