@@ -38,7 +38,6 @@ def email_template(toaddr, template_name, template_vars):
     subject = subject[8:].strip()
 
     msg = "\n".join(msg.splitlines()[1:])
-    print template_vars
     msg = msg.format(**template_vars)
 
     return email(toaddr, subject, msg)
