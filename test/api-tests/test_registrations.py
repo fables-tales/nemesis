@@ -1,11 +1,18 @@
+
+from nose.tools import with_setup
+
 import test_helpers
+
+def setUp():
+    test_helpers.remove_emails()
+    test_helpers.delete_db()
 
 def test_registration_no_user():
     r,data = test_helpers.server_post("/registrations")
     assert r.status == 403
 
+@with_setup(setUp, test_helpers.remove_emails)
 def test_registration_user_and_form():
-    test_helpers.delete_db()
     params = {"username":"teacher_coll1",
               "password":"facebees",
               "first_name":"register",
@@ -17,11 +24,9 @@ def test_registration_user_and_form():
     r,data = test_helpers.server_post("/registrations", params)
     assert r.status == 202
     assert len(test_helpers.get_registrations()) == 1
-    test_helpers.delete_db()
 
+@with_setup(setUp, test_helpers.remove_emails)
 def test_registration_wrong_college():
-    test_helpers.delete_db()
-
     params = {"username":"teacher_coll1",
               "password":"facebees",
               "first_name":"register",
@@ -33,4 +38,3 @@ def test_registration_wrong_college():
     r,data = test_helpers.server_post("/registrations", params)
     assert r.status == 403
     assert len(test_helpers.get_registrations()) == 0
-    test_helpers.delete_db()
