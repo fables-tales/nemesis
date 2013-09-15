@@ -103,6 +103,15 @@ def last_email():
         mail_data = json.load(f)
         return mail_data
 
+def last_n_emails(num):
+    files = all_emails()
+    assert len(files) == num
+    mail_datas = []
+    for fn in sorted(files):
+        with open(fn, 'r') as f:
+            mail_datas.append(json.load(f))
+    return mail_datas
+
 def template(name):
     file_path = os.path.join(root(), 'nemesis/templates', name)
     assert os.path.exists(file_path), "Cannot open a template that doesn't exist."

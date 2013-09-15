@@ -47,9 +47,15 @@ def email_template(toaddr, template_name, template_vars):
 if not config.has_option('mailer', 'host'):
     import json
     from time import time
+    from hashlib import md5
+    mail_num = 0
     def email(toaddr, subject, msg):
+        global mail_num
+        hash = str(md5(toaddr + subject + msg).hexdigest())
+        mail_num += 1
+
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        name = 'mail-' + str(time()) + '.sent-mail'
+        name = 'mail-' + str(time()) + str(mail_num) + hash + '.sent-mail'
         name = os.path.join(script_dir, name)
         with open(name, 'w') as f:
             args = { 'toaddr': toaddr

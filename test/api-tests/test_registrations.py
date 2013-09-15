@@ -54,14 +54,34 @@ def test_registration_user_and_form():
 
     template_lines = test_helpers.template('new_user.txt')
 
-    email_data = test_helpers.last_email()
-    assert email_data['subject'] in template_lines[0]
-    assert email_data['toaddr'] == new_email
-    msg = email_data['msg']
+    email_datas = test_helpers.last_n_emails(2)
+    student_data = email_datas[0]
+    subject = student_data['subject']
+    assert subject in template_lines[0]
+    to = student_data['toaddr']
+    assert to == new_email
+    msg = student_data['msg']
     assert NEW_USER_FNAME in msg
     assert '{activate_url}' not in msg
     vcode = pending.verify_code
     assert vcode in msg
+
+    template_lines = test_helpers.template('user_requested.txt')
+    teacher = User.create_user("teacher_coll1")
+
+    teacher_data = email_datas[1]
+    subject = teacher_data['subject']
+    assert subject in template_lines[0]
+    to = teacher_data['toaddr']
+    assert to == teacher.email
+    msg = teacher_data['msg']
+    assert NEW_USER_FNAME in msg
+    assert NEW_USER_LNAME in msg
+    assert new_email in msg
+    assert 'college the first' in msg
+    vcode = pending.verify_code
+    assert vcode not in msg, "Should not contain email verification code"
+    assert '1_rt1' in msg, "Should contain created username"
 
 @with_setup(remove_user('2_rt1'), remove_user('2_rt1'))
 @with_setup(setUp, test_helpers.remove_emails)

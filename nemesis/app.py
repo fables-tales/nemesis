@@ -60,6 +60,16 @@ def register_user():
             url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
             pu.send_welcome_email(first_name, url)
 
+            rqu_email_vars = { 'name': requesting_user.first_name,
+                      'pu_first_name': first_name,
+                       'pu_last_name': last_name,
+                        'pu_username': pu.username,
+                         'pu_college': College(pu.college).name,
+                           'pu_email': pu.email,
+                            'pu_team': pu.team
+                              }
+            mailer.email_template(requesting_user.email, 'user_requested', rqu_email_vars)
+
             return "{}", 202
         else:
             return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
