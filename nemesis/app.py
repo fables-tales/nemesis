@@ -158,13 +158,38 @@ def college_info(collegeid):
 @app.route("/activate/<username>/<code>", methods=["GET"])
 def activate_account(username, code):
     """
-    Verifies to the system that an email address exists, and assigns it to a user.
-    Expected to be used only by users clicking links in email-verfication emails.
+    Verifies to the system that an email address exists, and that the related
+    account should be made into a full account.
+    Expected to be used only by users clicking links in account-activation emails.
     Not part of the documented API.
     """
 
-    return "nope", 403
+    pu = PendingUser(username)
 
+    if not pu.in_db:
+        return "No such user account", 404
+
+    # TODO: expire the requests after a few days
+
+    if pu.verify_code != code:
+        return "Invalid verification code", 403
+
+    from libnemesis import srusers
+    new_pass = srusers.users.GenPasswd()
+
+    u = User(username)
+    u.set_email(pu.email)
+    u.set_team(pu.team)
+    u.set_college(pu.college)
+    u.set_password(new_pass)
+    u.save()
+
+    pu.delete()
+
+    html = open(PATH + "/templates/activate.html").read()
+    html = html.format(name = u.first_name, passwd = new_pass)
+
+    return html, 200
 
 @app.route("/verify/<username>/<code>", methods=["GET"])
 def verify_email(username, code):
