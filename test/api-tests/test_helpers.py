@@ -91,6 +91,10 @@ def remove_user(name):
     def helper():
         u = srusers.user(name)
         if u.in_db:
+            for gid in u.groups():
+                g = srusers.group(gid)
+                g.user_rm(u.username)
+                g.save()
             u.delete()
     return helper
 
