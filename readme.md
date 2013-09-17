@@ -23,3 +23,17 @@ for easy management in my brain
 
 Once you've greenlit all the tests, make some changes, go wild, send me patches
 either via GitHub or via gerrit and I'll review them for you!
+
+##Development server, avoiding WSGI
+
+It's also possible to develop using the srobo dev server just as the LDAP host.
+For this, you'll need to install python, nose, pyldap & flask onto your dev machine,
+and the configure nemesis to use a remote LDAP host.
+This configuration is done in the config.ini within the `srusers` submodule of the
+`libnemesis` submodule.
+
+There's then a development mode server which you can run:
+
+    python nemesis/app.py
+
+which shows stack traces when things go wrong, and will auto-reload when you make code changes.
