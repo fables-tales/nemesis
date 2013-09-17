@@ -16,10 +16,6 @@ def _exec(statement, arguments):
     cur.execute(statement, arguments)
     conn.commit()
 
-def register_user(teacher_username, college_group, first_name, last_name, email, team):
-    prep_statement = "INSERT INTO registrations (teacher_username, college_group, first_name, last_name, email, team) VALUES (?,?,?,?,?,?)";
-    _exec(prep_statement, (teacher_username, college_group, first_name, last_name, email, team))
-
 def is_email_request_valid(request):
     rq_age = datetime.datetime.now() - request['request_time']
     is_young_enuogh = rq_age < datetime.timedelta(days = 2)

@@ -136,16 +136,6 @@ class TestHelpers(unittest.TestCase):
     def tearDown(self):
         delete_db()
 
-    def test_register_user(self):
-        helpers.register_user("ab", "1", "sam", "phippen", "samphippen@googlemail.com", "1")
-        self.assertEqual(len(get_registrations()), 1)
-
-    def test_register_many_users(self):
-        n = random.randint(30, 100)
-        for i in xrange(0,n):
-            helpers.register_user("ab", "1", "sam", "phippen", "samphippen@googlemail.com", "1")
-        self.assertEqual(len(get_registrations()), n)
-
     def test_change_email_u(self):
         helpers.new_email('abc', 'nope@srobo.org', 'bibble')
         rq = helpers.get_change_email_request(username = 'abc')
