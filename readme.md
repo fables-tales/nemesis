@@ -36,3 +36,10 @@ There's then a development mode server which you can run:
     python nemesis/app.py
 
 which shows stack traces when things go wrong, and will auto-reload when you make code changes.
+
+You'll also need to create the sqlite DB manually, which can be done using:
+
+    ./nemesis/scripts/make_db.sh
+
+Note that this will only create the DB if it's missing, and not update it or remove it.
+As a result, if the schema changes the DB must be manually removed & re-created.
