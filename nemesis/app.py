@@ -182,6 +182,7 @@ def activate_account(username, code):
     u.set_team(pu.team)
     u.set_college(pu.college)
     u.set_password(new_pass)
+    u.make_student()
     u.save()
 
     pu.delete()

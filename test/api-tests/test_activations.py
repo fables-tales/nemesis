@@ -13,7 +13,7 @@ import helpers
 from sqlitewrapper import PendingUser
 
 sys.path.append("../../nemesis/libnemesis")
-from libnemesis import User
+from libnemesis import User, srusers
 
 def create_pending_user(name = 'abc'):
     pu = PendingUser(name)
@@ -63,6 +63,9 @@ def test_activate_success():
     assert pu.team in teams
     colleges = u.colleges
     assert pu.college in colleges
+
+    students = srusers.group('students').members
+    assert username in students
 
     pu = PendingUser(username)
     assert not pu.in_db, "registration DB entry should have been removed"
