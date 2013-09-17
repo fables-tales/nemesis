@@ -12,6 +12,7 @@ var RegisterView = function() {
             var text = TemplateExpander.template("register").render_with({"college":college, "team_select":this.make_team_select(college)});
             node.html(text);
             this.add_row(canonical_name);
+            $("#register-submit").attr("disabled", false);
             $("#register-submit").click(function() {
                 that.register_users();
             });
@@ -32,6 +33,7 @@ var RegisterView = function() {
             var count = 0;
             var max_count = this.registrations_array().length;
             wv.start("Registering users: " + count + "/" + max_count);
+            $("#register-submit").attr("disabled", true);
             $(this.registrations_array()).each(function(i, registration_hash) {
                 that.send_registration_hash(registration_hash, function() {
                     count += 1;
@@ -51,6 +53,8 @@ var RegisterView = function() {
             hash["college"] = college_name_from_hash();
             $.post("registrations", hash, function(response) {
                 callback(response);
+            }).fail(function() {
+                $("#register-submit").attr("disabled", false);
             });
         };
 
