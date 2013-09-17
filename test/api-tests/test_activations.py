@@ -20,7 +20,7 @@ def create_pending_user(name = 'abc'):
     pu.teacher_username = 'jim'
     pu.college = 'college-1'
     pu.team = 'team-ABC'
-    pu.email = 'nope@srobo.org'
+    pu.email = name + '@srobo.org'
     pu.verify_code = 'bibble'
 
     return pu
@@ -40,13 +40,13 @@ def test_activate_wrong_code():
     status = r.status
     assert status == 403, data
 
-@with_setup(test_helpers.remove_user('1_fl1'), test_helpers.remove_user('1_fl1'))
+@with_setup(test_helpers.remove_user('1_ja1'), test_helpers.remove_user('1_ja1'))
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_activate_success():
-    username = '1_fl1'
+    username = '1_ja1'
 
     rq_user = User.create_user("teacher_coll1", "facebees")
-    cu = User.create_new_user(rq_user, 'college-1', 'first', 'last')
+    cu = User.create_new_user(rq_user, 'college-1', 'James', 'Activate')
     assert cu.username == username
 
     pu = create_pending_user(username)
