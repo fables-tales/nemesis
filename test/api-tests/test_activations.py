@@ -15,10 +15,6 @@ from sqlitewrapper import PendingUser
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
 
-def setUp():
-    test_helpers.remove_emails()
-    test_helpers.delete_db()
-
 def create_pending_user(name = 'abc'):
     pu = PendingUser(name)
     pu.teacher_username = 'jim'
@@ -29,13 +25,13 @@ def create_pending_user(name = 'abc'):
 
     return pu
 
-@with_setup(setUp)
+@with_setup(test_helpers.clean_emails_and_db)
 def test_activate_needs_registration():
     r,data = test_helpers.server_get("/activate/nope/bees")
     status = r.status
     assert status == 404, data
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_activate_wrong_code():
     pu = create_pending_user()
     pu.save()
@@ -45,7 +41,7 @@ def test_activate_wrong_code():
     assert status == 403, data
 
 @with_setup(test_helpers.remove_user('1_fl1'), test_helpers.remove_user('1_fl1'))
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_activate_success():
     username = '1_fl1'
 

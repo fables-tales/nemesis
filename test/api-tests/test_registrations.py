@@ -14,16 +14,12 @@ from libnemesis import User
 NEW_USER_FNAME = 'register'
 NEW_USER_LNAME = 'this.user'
 
-def setUp():
-    test_helpers.remove_emails()
-    test_helpers.delete_db()
-
 def test_registration_no_user():
     r,data = test_helpers.server_post("/registrations")
     assert r.status == 403
 
 @with_setup(remove_user('1_rt1'), remove_user('1_rt1'))
-@with_setup(setUp, test_helpers.remove_emails)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_registration_user_and_form():
     new_email = "bob@example.com"
     params = {"username":"teacher_coll1",
@@ -78,7 +74,7 @@ def test_registration_user_and_form():
     assert '1_rt1' in msg, "Should contain created username"
 
 @with_setup(remove_user('2_rt1'), remove_user('2_rt1'))
-@with_setup(setUp, test_helpers.remove_emails)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_registration_wrong_college():
     params = {"username":"teacher_coll1",
               "password":"facebees",

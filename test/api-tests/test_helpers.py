@@ -94,6 +94,10 @@ def remove_user(name):
             u.delete()
     return helper
 
+def clean_emails_and_db():
+    remove_emails()
+    delete_db()
+
 def remove_emails():
     for f in all_emails():
         os.remove(f)

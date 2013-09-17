@@ -14,11 +14,7 @@ import helpers
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
 
-def setUp():
-    test_helpers.remove_emails()
-    test_helpers.delete_db()
-
-@with_setup(setUp, test_helpers.remove_emails)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_email_change_request():
     """ Test that change requests via POST at /user/ are handled correclty. """
     username = "student_coll1_1"
@@ -47,7 +43,7 @@ def test_email_change_request():
     assert req_u is not None
     assert req_u['new_email'] == new_email
 
-@with_setup(setUp, test_helpers.remove_emails)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_email_change_request_reset():
     """ Test that change requests via POST at /user/ are handled correclty. """
     username = "student_coll1_1"
@@ -72,7 +68,7 @@ def test_email_change_request_reset():
     req_u = helpers.get_change_email_request(username = username)
     assert req_u is None, 'POST using original email should have cleared request'
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_email_changed_in_user_get():
     username = "student_coll1_1"
     new_email = 'nope@srobo.org'
@@ -88,7 +84,7 @@ def test_email_changed_in_user_get():
 
     assert user_new_email == new_email
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_user_get_checks_same_email():
     username = "student_coll1_1"
     new_email = User(username).email
@@ -103,13 +99,13 @@ def test_user_get_checks_same_email():
     assert not user_info.has_key('new_email'), \
         "Should not have a new_email key when the new one and the current one match"
 
-@with_setup(setUp)
+@with_setup(test_helpers.clean_emails_and_db)
 def test_verify_needs_request():
     r,data = test_helpers.server_get("/verify/nope/bees")
     status = r.status
     assert status == 404, data
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_verify_wrong_code():
     helpers.new_email('abc', 'nope@srobo.org', 'wrong')
 
@@ -117,7 +113,7 @@ def test_verify_wrong_code():
     status = r.status
     assert status == 403, data
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_verify_outdated_request():
     conn = helpers.sqlite_connect()
     cur = conn.cursor()
@@ -131,7 +127,7 @@ def test_verify_outdated_request():
     status = r.status
     assert status == 410, data
 
-@with_setup(setUp, test_helpers.delete_db)
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_verify_success():
     username = "student_coll1_1"
     old_email = User(username).email
