@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.0-alpha.2 [SemVer](http://semver.org/)
+##Version 3.2.0-alpha.3 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -167,5 +167,13 @@ blueshirt or a team leader. Otherwise 403.
 
 ####Response body
 
-The usual authentication error conditions apply, any other response data is
-unspecified and should not be used.
+The usual authentication error conditions apply. Other errors are detailed
+via a single `error` key in the returned json object. Its values possible
+values are:
+
+* `YOU_CANT_REGISTER_USERS`: The current user is not allowed to register
+          users. Returned when the authenticated user is neither a
+          team-leader nor a blueshirt.
+* `BAD_COLLEGE`: The authenticated user is not a member of the requested
+          college.
+* `BAD_TEAM`: The requested team is not available within the requested college.
