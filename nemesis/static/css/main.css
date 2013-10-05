@@ -13,3 +13,9 @@
 select {
     width:110px;
 }
+
+.feedback {
+    color:red;
+    padding:0 0.5em 10px;
+    white-space:nowrap;
+}

@@ -51,10 +51,18 @@ var RegisterView = function() {
 
         this.send_registration_hash = function(hash, callback) {
             hash["college"] = college_name_from_hash();
+            var feedback_node = hash['feedback_node'];
+            delete hash['feedback_node'];
             $.post("registrations", hash, function(response) {
                 callback(response);
-            }).fail(function() {
+            }).fail(function(response) {
                 $("#register-submit").attr("disabled", false);
+                response = response.responseText;
+                if (typeof(response) === "string") {
+                    response = JSON.parse(response);
+                }
+                var human_error = human_readable_error(response.error);
+                feedback_node.html(human_error);
             });
         };
 
@@ -69,6 +77,7 @@ var RegisterView = function() {
                     var $e = $(e);
                     row_hash[$e.attr("name")] = $e.val();
                 });
+                row_hash['feedback_node'] = $(row).find('.feedback');
 
                 inputs.push(row_hash);
             }
@@ -76,6 +85,18 @@ var RegisterView = function() {
             return inputs;
         };
 
+        var human_readable_error = function(error_code) {
+            var errors = { 'BAD_TEAM': "Invalid team requested",
+                        'BAD_COLLEGE': "Invalid college requested",
+               'DETAILS_ALREADY_USED': "User details already in use",
+            'YOU_CANT_REGISTER_USERS': "You are not allowed to register users"
+                         };
+            if (errors.hasOwnProperty(error_code)) {
+                return errors[error_code];
+            } else {
+                return 'Unknown error!';
+            }
+        };
     };
 }();
 
