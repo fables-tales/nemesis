@@ -48,6 +48,9 @@ def register_user():
             if team not in [t.name for t in College(college_group).teams]:
                 return json.dumps({"error":"BAD_TEAM"}), 403
 
+            if User.name_used(first_name, last_name) or helpers.email_used(email):
+                return json.dumps({"error":"DETAILS_ALREADY_USED"}), 403
+
             u = User.create_new_user(requesting_user, college_group, first_name, last_name)
             verify_code = helpers.create_verify_code(u.username, email)
 

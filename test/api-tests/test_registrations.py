@@ -99,3 +99,61 @@ def test_registration_wrong_college():
 
     mails = test_helpers.all_emails()
     assert len(mails) == 0
+
+@with_setup(remove_user('1_ss1'), remove_user('1_ss1'))
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+def test_registration_name_in_use():
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "first_name":'student1i', # student_coll1_1
+              "last_name":'student',
+              "email":"bob@example.com",
+              "team":"team-ABC",
+              "college":"college-1"}
+
+    r,data = test_helpers.server_post("/registrations", params)
+
+    assert r.status == 403
+    assert 'DETAILS_ALREADY_USED' in data
+    assert len(test_helpers.get_registrations()) == 0
+
+    try:
+        created = User.create_user('1_ss1')
+        assert False, "Should not have created user"
+    except:
+        pass
+
+    pending = PendingUser('1_ss1')
+    assert not pending.in_db
+
+    mails = test_helpers.all_emails()
+    assert len(mails) == 0
+
+@with_setup(remove_user('1_rt1'), remove_user('1_rt1'))
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+def test_registration_email_in_use():
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "first_name":NEW_USER_FNAME,
+              "last_name":NEW_USER_LNAME,
+              "email":"sam@sam2518.com", # student_coll2_2
+              "team":"team-ABC",
+              "college":"college-1"}
+
+    r,data = test_helpers.server_post("/registrations", params)
+
+    assert r.status == 403
+    assert 'DETAILS_ALREADY_USED' in data
+    assert len(test_helpers.get_registrations()) == 0
+
+    try:
+        created = User.create_user('1_rt1')
+        assert False, "Should not have created user"
+    except:
+        pass
+
+    pending = PendingUser('1_rt1')
+    assert not pending.in_db
+
+    mails = test_helpers.all_emails()
+    assert len(mails) == 0
