@@ -9,6 +9,41 @@ sys.path.append("../../nemesis")
 from sqlitewrapper import *
 
 @with_setup(test_helpers.delete_db)
+def test_none_listed_at_start():
+    all_list = PendingUser.ListAll()
+    assert len(all_list) == 0
+
+@with_setup(test_helpers.delete_db)
+def test_one_listed():
+    test_creation()
+
+    all_list = PendingUser.ListAll()
+    assert len(all_list) == 1
+
+    pu = all_list[0]
+
+    assert type(pu) == PendingUser
+
+    assert pu.in_db
+    assert pu.username == 'abc'
+    assert pu.teacher_username == 'jim'
+    assert pu.college == 'college-1'
+    assert pu.team == 'team-ABC'
+    assert pu.email == 'nope@srobo.org'
+    assert pu.verify_code == 'bibble'
+
+@with_setup(test_helpers.delete_db)
+def test_none_listed_after_removal():
+    test_creation()
+
+    all_list = PendingUser.ListAll()
+    for pu in all_list:
+        pu.delete()
+
+    all_list = PendingUser.ListAll()
+    assert len(all_list) == 0
+
+@with_setup(test_helpers.delete_db)
 def test_empty_at_start():
     pu = PendingUser('abc')
     assert pu.in_db == False

@@ -5,6 +5,15 @@ import helpers
 import mailer
 
 class UsernameKeyedSqliteThing(object):
+    @classmethod
+    def ListAll(cls, connector = None):
+        connector = connector or helpers.sqlite_connect
+        conn = connector()
+        cur  = conn.cursor()
+
+        rows = cur.execute('SELECT username FROM ' + cls._db_table)
+        items = [cls(row[0], connector) for row in rows]
+        return items
 
     _db_props = []
 
