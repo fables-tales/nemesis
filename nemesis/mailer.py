@@ -1,4 +1,5 @@
 
+from email.mime.text import MIMEText
 import smtplib
 import os
 
@@ -7,7 +8,10 @@ from config import config
 def email(toaddr, subject, msg):
 
     fromaddr = config.get('mailer', 'fromaddr')
-    msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s" % (fromaddr, toaddr, subject, msg)
+    msg = MIMEText(msg)
+    msg["From"] = fromaddr
+    msg["To"] = toaddr
+    msg["Subject"] = subject
 
     server = smtplib.SMTP(config.get('mailer', 'smtpserver'), timeout = 5)
     server.ehlo()
@@ -17,7 +21,7 @@ def email(toaddr, subject, msg):
     smtp_pass = config.get('mailer', 'password')
     server.login(smtp_user, smtp_pass)
 
-    r = server.sendmail(fromaddr, toaddr, msg)
+    r = server.sendmail(fromaddr, toaddr, str(msg))
 
     try:
         server.quit()
