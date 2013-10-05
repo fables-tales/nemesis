@@ -11,7 +11,7 @@ see:
 Your username is: {username}
 Your registered email address is: {email}.
 
-To activate your account, please click (or copy/past into a browser) this
+To activate your account, please click (or copy/paste into a browser) this
 link, which will also let you set your password:
 
 	{activation_url}
