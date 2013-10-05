@@ -68,6 +68,26 @@ def test_email_change_request_reset():
     req_u = helpers.get_change_email_request(username = username)
     assert req_u is None, 'POST using original email should have cleared request'
 
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+def test_email_change_request_reset_without_change():
+    """ Test that a change requests to the original value,
+        where there is no actual outstanding request doens't explode"""
+    username = "student_coll1_1"
+    old_email = User(username).email
+
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "new_email":old_email,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200, data
+    user = User(username)
+    assert user.email == old_email
+
+    all_mails = test_helpers.all_emails()
+    assert len(all_mails) == 0
+
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_email_changed_in_user_get():
     username = "student_coll1_1"
