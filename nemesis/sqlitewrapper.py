@@ -117,12 +117,12 @@ class PendingEmail(AgedUsernameKeyedSqliteThing):
                         'url': verification_url }
         mailer.email_template(self.new_email, 'change_email', email_vars)
 
-class PendingUser(UsernameKeyedSqliteThing):
+class PendingUser(AgedUsernameKeyedSqliteThing):
     _db_table = 'registrations'
     _db_props = ['teacher_username', 'college', 'team', 'email', 'verify_code']
 
     def __init__(self, username, connector = None):
-        super(PendingUser, self).__init__(username, connector)
+        super(PendingUser, self).__init__('request_time', username, connector)
 
     def send_welcome_email(self, first_name, activation_url):
         email_vars = { 'name': first_name,

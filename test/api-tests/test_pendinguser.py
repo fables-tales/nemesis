@@ -1,4 +1,5 @@
 
+from datetime import timedelta
 from nose.tools import raises, with_setup
 import sys
 
@@ -31,6 +32,7 @@ def test_properties():
     assert pu.team == 'team-ABC'
     assert pu.email == 'nope@srobo.org'
     assert pu.verify_code == 'bibble'
+    assert pu.age == timedelta()
 
 @with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_creation():
@@ -52,6 +54,8 @@ def test_creation():
     assert pu.team == 'team-ABC'
     assert pu.email == 'nope@srobo.org'
     assert pu.verify_code == 'bibble'
+    assert pu.age > timedelta()
+    assert pu.age < timedelta(minutes = 1)
 
 @with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_update():

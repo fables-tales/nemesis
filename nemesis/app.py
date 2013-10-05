@@ -174,7 +174,8 @@ def activate_account(username, code):
     if not pu.in_db:
         return "No such user account", 404
 
-    # TODO: expire the requests after a few days
+    if pu.age > timedelta(days = 2):
+        return "Request not valid", 410
 
     if pu.verify_code != code:
         return "Invalid verification code", 403
