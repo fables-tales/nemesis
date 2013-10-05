@@ -13,10 +13,7 @@ def email(toaddr, subject, msg):
     msg["To"] = toaddr
     msg["Subject"] = subject
 
-    server = smtplib.SMTP(config.get('mailer', 'smtpserver'), timeout = 5)
-    server.ehlo()
-    server.starttls()
-    server.ehlo()
+    server = smtplib.SMTP_SSL(config.get('mailer', 'smtpserver'), timeout = 5)
     smtp_user = config.get('mailer', 'username')
     smtp_pass = config.get('mailer', 'password')
     server.login(smtp_user, smtp_pass)
