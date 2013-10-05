@@ -188,7 +188,15 @@ def activate_account(username, code):
     pu.delete()
 
     html = open(PATH + "/templates/activate.html").read()
-    html = html.format(name = u.first_name, passwd = new_pass)
+    replacements = { 'first_name': u.first_name
+                   ,  'last_name': u.last_name
+                   ,   'password': new_pass
+                   ,      'email': u.email
+                   ,   'username': username
+                   ,       'root': url_for('.index')
+                   }
+
+    html = html.format(**replacements)
 
     return html, 200
 
