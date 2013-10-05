@@ -1,0 +1,11 @@
+Subject:User account request expired!
+Hello {name},
+
+This is to let you know that the account you requested for {pu_first_name} {pu_last_name}
+has not been activated, and the request has now expired. If you still
+want {pu_first_name} {pu_last_name} to have a Student Robotics account
+unfortunately you will now need to re-register them.
+
+Thanks,
+
+The Student Robotics Team

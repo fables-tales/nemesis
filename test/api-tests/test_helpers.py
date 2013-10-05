@@ -12,9 +12,10 @@ import os
 
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
 import helpers as helpers
+from sqlitewrapper import PendingEmail, PendingUser
 
 sys.path.append("../../nemesis/libnemesis")
-from libnemesis import srusers
+from libnemesis import srusers, User
 
 def apache_mode():
     return os.path.exists(".apachetest")
@@ -139,10 +140,96 @@ def template(name):
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
-        delete_db()
+        clean_emails_and_db()
 
     def tearDown(self):
-        delete_db()
+        clean_emails_and_db()
+        u = srusers.user('old')
+        if u.in_db:
+            u.delete()
+
+    def _exec(self, statement, arguments):
+        conn = helpers.sqlite_connect()
+        cur = conn.cursor()
+        cur.execute(statement, arguments)
+        conn.commit()
+
+    def _make_old(self, table, username):
+        old_time = datetime.datetime(2012, 01, 01).strftime('%Y-%m-%d %H:%M:%S')
+        self._exec('UPDATE ' + table + ' SET request_time=? WHERE username=?', \
+                        (old_time, username))
+
+    def test_clear_old_emails(self):
+        pe = PendingEmail('old')
+        pe.new_email = 'old@srobo.org'
+        pe.verify_code = 'bibble-old'
+        pe.save()
+
+        self._make_old('email_changes', 'old')
+
+        pe = PendingEmail('abc')
+        pe.new_email = 'nope@srobo.org'
+        pe.verify_code = 'bibble-new'
+        pe.save()
+
+        helpers.clear_old_emails()
+
+        pe = PendingEmail('old')
+        assert not pe.in_db
+
+        pe = PendingEmail('abc')
+        assert pe.in_db
+
+    def test_clear_old_registrations(self):
+        first_name = 'old'
+        last_name = 'user'
+        old_user = srusers.user('old')
+        old_user.cname = first_name
+        old_user.sname = last_name
+        old_user.email = ''
+        old_user.save()
+
+        old_team_leader = User('teacher_coll1')
+
+        pu = PendingUser('old')
+        pu.teacher_username = old_team_leader.username
+        pu.college = 'college-1'
+        pu.team = 'team-ABC'
+        pu.email = 'nope@srobo.org'
+        pu.verify_code = 'bibble-old'
+        pu.save()
+
+        self._make_old('registrations', 'old')
+
+        pu = PendingUser('abc')
+        pu.teacher_username = 'jim'
+        pu.college = 'new-college-1'
+        pu.team = 'team-NEW'
+        pu.email = 'nope@srobo.org'
+        pu.verify_code = 'bibble'
+        pu.save()
+
+        helpers.clear_old_registrations()
+
+        pu = PendingUser('old')
+        assert not pu.in_db
+
+        pu = PendingUser('abc')
+        assert pu.in_db
+
+        email = last_email()
+
+        message = email['msg']
+        team_lead_first = old_team_leader.first_name
+        assert team_lead_first in message
+        assert first_name in message
+        assert last_name in message
+        team_lead_email = old_team_leader.email
+        assert team_lead_email == email['toaddr']
+
+        template_lines = template('registration_expired.txt')
+        subject_line = template_lines[0]
+        assert email['subject'] in subject_line
 
 if __name__ == '__main__':
     unittest.main()
