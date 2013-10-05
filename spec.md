@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.0-alpha.3 [SemVer](http://semver.org/)
+##Version 3.2.0-alpha.4 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -163,7 +163,8 @@ new account's details.
 
 202 if the authenticated user is a member of the specified college and the
 specified college has the specified team and the authenticated user is a
-blueshirt or a team leader. Otherwise 403.
+blueshirt or a team leader and the requested user details are not already
+in use. Otherwise 403.
 
 ####Response body
 
@@ -177,3 +178,5 @@ values are:
 * `BAD_COLLEGE`: The authenticated user is not a member of the requested
           college.
 * `BAD_TEAM`: The requested team is not available within the requested college.
+* `DETAILS_ALREADY_USED`: The name or email address requested for the user
+          are already being used by another user.
