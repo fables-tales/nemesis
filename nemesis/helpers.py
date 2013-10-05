@@ -61,6 +61,6 @@ def create_verify_code(username, new_email):
     isn't strictly needed. The overall length is 160 characters.
     """
     user_part = hashlib.md5(username + new_email).hexdigest()
-    random_part = hex(random.getrandbits(512))[2:-1]
+    random_part = hex(random.getrandbits(128))[2:-1]
     code = random_part + user_part
     return code
