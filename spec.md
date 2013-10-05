@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.0-alpha.1 [SemVer](http://semver.org/)
+##Version 3.2.0-alpha.2 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -148,7 +148,7 @@ unspecified and should not be used.
 
 Used to register new users. Specifically posting to this endpoint inserts one
 user into the registration queue. The new user will be emailed to activate
-their account, and the requesting used will be emailed a summary of the
+their account, and the requesting user will be emailed a summary of the
 new account's details.
 
 ####Parameters
