@@ -44,7 +44,7 @@ def email_template(toaddr, template_name, template_vars):
 
 # In testing we don't want to actually send emails,
 # so we write them out to files instead.
-if not config.has_option('mailer', 'host'):
+if not config.has_option('mailer', 'smtpserver'):
     import json
     from time import time
     from hashlib import md5
