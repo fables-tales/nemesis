@@ -10,9 +10,16 @@ import test_helpers
 
 sys.path.append("../../nemesis")
 import helpers
+from sqlitewrapper import PendingEmail
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
+
+def setup_new_email(username, new_email, verify_code):
+    pe = PendingEmail(username)
+    pe.new_email = new_email
+    pe.verify_code = verify_code
+    pe.save()
 
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_email_change_request():
@@ -39,9 +46,9 @@ def test_email_change_request():
     assert user.first_name in msg
     assert '{url}' not in msg
 
-    req_u = helpers.get_change_email_request(username = username)
-    assert req_u is not None
-    assert req_u['new_email'] == new_email
+    pe = PendingEmail(username)
+    assert pe.in_db
+    assert pe.new_email == new_email
 
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_email_change_request_reset():
@@ -49,8 +56,30 @@ def test_email_change_request_reset():
     username = "student_coll1_1"
     old_email = User(username).email
     new_email = "new-email@example.com"
+    setup_new_email(username, new_email, 'bees')
 
-    helpers.new_email(username, new_email, 'bees')
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "new_email":old_email,
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200, data
+    user = User(username)
+    assert user.email == old_email
+
+    pe = PendingEmail(username)
+    assert not pe.in_db, 'POST using original email should have cleared request'
+
+    all_mails = test_helpers.all_emails()
+    assert len(all_mails) == 0
+
+@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+def test_email_change_request_reset_without_change():
+    """ Test that a change requests to the original value,
+        where there is no actual outstanding request doens't explode"""
+    username = "student_coll1_1"
+    old_email = User(username).email
 
     params = {"username":"teacher_coll1",
               "password":"facebees",
@@ -64,9 +93,6 @@ def test_email_change_request_reset():
 
     all_mails = test_helpers.all_emails()
     assert len(all_mails) == 0
-
-    req_u = helpers.get_change_email_request(username = username)
-    assert req_u is None, 'POST using original email should have cleared request'
 
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
 def test_email_change_request_reset_without_change():
@@ -92,7 +118,7 @@ def test_email_change_request_reset_without_change():
 def test_email_changed_in_user_get():
     username = "student_coll1_1"
     new_email = 'nope@srobo.org'
-    helpers.new_email(username, new_email, 'bees')
+    setup_new_email(username, new_email, 'bees')
 
     params = {"username":username,
               "password":"cows"}
@@ -108,7 +134,7 @@ def test_email_changed_in_user_get():
 def test_user_get_checks_same_email():
     username = "student_coll1_1"
     new_email = User(username).email
-    helpers.new_email(username, new_email, 'bees')
+    setup_new_email(username, new_email, 'bees')
 
     params = {"username":username,
               "password":"cows"}
@@ -127,7 +153,7 @@ def test_verify_needs_request():
 
 @with_setup(test_helpers.clean_emails_and_db, test_helpers.delete_db)
 def test_verify_wrong_code():
-    helpers.new_email('abc', 'nope@srobo.org', 'wrong')
+    setup_new_email('abc', 'nope@srobo.org', 'wrong')
 
     r,data = test_helpers.server_get("/verify/abc/bees")
     status = r.status
@@ -153,7 +179,7 @@ def test_verify_success():
     old_email = User(username).email
     new_email = "new-email@example.com"
 
-    helpers.new_email('student_coll1_1', new_email, 'bees')
+    setup_new_email('student_coll1_1', new_email, 'bees')
 
     r,data = test_helpers.server_get("/verify/" + username + "/bees")
     status = r.status

@@ -11,8 +11,10 @@ import mailer
 import helpers
 
 from flask import Flask, request, url_for
+from datetime import timedelta
+
 from libnemesis import User, College, AuthHelper
-from sqlitewrapper import PendingUser
+from sqlitewrapper import PendingEmail, PendingUser
 
 app = Flask(__name__)
 
@@ -82,9 +84,9 @@ def user_details(userid):
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user = User.create_user(userid)
         details = user.details_dictionary_for(ah.user)
-        email_change_rq = helpers.get_change_email_request(username = userid)
-        if email_change_rq is not None:
-            new_email = email_change_rq['new_email']
+        email_change_rq = PendingEmail(userid)
+        if email_change_rq.in_db:
+            new_email = email_change_rq.new_email
             if new_email != details['email']:
                 details['new_email'] = new_email
         return json.dumps(details), 200
@@ -94,17 +96,20 @@ def user_details(userid):
 def request_new_email(user, new_email):
     userid = user.username
 
+    pe = PendingEmail(userid)
+
     if user.email == new_email:
-        helpers.clear_new_email_request(userid)
+        if pe.in_db:
+            pe.delete()
         return
 
     verify_code = helpers.create_verify_code(userid, new_email)
-    helpers.new_email(userid, new_email, verify_code)
+    pe.new_email = new_email
+    pe.verify_code = verify_code
+    pe.save()
 
     url = url_for('verify_email', username=userid, code=verify_code, _external=True)
-    email_vars = { 'name': user.first_name,
-                   'url': url }
-    mailer.email_template(new_email, 'change_email', email_vars)
+    pe.send_verification_email(user.first_name, url)
 
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
@@ -208,19 +213,19 @@ def verify_email(username, code):
     Not part of the documented API.
     """
 
-    change_request = helpers.get_change_email_request(username)
+    change_request = PendingEmail(username)
 
-    if change_request is None:
+    if not change_request.in_db:
         return "No such change request", 404
 
-    if not helpers.is_email_request_valid(change_request):
+    if change_request.age > timedelta(days = 2):
         return "Request not valid", 410
 
-    if change_request['verify_code'] != code:
+    if change_request.verify_code != code:
         return "Invalid verification code", 403
 
-    u = User(change_request['username'])
-    u.set_email(change_request['new_email'])
+    u = User(change_request.username)
+    u.set_email(change_request.new_email)
     u.save()
 
     return "Email address successfully changed", 200

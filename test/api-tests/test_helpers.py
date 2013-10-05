@@ -144,38 +144,5 @@ class TestHelpers(unittest.TestCase):
     def tearDown(self):
         delete_db()
 
-    def test_change_email_u(self):
-        helpers.new_email('abc', 'nope@srobo.org', 'bibble')
-        rq = helpers.get_change_email_request(username = 'abc')
-        assert rq['username'] == 'abc'
-        assert rq['new_email'] == 'nope@srobo.org'
-        assert rq['verify_code'] == 'bibble'
-
-    def test_re_change_email_u(self):
-        helpers.new_email('abc', 'nope@srobo.org', 'bibble')
-        helpers.new_email('abc', 'thing@srobo.org', 'bibble')
-
-        rq = helpers.get_change_email_request(username = 'abc')
-        assert rq['username'] == 'abc'
-        assert rq['new_email'] == 'thing@srobo.org'
-        assert rq['verify_code'] == 'bibble'
-
-    def test_email_request_age(self):
-        rq = { 'request_time': datetime.datetime.now() }
-        is_valid = helpers.is_email_request_valid(rq)
-        assert is_valid
-
-        rq = { 'request_time': datetime.datetime.now() - datetime.timedelta(days = 4) }
-        is_valid = helpers.is_email_request_valid(rq)
-        assert not is_valid
-
-    def test_remove_request(self):
-        helpers.new_email('abc', 'abc@srobo.org', 'bibble1')
-        helpers.new_email('def', 'def@srobo.org', 'bibble2')
-
-        helpers.clear_new_email_request('abc')
-        assert helpers.get_change_email_request(username = 'abc') is None
-        assert helpers.get_change_email_request(username = 'def') is not None
-
 if __name__ == '__main__':
     unittest.main()

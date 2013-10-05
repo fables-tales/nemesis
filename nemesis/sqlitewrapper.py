@@ -1,4 +1,6 @@
 
+from datetime import datetime, timedelta
+
 import helpers
 import mailer
 
@@ -6,10 +8,11 @@ class UsernameKeyedSqliteThing(object):
 
     _db_props = []
 
-    def __init__(self, username, connector):
+    def __init__(self, username, connector, auto_props = []):
         self._username = username
         self._connector = connector or helpers.sqlite_connect
         self._conn = None
+        self._db_auto_props = auto_props
         self._props = {}
         self._in_db = False
         self._load()
@@ -44,11 +47,12 @@ class UsernameKeyedSqliteThing(object):
         return cur.fetchone()
 
     def _load(self):
-        statement = 'SELECT ' + ', '.join(self._db_props) + ' FROM ' + self._db_table + ' WHERE username=?'
+        props = self._db_props + self._db_auto_props
+        statement = 'SELECT ' + ', '.join(props) + ' FROM ' + self._db_table + ' WHERE username=?'
         row = self._fetchone(statement, (self._username,))
         if not row is None:
-            for i in xrange(len(self._db_props)):
-                self._props[self._db_props[i]] = row[i]
+            for i in xrange(len(props)):
+                self._props[props[i]] = row[i]
             self._in_db = True
 
     def _missing_props(self):
@@ -84,6 +88,34 @@ class UsernameKeyedSqliteThing(object):
                              ',?' * len(self._db_props) + ")"
             self._exec(prep_statement, [self.username] + [self._props[x] for x in self._db_props])
             self._in_db = True
+
+class AgedUsernameKeyedSqliteThing(UsernameKeyedSqliteThing):
+
+    def __init__(self, birth_time_prop, username, connector):
+        super(AgedUsernameKeyedSqliteThing, self).__init__(username, connector, [birth_time_prop])
+        self._birth_time_prop = birth_time_prop
+
+    @property
+    def age(self):
+        if not self.in_db:
+            return timedelta()
+        else:
+            rq_time = self._props[self._birth_time_prop]
+            rq_time = datetime.strptime(rq_time, '%Y-%m-%d %H:%M:%S')
+            age = datetime.utcnow() - rq_time
+            return age
+
+class PendingEmail(AgedUsernameKeyedSqliteThing):
+    _db_table = 'email_changes'
+    _db_props = ['new_email', 'verify_code']
+
+    def __init__(self, username, connector = None):
+        super(PendingEmail, self).__init__('request_time', username, connector)
+
+    def send_verification_email(self, first_name, verification_url):
+        email_vars = { 'name': first_name,
+                        'url': verification_url }
+        mailer.email_template(self.new_email, 'change_email', email_vars)
 
 class PendingUser(UsernameKeyedSqliteThing):
     _db_table = 'registrations'
