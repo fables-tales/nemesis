@@ -231,5 +231,38 @@ class TestHelpers(unittest.TestCase):
         subject_line = template_lines[0]
         assert email['subject'] in subject_line
 
+    def test_is_email_used_no(self):
+        email = 'nope@srobo.org'
+        used = helpers.email_used(email)
+        assert used == False
+
+    def test_is_email_used_full_user(self):
+        email = 'sam@sam2518.com' # student_coll2_2
+        used = helpers.email_used(email)
+        assert used == True
+
+    def test_is_email_used_pending_user(self):
+        email = 'pu@srobo.org'
+        pu = PendingUser('pu')
+        pu.college = 'c'
+        pu.team = 't'
+        pu.teacher_username = 'tu'
+        pu.verify_code = 'vc'
+        pu.email = email
+        pu.save()
+
+        used = helpers.email_used(email)
+        assert used == True
+
+    def test_is_email_used_pending_email_change(self):
+        email = 'pe@srobo.org'
+        pe = PendingEmail('pu')
+        pe.verify_code = 'vc'
+        pe.new_email = email
+        pe.save()
+
+        used = helpers.email_used(email)
+        assert used == True
+
 if __name__ == '__main__':
     unittest.main()

@@ -30,6 +30,18 @@ def create_verify_code(username, new_email):
     code = random_part + user_part
     return code
 
+def email_used(email):
+    if User.email_used(email):
+        return True
+
+    if any(pe.new_email == email for pe in PendingEmail.ListAll()):
+        return True
+
+    if any(pu.email == email for pu in PendingUser.ListAll()):
+        return True
+
+    return False
+
 ## Helpers created for tidying things up, mainly for use in cron
 
 def clear_old_emails():
