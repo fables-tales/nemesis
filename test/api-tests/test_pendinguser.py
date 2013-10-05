@@ -25,6 +25,7 @@ def test_properties():
     pu.email = 'nope@srobo.org'
     pu.verify_code = 'bibble'
 
+    assert pu.username == 'abc'
     assert pu.teacher_username == 'jim'
     assert pu.college == 'college-1'
     assert pu.team == 'team-ABC'
@@ -45,6 +46,7 @@ def test_creation():
 
     pu = PendingUser('abc')
     assert pu.in_db
+    assert pu.username == 'abc'
     assert pu.teacher_username == 'jim'
     assert pu.college == 'college-1'
     assert pu.team == 'team-ABC'
