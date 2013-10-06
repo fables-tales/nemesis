@@ -1,8 +1,14 @@
 
 from datetime import datetime, timedelta
+import json
+import os
+import sqlite3
 
-import helpers
 import mailer
+
+PATH = os.path.dirname(os.path.abspath(__file__))
+def sqlite_connect():
+    return sqlite3.connect(PATH + "/db/nemesis.sqlite")
 
 class KeyedSqliteThing(object):
 
@@ -10,7 +16,7 @@ class KeyedSqliteThing(object):
 
     def __init__(self, id = None, connector = None, auto_props = []):
         self._id = id
-        self._connector = connector or helpers.sqlite_connect
+        self._connector = connector or sqlite_connect
         self._conn = None
         self._db_auto_props = auto_props
         self._props = {}
@@ -102,7 +108,7 @@ class KeyedSqliteThing(object):
 class UsernameKeyedSqliteThing(KeyedSqliteThing):
     @classmethod
     def ListAll(cls, connector = None):
-        connector = connector or helpers.sqlite_connect
+        connector = connector or sqlite_connect
         conn = connector()
         cur  = conn.cursor()
 

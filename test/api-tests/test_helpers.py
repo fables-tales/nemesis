@@ -12,7 +12,7 @@ import os
 
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
 import helpers as helpers
-from sqlitewrapper import PendingEmail, PendingUser
+from sqlitewrapper import PendingEmail, PendingUser, sqlite_connect
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import srusers, User
@@ -30,14 +30,14 @@ def modify_endpoint(endpoint):
     return "/userman" + endpoint if apache_mode() else endpoint
 
 def delete_db():
-    conn = helpers.sqlite_connect()
+    conn = sqlite_connect()
     cur = conn.cursor()
     cur.execute("DELETE FROM registrations")
     cur.execute("DELETE FROM email_changes")
     conn.commit()
 
 def get_registrations():
-    conn = helpers.sqlite_connect()
+    conn = sqlite_connect()
     cur = conn.cursor()
     cur.execute("SELECT * FROM registrations")
     return list(cur)
@@ -149,7 +149,7 @@ class TestHelpers(unittest.TestCase):
             u.delete()
 
     def _exec(self, statement, arguments):
-        conn = helpers.sqlite_connect()
+        conn = sqlite_connect()
         cur = conn.cursor()
         cur.execute(statement, arguments)
         conn.commit()

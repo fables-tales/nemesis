@@ -2,7 +2,6 @@
 from datetime import timedelta
 import hashlib
 import random
-import sqlite3
 import os
 import sys
 
@@ -14,9 +13,6 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PATH + '/libnemesis/')
 
 from libnemesis import srusers, User
-
-def sqlite_connect():
-    return sqlite3.connect(PATH + "/db/nemesis.sqlite")
 
 def create_verify_code(username, new_email):
     """
