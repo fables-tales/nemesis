@@ -48,6 +48,7 @@ class KeyedSqliteThing(object):
         cur = conn.cursor()
         cur.execute(statement, arguments)
         conn.commit()
+        return cur.lastrowid
 
     def _fetchone(self, statement, arguments):
         conn = self._get_connection()
@@ -111,7 +112,9 @@ class KeyedSqliteThing(object):
                                     ', '.join(props),
                                     ',?' * len(props)
                                 )
-            self._exec(prep_statement, [self._id] + values)
+            lastid = self._exec(prep_statement, [self._id] + values)
+            if self._id is None:
+                self._id = lastid
             self._in_db = True
 
 class UsernameKeyedSqliteThing(KeyedSqliteThing):
