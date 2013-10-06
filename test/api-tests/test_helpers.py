@@ -34,6 +34,7 @@ def delete_db():
     cur = conn.cursor()
     cur.execute("DELETE FROM registrations")
     cur.execute("DELETE FROM email_changes")
+    cur.execute("DELETE FROM outbox")
     conn.commit()
 
 def get_registrations():

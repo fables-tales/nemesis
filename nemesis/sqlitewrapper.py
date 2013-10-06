@@ -149,6 +149,10 @@ class AgedKeyedSqliteThing(KeyedSqliteThing):
         dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
         return dt
 
+    def _set_time_property(self, name, dt):
+        time_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+        self.__setattr__(name, time_str)
+
     @property
     def age(self):
         if not self.in_db:
@@ -189,3 +193,55 @@ class PendingUser(AgedUsernameKeyedSqliteThing):
                      }
 
         mailer.email_template(self.email, 'new_user', email_vars)
+
+class PendingSend(AgedKeyedSqliteThing):
+    @classmethod
+    def Unsent(cls, max_retry = 5, max_results = 50, connector = None):
+        connector = connector or sqlite_connect
+        conn = connector()
+        cur  = conn.cursor()
+        args = (max_retry, max_results)
+
+        cur.execute("SELECT id FROM outbox WHERE retry_count<? AND sent_time is null ORDER BY request_time ASC LIMIT ?", args)
+        rows = cur.fetchall()
+        for row in rows:
+            id = row[0]
+            yield PendingSend(id, connector)
+
+    _db_table = 'outbox'
+    _db_required_props = ['toaddr', 'template_name', 'template_vars_json']
+    _db_optional_props = ['last_error', 'retry_count', 'sent_time']
+
+    def __init__(self, id = None, connector = None):
+        super(PendingSend, self).__init__('request_time', id, connector)
+
+    @property
+    def retry_count(self):
+        return self._props.get('retry_count', 0)
+
+    @property
+    def template_vars(self):
+        raw = self._props.get('template_vars_json', None)
+        if raw is not None:
+            vars = json.loads(raw)
+            return vars
+        return None
+
+    @template_vars.setter
+    def template_vars(self, value):
+        str = json.dumps(value)
+        self._props['template_vars_json'] = str
+
+    @property
+    def is_sent(self):
+        return self.sent_time is not None
+
+    @property
+    def sent_time(self):
+        return self._get_time_property('sent_time')
+
+    def mark_sent(self):
+        self._set_time_property('sent_time', datetime.now())
+
+    def retried(self):
+        self.retry_count += 1
