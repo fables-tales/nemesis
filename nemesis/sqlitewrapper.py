@@ -131,14 +131,20 @@ class AgedKeyedSqliteThing(KeyedSqliteThing):
         super(AgedKeyedSqliteThing, self).__init__(id, connector, [birth_time_prop])
         self._birth_time_prop = birth_time_prop
 
+    def _get_time_property(self, name):
+        if name not in self._props:
+            return None
+        time_str = self._props[name]
+        dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
+        return dt
+
     @property
     def age(self):
         if not self.in_db:
             return timedelta()
         else:
-            rq_time = self._props[self._birth_time_prop]
-            rq_time = datetime.strptime(rq_time, '%Y-%m-%d %H:%M:%S')
-            age = datetime.utcnow() - rq_time
+            birth = self._get_time_property(self._birth_time_prop)
+            age = datetime.utcnow() - birth
             return age
 
 class AgedUsernameKeyedSqliteThing(AgedKeyedSqliteThing, UsernameKeyedSqliteThing):
