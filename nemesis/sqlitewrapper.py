@@ -120,10 +120,9 @@ class UsernameKeyedSqliteThing(KeyedSqliteThing):
     def username(self):
         return self._id
 
-class AgedUsernameKeyedSqliteThing(UsernameKeyedSqliteThing):
-
+class AgedKeyedSqliteThing(KeyedSqliteThing):
     def __init__(self, birth_time_prop, username, connector):
-        super(AgedUsernameKeyedSqliteThing, self).__init__(username, connector, [birth_time_prop])
+        super(AgedKeyedSqliteThing, self).__init__(username, connector, [birth_time_prop])
         self._birth_time_prop = birth_time_prop
 
     @property
@@ -135,6 +134,10 @@ class AgedUsernameKeyedSqliteThing(UsernameKeyedSqliteThing):
             rq_time = datetime.strptime(rq_time, '%Y-%m-%d %H:%M:%S')
             age = datetime.utcnow() - rq_time
             return age
+
+class AgedUsernameKeyedSqliteThing(AgedKeyedSqliteThing, UsernameKeyedSqliteThing):
+    def __init__(self, birth_time_prop, username, connector):
+        super(AgedUsernameKeyedSqliteThing, self).__init__(birth_time_prop, username, connector)
 
 class PendingEmail(AgedUsernameKeyedSqliteThing):
     _db_table = 'email_changes'
