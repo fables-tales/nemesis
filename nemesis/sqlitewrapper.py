@@ -121,8 +121,8 @@ class UsernameKeyedSqliteThing(KeyedSqliteThing):
         return self._id
 
 class AgedKeyedSqliteThing(KeyedSqliteThing):
-    def __init__(self, birth_time_prop, username, connector):
-        super(AgedKeyedSqliteThing, self).__init__(username, connector, [birth_time_prop])
+    def __init__(self, birth_time_prop, id, connector):
+        super(AgedKeyedSqliteThing, self).__init__(id, connector, [birth_time_prop])
         self._birth_time_prop = birth_time_prop
 
     @property
