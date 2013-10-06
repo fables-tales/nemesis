@@ -13,6 +13,8 @@ def sqlite_connect():
 class KeyedSqliteThing(object):
 
     _id_key = 'id'
+    _db_required_props = []
+    _db_optional_props = []
 
     def __init__(self, id = None, connector = None, auto_props = []):
         self._id = id
@@ -68,8 +70,12 @@ class KeyedSqliteThing(object):
                 self._props[props[i]] = row[i]
             self._in_db = True
 
+    @property
+    def _db_props(self):
+        return self._db_required_props + self._db_optional_props
+
     def _missing_props(self):
-        return [name for name in self._db_props if not self._props.has_key(name)]
+        return [name for name in self._db_required_props if not self._props.has_key(name)]
 
     @property
     def id(self):
@@ -92,17 +98,19 @@ class KeyedSqliteThing(object):
             missing_str = ', '.join(missing)
             raise Exception( "Cannot save %s '%s' - missing settings: '%s'." % (type(self), self._id, missing_str) )
 
+        props = self._props.keys()
+        values = self._props.values()
         if self.in_db:
-            prep_statement = "UPDATE " + self._db_table + " SET " + '=?, '.join(self._db_props) + "=? " + self._where_id()
-            self._exec(prep_statement, [self._props[x] for x in self._db_props] + [self._id])
+            prep_statement = "UPDATE " + self._db_table + " SET " + '=?, '.join(props) + "=? " + self._where_id()
+            self._exec(prep_statement, values + [self._id])
         else:
             prep_statement = "INSERT INTO {0} ({1}, {2}) VALUES (?{3})".format(
                                     self._db_table,
                                     self._id_key,
-                                    ', '.join(self._db_props),
-                                    ',?' * len(self._db_props)
+                                    ', '.join(props),
+                                    ',?' * len(props)
                                 )
-            self._exec(prep_statement, [self._id] + [self._props[x] for x in self._db_props])
+            self._exec(prep_statement, [self._id] + values)
             self._in_db = True
 
 class UsernameKeyedSqliteThing(KeyedSqliteThing):
@@ -117,7 +125,6 @@ class UsernameKeyedSqliteThing(KeyedSqliteThing):
         return items
 
     _id_key = 'username'
-    _db_props = []
 
     def __init__(self, username, connector, auto_props = []):
         super(UsernameKeyedSqliteThing, self).__init__(username, connector, auto_props)
@@ -153,7 +160,7 @@ class AgedUsernameKeyedSqliteThing(AgedKeyedSqliteThing, UsernameKeyedSqliteThin
 
 class PendingEmail(AgedUsernameKeyedSqliteThing):
     _db_table = 'email_changes'
-    _db_props = ['new_email', 'verify_code']
+    _db_required_props = ['new_email', 'verify_code']
 
     def __init__(self, username, connector = None):
         super(PendingEmail, self).__init__('request_time', username, connector)
@@ -165,7 +172,7 @@ class PendingEmail(AgedUsernameKeyedSqliteThing):
 
 class PendingUser(AgedUsernameKeyedSqliteThing):
     _db_table = 'registrations'
-    _db_props = ['teacher_username', 'college', 'team', 'email', 'verify_code']
+    _db_required_props = ['teacher_username', 'college', 'team', 'email', 'verify_code']
 
     def __init__(self, username, connector = None):
         super(PendingUser, self).__init__('request_time', username, connector)
