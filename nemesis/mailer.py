@@ -5,7 +5,7 @@ import os
 
 from config import config
 
-def email(toaddr, subject, msg):
+def send_email(toaddr, subject, msg):
 
     fromaddr = config.get('mailer', 'fromaddr')
     msg = MIMEText(msg)
@@ -27,7 +27,7 @@ def email(toaddr, subject, msg):
 
     return len(r) > 0
 
-def email_template(toaddr, template_name, template_vars):
+def send_email_template(toaddr, template_name, template_vars):
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     temp_path = os.path.join(script_dir, "templates", template_name + ".txt")
@@ -41,7 +41,9 @@ def email_template(toaddr, template_name, template_vars):
     msg = "\n".join(msg.splitlines()[1:])
     msg = msg.format(**template_vars)
 
-    return email(toaddr, subject, msg)
+    return send_email(toaddr, subject, msg)
+
+email_template = send_email_template
 
 # In testing we don't want to actually send emails,
 # so we write them out to files instead.
@@ -50,7 +52,7 @@ if not config.has_option('mailer', 'smtpserver'):
     from time import time
     from hashlib import md5
     mail_num = 0
-    def email(toaddr, subject, msg):
+    def send_email(toaddr, subject, msg):
         global mail_num
         hash = str(md5(toaddr + subject + msg).hexdigest())
         mail_num += 1
