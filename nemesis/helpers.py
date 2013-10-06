@@ -6,7 +6,7 @@ import os
 import sys
 
 import mailer
-from sqlitewrapper import PendingEmail, PendingUser
+from sqlitewrapper import PendingEmail, PendingSend, PendingUser
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -67,3 +67,8 @@ def clear_old_registrations():
 
             team_leader = User(pu.teacher_username)
             inform_team_lead_registration_expired(team_leader, expired)
+
+def send_emails(limit = 50):
+    unsent_mails = PendingSend.Unsent(max_results = limit)
+    for ps in unsent_mails:
+        mailer.try_send(ps)

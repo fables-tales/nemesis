@@ -1,9 +1,11 @@
 
 from email.mime.text import MIMEText
 import smtplib
+import traceback
 import os
 
 from config import config
+from sqlitewrapper import PendingSend
 
 def send_email(toaddr, subject, msg):
 
@@ -43,15 +45,43 @@ def send_email_template(toaddr, template_name, template_vars):
 
     return send_email(toaddr, subject, msg)
 
-email_template = send_email_template
+def store_template(toaddr, template_name, template_vars):
+    ps = PendingSend()
+    ps.toaddr = toaddr
+    ps.template_name = template_name
+    ps.template_vars = template_vars
+    ps.save()
+    return ps
+
+def try_send(ps):
+    try:
+        send_email_template(ps.toaddr, ps.template_name, ps.template_vars)
+        ps.mark_sent()
+    except:
+        ps.retried()
+        ps.last_error = traceback.format_exc()
+    finally:
+        ps.save()
+
+def email_template(toaddr, template_name, template_vars):
+    # always store the email
+    ps = store_template(toaddr, template_name, template_vars)
+
+    # see if we're meant to send it right away
+    if not config.getboolean('mailer', 'delayed_send'):
+        try_send(ps)
 
 # In testing we don't want to actually send emails,
 # so we write them out to files instead.
 if not config.has_option('mailer', 'smtpserver'):
+    # Don't bother using the DB, just send now
+    email_template = send_email_template
+
     import json
     from time import time
     from hashlib import md5
     mail_num = 0
+    # override the actual send function so we can see the resuls.
     def send_email(toaddr, subject, msg):
         global mail_num
         hash = str(md5(toaddr + subject + msg).hexdigest())

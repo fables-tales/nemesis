@@ -1,0 +1,13 @@
+Subject: An example template.
+
+This is an exmaple template, which is also used in the tests.
+
+The first line of the file is expected to begin 'Subject:' and is
+then followed by the subject line of the email. No replacements
+occur within the subject line.
+
+The main body of the email then follows, and can optionally have
+items for replacement, delimited by curly braces, like this: {foo}.
+These will be replaced by whatever value is given in the template_vars
+dict passed to the send_email_template function in the mailer module,
+using the string within the braces as the key.
