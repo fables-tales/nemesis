@@ -67,7 +67,8 @@ class KeyedSqliteThing(object):
         row = self._fetchone(statement, (self._id,))
         if not row is None:
             for i in xrange(len(props)):
-                self._props[props[i]] = row[i]
+                if row[i] is not None:
+                    self._props[props[i]] = row[i]
             self._in_db = True
 
     @property
