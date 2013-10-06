@@ -31,10 +31,11 @@ var RegisterView = function() {
 
         this.register_users = function() {
             var count = 0;
-            var max_count = this.registrations_array().length;
+            var registrations = this.registrations_array();
+            var max_count = registrations.length;
             wv.start("Registering users: " + count + "/" + max_count);
             $("#register-submit").attr("disabled", true);
-            $(this.registrations_array()).each(function(i, registration_hash) {
+            $(registrations).each(function(i, registration_hash) {
                 that.send_registration_hash(registration_hash, function() {
                     count += 1;
                     wv.start("Registering users: " + count + "/" + max_count);
