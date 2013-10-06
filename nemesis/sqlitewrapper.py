@@ -4,27 +4,19 @@ from datetime import datetime, timedelta
 import helpers
 import mailer
 
-class UsernameKeyedSqliteThing(object):
-    @classmethod
-    def ListAll(cls, connector = None):
-        connector = connector or helpers.sqlite_connect
-        conn = connector()
-        cur  = conn.cursor()
+class KeyedSqliteThing(object):
 
-        rows = cur.execute('SELECT username FROM ' + cls._db_table)
-        items = [cls(row[0], connector) for row in rows]
-        return items
+    _id_key = 'id'
 
-    _db_props = []
-
-    def __init__(self, username, connector, auto_props = []):
-        self._username = username
+    def __init__(self, id = None, connector = None, auto_props = []):
+        self._id = id
         self._connector = connector or helpers.sqlite_connect
         self._conn = None
         self._db_auto_props = auto_props
         self._props = {}
         self._in_db = False
-        self._load()
+        if id is not None:
+            self._load()
 
     def __getattr__(self, name):
         if name not in self._db_props:
@@ -55,10 +47,16 @@ class UsernameKeyedSqliteThing(object):
         cur.execute(statement, arguments)
         return cur.fetchone()
 
+    def _where_id(self):
+        return ' WHERE {0}=?'.format(self._id_key)
+
+    def _from_table_where_id(self):
+        return ' FROM {0}{1}'.format(self._db_table, self._where_id())
+
     def _load(self):
         props = self._db_props + self._db_auto_props
-        statement = 'SELECT ' + ', '.join(props) + ' FROM ' + self._db_table + ' WHERE username=?'
-        row = self._fetchone(statement, (self._username,))
+        statement = 'SELECT ' + ', '.join(props) + self._from_table_where_id()
+        row = self._fetchone(statement, (self._id,))
         if not row is None:
             for i in xrange(len(props)):
                 self._props[props[i]] = row[i]
@@ -68,8 +66,8 @@ class UsernameKeyedSqliteThing(object):
         return [name for name in self._db_props if not self._props.has_key(name)]
 
     @property
-    def username(self):
-        return self._username
+    def id(self):
+        return self._id
 
     @property
     def in_db(self):
@@ -77,26 +75,50 @@ class UsernameKeyedSqliteThing(object):
 
     def delete(self):
         if not self.in_db:
-            raise Exception( "Cannot remove %s '%s' - not in database!" % (type(self), self.username) )
+            raise Exception( "Cannot remove %s '%s' - not in database!" % (type(self), self.self._id) )
 
-        self._exec("DELETE FROM " + self._db_table + " WHERE username=?", (self.username,))
+        self._exec("DELETE" + self._from_table_where_id(), (self._id,))
         self._in_db = False
 
     def save(self):
         missing = self._missing_props()
         if len(missing) > 0:
             missing_str = ', '.join(missing)
-            raise Exception( "Cannot save %s '%s' - missing settings: '%s'." % (type(self), self.username, missing_str) )
+            raise Exception( "Cannot save %s '%s' - missing settings: '%s'." % (type(self), self._id, missing_str) )
 
         if self.in_db:
-            prep_statement = "UPDATE " + self._db_table + " SET " + '=?, '.join(self._db_props) + "=? WHERE username=?"
-            self._exec(prep_statement, [self._props[x] for x in self._db_props] + [self.username])
+            prep_statement = "UPDATE " + self._db_table + " SET " + '=?, '.join(self._db_props) + "=? " + self._where_id()
+            self._exec(prep_statement, [self._props[x] for x in self._db_props] + [self._id])
         else:
-            prep_statement = "INSERT INTO " + self._db_table + " (username, " + \
-                             ', '.join(self._db_props) + ") VALUES (?" + \
-                             ',?' * len(self._db_props) + ")"
-            self._exec(prep_statement, [self.username] + [self._props[x] for x in self._db_props])
+            prep_statement = "INSERT INTO {0} ({1}, {2}) VALUES (?{3})".format(
+                                    self._db_table,
+                                    self._id_key,
+                                    ', '.join(self._db_props),
+                                    ',?' * len(self._db_props)
+                                )
+            self._exec(prep_statement, [self._id] + [self._props[x] for x in self._db_props])
             self._in_db = True
+
+class UsernameKeyedSqliteThing(KeyedSqliteThing):
+    @classmethod
+    def ListAll(cls, connector = None):
+        connector = connector or helpers.sqlite_connect
+        conn = connector()
+        cur  = conn.cursor()
+
+        rows = cur.execute('SELECT username FROM ' + cls._db_table)
+        items = [cls(row[0], connector) for row in rows]
+        return items
+
+    _id_key = 'username'
+    _db_props = []
+
+    def __init__(self, username, connector, auto_props = []):
+        super(UsernameKeyedSqliteThing, self).__init__(username, connector, auto_props)
+
+    @property
+    def username(self):
+        return self._id
 
 class AgedUsernameKeyedSqliteThing(UsernameKeyedSqliteThing):
 
