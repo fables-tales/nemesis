@@ -34,7 +34,7 @@ class KeyedSqliteThing(object):
         if name in self._db_props:
             self._props[name] = value
         else:
-            self.__dict__[name] = value
+            super(KeyedSqliteThing, self).__setattr__(name, value)
 
     def _get_connection(self):
         if self._conn is None:
