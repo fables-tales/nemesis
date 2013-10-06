@@ -33,6 +33,10 @@ var RegisterView = function() {
             var count = 0;
             var registrations = this.registrations_array();
             var max_count = registrations.length;
+            if (max_count == 0) {
+                // errors in all the lines, bail
+                return;
+            }
             wv.start("Registering users: " + count + "/" + max_count);
             $("#register-submit").attr("disabled", true);
             $(registrations).each(function(i, registration_hash) {
@@ -74,11 +78,24 @@ var RegisterView = function() {
             for (var i = 1; i < rows.length; i++) {
                 var row = rows[i];
                 var row_hash = {};
+                var feedback_node = $(row).find('.feedback');
+                var invalid = false;
                 $(row).find(":input").each (function (i, e) {
                     var $e = $(e);
-                    row_hash[$e.attr("name")] = $e.val();
+                    var name = $e.attr("name");
+                    var val = $e.val();
+                    if ($e.attr('required') && val.length == 0) {
+                        var human_error = human_readable_error('no_' + name);
+                        feedback_node.html(human_error);
+                        invalid = true;
+                        return false;
+                    }
+                    row_hash[name] = val;
                 });
-                row_hash['feedback_node'] = $(row).find('.feedback');
+                if (invalid) {
+                    continue;
+                }
+                row_hash['feedback_node'] = feedback_node;
 
                 inputs.push(row_hash);
             }
@@ -90,7 +107,11 @@ var RegisterView = function() {
             var errors = { 'BAD_TEAM': "Invalid team requested",
                         'BAD_COLLEGE': "Invalid college requested",
                'DETAILS_ALREADY_USED': "User details already in use",
-            'YOU_CANT_REGISTER_USERS': "You are not allowed to register users"
+            'YOU_CANT_REGISTER_USERS': "You are not allowed to register users",
+                    // javascript generated errors
+                      'no_first_name': "First name is required",
+                       'no_last_name': "Second name is required",
+                           'no_email': "Email address is required"
                          };
             if (errors.hasOwnProperty(error_code)) {
                 return errors[error_code];
