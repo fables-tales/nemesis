@@ -9,6 +9,4 @@ sys.path.insert(0, nemesis_root)
 import helpers
 
 if __name__ == "__main__":
-    helpers.clear_old_emails()
-    helpers.clear_old_registrations()
-    #helpers.send_emails()
+    helpers.send_emails()
