@@ -16,11 +16,11 @@ def test_registration_user_and_form():
 
     r,data = test_helpers.server_post("/registrations", params)
     status = r.status
-    assert status == 202
+    assert status == 202, data
     assert len(test_helpers.get_registrations()) == 1
     test_helpers.delete_db()
 
-def test_registration_user_and_form():
+def test_registration_rq_from_blueshirt():
     test_helpers.delete_db()
     params = {"username":"blueshirt",
               "password":"blueshirt",
@@ -31,7 +31,8 @@ def test_registration_user_and_form():
               "college":"college-1"}
 
     r,data = test_helpers.server_post("/registrations", params)
-    assert r.status == 202
+    status = r.status
+    assert status == 202, data
     assert len(test_helpers.get_registrations()) == 1
     test_helpers.delete_db()
 
