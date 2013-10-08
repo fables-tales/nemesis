@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.0-alpha.4 [SemVer](http://semver.org/)
+##Version 3.2.0 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
