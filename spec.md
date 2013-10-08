@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.1.0 [SemVer](http://semver.org/)
+##Version 3.2.0-alpha.4 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -104,6 +104,9 @@ If the response code is 200:
 * `email`: the user's email address. Only given if the authenticated user
            is the user specified by :username or the authenticated user
            is a teacher of the user specified by :username.
+* `new_email`: the email address that the system has been asked to change
+           to using. Only given if the authenticated user has access to the
+           `email` field (see above) and a change request has been made.
 * `username`: the user's username.
 * `first_name`: the user's first name.
 * `last_name`: the user's last name.
@@ -120,7 +123,8 @@ Updates information about the user specified in the URL parameter `username`.
 * `new_email` optional: the new email address for the user. An update of the
   email is only performed if the authenticated user is the user specified by
 :username or the authenticated user is a teacher of the user specified by
-:username.
+:username. Changes to email address require validation. Change requests can
+be cancelled by setting this to the users' current email.
 * `new_team` optional: the new team for the user. An update of the team
   is only performed if:
   * the authenticated user is a teacher of the user specified by :username,
@@ -143,7 +147,9 @@ unspecified and should not be used.
 ##POST /registrations
 
 Used to register new users. Specifically posting to this endpoint inserts one
-user into the registration queue.
+user into the registration queue. The new user will be emailed to activate
+their account, and the requesting user will be emailed a summary of the
+new account's details.
 
 ####Parameters
 
@@ -157,9 +163,20 @@ user into the registration queue.
 
 202 if the authenticated user is a member of the specified college and the
 specified college has the specified team and the authenticated user is a
-blueshirt or a team leader. Otherwise 403.
+blueshirt or a team leader and the requested user details are not already
+in use. Otherwise 403.
 
 ####Response body
 
-The usual authentication error conditions apply, any other response data is
-unspecified and should not be used.
+The usual authentication error conditions apply. Other errors are detailed
+via a single `error` key in the returned json object. Its values possible
+values are:
+
+* `YOU_CANT_REGISTER_USERS`: The current user is not allowed to register
+          users. Returned when the authenticated user is neither a
+          team-leader nor a blueshirt.
+* `BAD_COLLEGE`: The authenticated user is not a member of the requested
+          college.
+* `BAD_TEAM`: The requested team is not available within the requested college.
+* `DETAILS_ALREADY_USED`: The name or email address requested for the user
+          are already being used by another user.

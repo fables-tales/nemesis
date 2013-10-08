@@ -1,0 +1,14 @@
+Subject:Student Robotics user account email address change
+Dear {name},
+
+You're receiving this email because you've requested to change the email
+address associated with your Student Robotics user account.
+Please click the link below to confirm that you own this account, and that
+you want to make the change.
+
+If you don't want the change to occur, you need not do anything -- the link
+will expire in a couple of days.
+
+{url}
+
+The Student Robotics Team.

@@ -6,10 +6,15 @@ sys.path.append(PATH + "/libnemesis/")
 
 import subprocess
 import json
+
+import mailer
 import helpers
 
-from flask import Flask, request
+from flask import Flask, request, url_for
+from datetime import timedelta
+
 from libnemesis import User, College, AuthHelper
+from sqlitewrapper import PendingEmail, PendingUser
 
 app = Flask(__name__)
 
@@ -43,12 +48,33 @@ def register_user():
             if team not in [t.name for t in College(college_group).teams]:
                 return json.dumps({"error":"BAD_TEAM"}), 403
 
-            helpers.register_user(teacher_username,
-                    college_group,
-                    first_name,
-                    last_name,
-                    email,
-                    team)
+            if User.name_used(first_name, last_name) or helpers.email_used(email):
+                return json.dumps({"error":"DETAILS_ALREADY_USED"}), 403
+
+            u = User.create_new_user(requesting_user, college_group, first_name, last_name)
+            verify_code = helpers.create_verify_code(u.username, email)
+
+            pu = PendingUser(u.username)
+            pu.teacher_username = teacher_username
+            pu.college = college_group
+            pu.email = email
+            pu.team = team
+            pu.verify_code = verify_code
+            pu.save()
+
+            url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
+            pu.send_welcome_email(first_name, url)
+
+            rqu_email_vars = { 'name': requesting_user.first_name,
+                      'pu_first_name': first_name,
+                       'pu_last_name': last_name,
+                        'pu_username': pu.username,
+                         'pu_college': College(pu.college).name,
+                           'pu_email': pu.email,
+                            'pu_team': pu.team
+                              }
+            mailer.email_template(requesting_user.email, 'user_requested', rqu_email_vars)
+
             return "{}", 202
         else:
             return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
@@ -60,9 +86,33 @@ def user_details(userid):
     ah = AuthHelper(request)
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user = User.create_user(userid)
-        return json.dumps(user.details_dictionary_for(ah.user)), 200
+        details = user.details_dictionary_for(ah.user)
+        email_change_rq = PendingEmail(userid)
+        if email_change_rq.in_db:
+            new_email = email_change_rq.new_email
+            if new_email != details['email']:
+                details['new_email'] = new_email
+        return json.dumps(details), 200
     else:
         return ah.auth_error_json, 403
+
+def request_new_email(user, new_email):
+    userid = user.username
+
+    pe = PendingEmail(userid)
+
+    if user.email == new_email:
+        if pe.in_db:
+            pe.delete()
+        return
+
+    verify_code = helpers.create_verify_code(userid, new_email)
+    pe.new_email = new_email
+    pe.verify_code = verify_code
+    pe.save()
+
+    url = url_for('verify_email', username=userid, code=verify_code, _external=True)
+    pe.send_verification_email(user.first_name, url)
 
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
@@ -70,7 +120,8 @@ def set_user_details(userid):
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user_to_update = User.create_user(userid)
         if request.form.has_key("new_email") and not ah.user.is_blueshirt:
-            user_to_update.set_email(request.form["new_email"])
+            new_email = request.form["new_email"]
+            request_new_email(user_to_update, new_email)
         if request.form.has_key("new_password"):
             user_to_update.set_password(request.form["new_password"])
         if request.form.has_key("new_first_name"):
@@ -111,6 +162,77 @@ def college_info(collegeid):
 
     else:
         return ah.auth_error_json, 403
+
+@app.route("/activate/<username>/<code>", methods=["GET"])
+def activate_account(username, code):
+    """
+    Verifies to the system that an email address exists, and that the related
+    account should be made into a full account.
+    Expected to be used only by users clicking links in account-activation emails.
+    Not part of the documented API.
+    """
+
+    pu = PendingUser(username)
+
+    if not pu.in_db:
+        return "No such user account", 404
+
+    if pu.age > timedelta(days = 2):
+        return "Request not valid", 410
+
+    if pu.verify_code != code:
+        return "Invalid verification code", 403
+
+    from libnemesis import srusers
+    new_pass = srusers.users.GenPasswd()
+
+    u = User(username)
+    u.set_email(pu.email)
+    u.set_team(pu.team)
+    u.set_college(pu.college)
+    u.set_password(new_pass)
+    u.make_student()
+    u.save()
+
+    pu.delete()
+
+    html = open(PATH + "/templates/activate.html").read()
+    replacements = { 'first_name': u.first_name
+                   ,  'last_name': u.last_name
+                   ,   'password': new_pass
+                   ,      'email': u.email
+                   ,   'username': username
+                   ,       'root': url_for('.index')
+                   }
+
+    html = html.format(**replacements)
+
+    return html, 200
+
+@app.route("/verify/<username>/<code>", methods=["GET"])
+def verify_email(username, code):
+    """
+    Verifies to the system that an email address exists, and assigns it to a user.
+    Expected to be used only by users clicking links in email-verfication emails.
+    Not part of the documented API.
+    """
+
+    change_request = PendingEmail(username)
+
+    if not change_request.in_db:
+        return "No such change request", 404
+
+    if change_request.age > timedelta(days = 2):
+        return "Request not valid", 410
+
+    if change_request.verify_code != code:
+        return "Invalid verification code", 403
+
+    u = User(change_request.username)
+    u.set_email(change_request.new_email)
+    u.save()
+
+    return "Email address successfully changed", 200
 
 if __name__ == "__main__":
     app.debug = True

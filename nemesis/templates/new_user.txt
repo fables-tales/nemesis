@@ -1,0 +1,31 @@
+Subject:Welcome to Student Robotics
+Hello {name},
+
+Your team-leader has registered you for a shiny new Student Robotics account.
+Once activated (which you need to do in the next two days), this will let
+you access the Student Robotics facilities, including the forums and the
+software development environment for your robot.
+
+For more information, see:
+
+	https://www.studentrobotics.org/docs/user_accounts
+
+Your username is: {username}
+Your registered email address is: {email}.
+
+To activate your account, please click (or copy/paste into a browser) this
+link, which will also let you set your password:
+
+	{activation_url}
+
+Note, this link is only valid for the next two days, after which you'll
+need to ask your team-leader to re-register you.
+
+If you have any problems with your account then please ask your team-leader.
+
+So go introduce yourself to everyone on the forums, and enjoy building
+your robots.
+
+Thanks,
+
+The Student Robotics Team

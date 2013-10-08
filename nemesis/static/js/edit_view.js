@@ -14,7 +14,12 @@ var EditView = function() {
         this.refresh_view = function() {
             my_user.fetch(function(user) {
                 var template = TemplateExpander.template("user_edit");
+                var email_comment = '';
+                if (user.new_email !== undefined) {
+                    email_comment = " (pending change to " + user.new_email + ")";
+                }
                 var opts = {"user":user,
+                   "email_comment":email_comment,
                      "team_select":that.make_team_select(user)};
                 var text = template.render_with(opts);
                 jquerynode.html(text);
@@ -23,6 +28,14 @@ var EditView = function() {
                     $("#data-email").hide();
                 } else {
                     $("#data-email").show();
+                }
+                if (user.new_email === undefined) {
+                    $("#edit-cancel-email-change").hide();
+                } else {
+                    $("#edit-cancel-email-change").show()
+                                                  .click(function() {
+                        that.cancel_email_change();
+                    });
                 }
                 wv.end("Loaded user successfully!");
                 $("#edit-submit").click(function() {
@@ -39,6 +52,13 @@ var EditView = function() {
 
         this.hide = function() {
             jquerynode.hide();
+        };
+
+        this.cancel_email_change = function() {
+            wv.start("Cancelling outstanding email change");
+            $.post("user/" + my_user.username, {'new_email': my_user.email}, function(response) {
+                that.refresh_view();
+            });
         };
 
         this.submit_form = function() {
@@ -60,6 +80,11 @@ var EditView = function() {
             });
 
             details['new_team'] = $("#update-user select[name=new_team]").val();
+
+            if (details['new_email'] == my_user.email) {
+                // If unchanged, we mustn't send the value -- this cancels any outstanding change requests
+                delete details['new_email'];
+            }
 
             return details;
         };

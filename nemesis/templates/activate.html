@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Student Robotics Account Activation Successful</title>
+        <link type="text/css" rel="stylesheet" href="{root}static/bootstrap/css/bootstrap.css"></link>
+        <link type="text/css" rel="stylesheet" href="{root}static/bootstrap/css/bootstrap-responsive.css"></link>
+        <link type="text/css" rel="stylesheet" href="{root}static/css/main.css"></link>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{root}static/js/base64.js"></script>
+        <script type="text/javascript" src="{root}static/js/activate.js"></script>
+        <script type="text/javascript" src="{root}static/js/activate_view.js"></script>
+        <script type="text/javascript" src="{root}static/js/college.js"></script>
+        <script type="text/javascript" src="{root}static/js/template_expander.js"></script>
+        <script type="text/javascript" src="{root}static/js/user.js"></script>
+        <script type="text/javascript">
+            var init_data = {{ 'username': "{username}"
+                             , 'password': "{password}"
+                             ,     'root': "{root}" }};
+        </script>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <span class="brand">Userman</span>
+                    <p id="messages" class="navbar-text pull-right"></p>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="content">
+            <div class="row">
+                <div class="span9">
+                    <div id="data-user-set-password">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="templates">
+            <script type="text/template" id="set-password">
+                <p>
+                    Hi {first_name}, you're almost done &mdash; you just need to
+                    set your password before your password before you can start using your Student Robotics
+                    <a href="/docs/user_accounts" title="Find out more about user accounts" target="_blank">user account</a>.
+                </p>
+                    Note that if you don't do this now, you'll need to ask your team-leader to reset it,
+                    since this activation page will not work a second time.
+                </p>
+                <div id="data-change-password">
+                    <fieldset>
+                        <label>New Password</label>
+                        <input type="password" name="new_password">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password">
+                        <hr>
+                        <button type="submit" class="btn btn-primary" id="set-password-submit">Submit</button>
+                    </fieldset>
+                </div>
+            </script>
+            <script type="text/template" id="account-details">
+                <p>
+                    Congratulations {first_name}, your Student Robotics
+                    <a href="/docs/user_accounts" title="Find out more about user accounts" target="_blank">user account</a>
+                    is now ready for use.
+                </p><p>
+                    You can now access the
+                    <a href="/ide" title="The IDE lets you write code for your robot">IDE</a> and
+                    <a href="/forum" title="The forums are a great place to chat or get help">forums</a>
+                    using the password you just set.
+                </p><p>
+                    In case you don't already know them, here's a reminder of your other account details:
+                </p>
+                <dl>
+                    <dt>Email</dt>
+                    <dd>{email}</dd>
+                    <dt>Name</dt>
+                    <dd>{first_name} {last_name}</dd>
+                    <dt>Username</dt>
+                    <dd>{username}</dd>
+                </dl>
+                <p>
+                    Why not introduce yourself on the
+                    <a href="/forum" title="The forums are a great place to chat or get help">forums</a>
+                    now?
+                </p>
+            </script>
+        </div>
+    </body>
+</html>

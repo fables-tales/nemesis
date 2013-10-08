@@ -85,7 +85,7 @@
                     <label>Last Name</label>
                     <input type="text" value="{user.last_name}" name="new_last_name">
                     <div id="data-email">
-                        <label>Email</label>
+                        <label>Email{email_comment}</label>
                         <input type="text" value="{user.email}" name="new_email">
                     </div>
                     <label>Password</label>
@@ -94,16 +94,19 @@
                     {team_select}
                     <hr>
                     <button type="submit" class="btn btn-primary" id="edit-submit">Submit</button>
+                    <button type="submit" class="btn" id="edit-cancel-email-change">Cancel Email Change</button>
                 </fieldset>
             </script>
             <script type="text/template" id="register">
                 <h2>Register users to <span class="capitalize">{college.english_name}</span></h2>
+                <p>Users will be emailed an activation link, which will be valid for two days.</p>
                 <table id="data-register-table">
                     <tr>
                         <th>First Name</th>
                         <th>Second Name</th>
                         <th>Email</th>
                         <th>Team</th>
+                        <th></th>
                     </tr>
                 </table>
                 <button type="submit" class="btn btn-primary" id="register-submit">Submit</button>
@@ -112,10 +115,11 @@
             <script type="text/template" id="register-row">
                 <tr>
                     <fieldset>
-                        <td><input type="text" name="first_name"></td>
-                        <td><input type="text" name="last_name"></td>
-                        <td><input type="text" name="email"></td>
+                        <td><input type="text" required name="first_name"></td>
+                        <td><input type="text" required name="last_name"></td>
+                        <td><input type="text" required name="email"></td>
                         <td>{team_select}</td>
+                        <td class="feedback"></td>
                     </fieldset>
                 </tr>
             </script>
