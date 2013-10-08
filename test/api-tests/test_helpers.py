@@ -1,18 +1,15 @@
 
 import datetime
-import glob
 import httplib
-import json
 import base64
 import unittest
-import random
 import urllib
 import sys
 import os
 
 sys.path.insert(0,os.path.abspath('../../nemesis/'))
 import helpers as helpers
-from sqlitewrapper import PendingEmail, PendingUser, sqlite_connect
+from sqlitewrapper import PendingEmail, PendingUser, PendingSend, sqlite_connect
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import srusers, User
@@ -100,38 +97,35 @@ def remove_user(name):
             u.delete()
     return helper
 
-def clean_emails_and_db():
-    remove_emails()
-    delete_db()
-
-def remove_emails():
-    for f in all_emails():
-        os.remove(f)
-
 def root():
    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
    return root
 
-def all_emails():
-    pattern = os.path.join(root(), 'nemesis/mail-*.sent-mail')
-    files = glob.glob(pattern)
-    return files
-
 def last_email():
-    files = all_emails()
-    assert len(files) == 1
-    with open(files[0], 'r') as f:
-        mail_data = json.load(f)
-        return mail_data
+    conn = sqlite_connect()
+    cur  = conn.cursor()
+    cur.execute("SELECT id FROM outbox")
+    row = cur.fetchone()
+    assert row is not None, "Failed to get last email from SQLite."
+    return PendingSend(row[0])
 
 def last_n_emails(num):
-    files = all_emails()
-    assert len(files) == num
-    mail_datas = []
-    for fn in sorted(files):
-        with open(fn, 'r') as f:
-            mail_datas.append(json.load(f))
-    return mail_datas
+    conn = sqlite_connect()
+    cur  = conn.cursor()
+    cur.execute("SELECT id FROM outbox LIMIT ?", (num,))
+    rows = cur.fetchall()
+    assert len(rows) == num, "Failed to get last %d emails from SQLite." % (num,)
+    mails = []
+    for row in rows:
+        mails.append(PendingSend(row[0]))
+    return mails
+
+def assert_no_emails():
+    conn = sqlite_connect()
+    cur  = conn.cursor()
+    cur.execute("SELECT id FROM outbox")
+    row = cur.fetchone()
+    assert row is None, "Should not be any emails in SQLite."
 
 def template(name):
     file_path = os.path.join(root(), 'nemesis/templates', name)
@@ -141,10 +135,10 @@ def template(name):
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
-        clean_emails_and_db()
+        delete_db()
 
     def tearDown(self):
-        clean_emails_and_db()
+        delete_db()
         u = srusers.user('old')
         if u.in_db:
             u.delete()
@@ -218,19 +212,19 @@ class TestHelpers(unittest.TestCase):
         pu = PendingUser('abc')
         assert pu.in_db
 
-        email = last_email()
-
-        message = email['msg']
-        team_lead_first = old_team_leader.first_name
-        assert team_lead_first in message
-        assert first_name in message
-        assert last_name in message
+        ps = last_email()
+        toaddr = ps.toaddr
         team_lead_email = old_team_leader.email
-        assert team_lead_email == email['toaddr']
+        assert toaddr == team_lead_email
 
-        template_lines = template('registration_expired.txt')
-        subject_line = template_lines[0]
-        assert email['subject'] in subject_line
+        vars = ps.template_vars
+        team_lead_first = old_team_leader.first_name
+        assert team_lead_first == vars['name']
+        assert first_name == vars['pu_first_name']
+        assert last_name == vars['pu_last_name']
+
+        template = ps.template_name
+        assert template == 'registration_expired'
 
     def test_is_email_used_no(self):
         email = 'nope@srobo.org'

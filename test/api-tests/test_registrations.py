@@ -19,7 +19,7 @@ def test_registration_no_user():
     assert r.status == 403
 
 @with_setup(remove_user('1_rt1'), remove_user('1_rt1'))
-@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_registration_user_and_form():
     new_email = "bob@example.com"
     params = {"username":"teacher_coll1",
@@ -42,39 +42,38 @@ def test_registration_user_and_form():
     assert pending.team == "team-ABC"
     assert pending.college == "college-1"
 
-    template_lines = test_helpers.template('new_user.txt')
-
     email_datas = test_helpers.last_n_emails(2)
-    student_data = email_datas[0]
-    subject = student_data['subject']
-    assert subject in template_lines[0]
-    to = student_data['toaddr']
-    assert to == new_email
-    msg = student_data['msg']
-    assert NEW_USER_FNAME in msg
-    assert '{activate_url}' not in msg
-    vcode = pending.verify_code
-    assert vcode in msg
 
-    template_lines = test_helpers.template('user_requested.txt')
+    student_ps = email_datas[0]
+    template = student_ps.template_name
+    assert template == 'new_user'
+    to = student_ps.toaddr
+    assert to == new_email
+    vars = student_ps.template_vars
+    assert NEW_USER_FNAME == vars['name']
+    vcode = pending.verify_code
+    assert vcode in vars['activation_url']
+
     teacher = User.create_user("teacher_coll1")
 
-    teacher_data = email_datas[1]
-    subject = teacher_data['subject']
-    assert subject in template_lines[0]
-    to = teacher_data['toaddr']
+    teacher_ps = email_datas[1]
+    template = teacher_ps.template_name
+    assert template == 'user_requested'
+    to = teacher_ps.toaddr
     assert to == teacher.email
-    msg = teacher_data['msg']
-    assert NEW_USER_FNAME in msg
-    assert NEW_USER_LNAME in msg
-    assert new_email in msg
-    assert 'college the first' in msg
-    vcode = pending.verify_code
-    assert vcode not in msg, "Should not contain email verification code"
-    assert '1_rt1' in msg, "Should contain created username"
+    vars = teacher_ps.template_vars
+    assert NEW_USER_FNAME == vars['pu_first_name']
+    assert NEW_USER_LNAME == vars['pu_last_name']
+    assert new_email == vars['pu_email']
+    assert '1_rt1' == vars['pu_username']
+    assert 'team-ABC' == vars['pu_team']
+    assert 'college the first' == vars['pu_college']
+
+    vars_str = teacher_ps.template_vars_json
+    assert vcode not in vars_str, "Should not contain the verification code."
 
 @with_setup(remove_user('2_rt1'), remove_user('2_rt1'))
-@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_registration_wrong_college():
     params = {"username":"teacher_coll1",
               "password":"facebees",
@@ -97,11 +96,10 @@ def test_registration_wrong_college():
     pending = PendingUser('2_rt1')
     assert not pending.in_db
 
-    mails = test_helpers.all_emails()
-    assert len(mails) == 0
+    test_helpers.assert_no_emails()
 
 @with_setup(remove_user('1_ss1'), remove_user('1_ss1'))
-@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_registration_name_in_use():
     params = {"username":"teacher_coll1",
               "password":"facebees",
@@ -126,11 +124,10 @@ def test_registration_name_in_use():
     pending = PendingUser('1_ss1')
     assert not pending.in_db
 
-    mails = test_helpers.all_emails()
-    assert len(mails) == 0
+    test_helpers.assert_no_emails()
 
 @with_setup(remove_user('1_rt1'), remove_user('1_rt1'))
-@with_setup(test_helpers.clean_emails_and_db, test_helpers.remove_emails)
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_registration_email_in_use():
     params = {"username":"teacher_coll1",
               "password":"facebees",
@@ -155,5 +152,4 @@ def test_registration_email_in_use():
     pending = PendingUser('1_rt1')
     assert not pending.in_db
 
-    mails = test_helpers.all_emails()
-    assert len(mails) == 0
+    test_helpers.assert_no_emails()

@@ -4,17 +4,10 @@ import os
 from unittest import TestCase
 
 import test_helpers
+from test_helpers import last_email
 
 import mailer
 from sqlitewrapper import PendingSend
-
-def last_email():
-    conn = test_helpers.sqlite_connect()
-    cur = conn.cursor()
-    cur.execute("SELECT id FROM outbox ORDER BY request_time DESC LIMIT 1")
-    row = cur.fetchone()
-    ps = PendingSend(row[0])
-    return ps
 
 # cache the original, since we'll be injecting a mock
 # not sure why I couldn't do this as a class thing, but this seems to work.

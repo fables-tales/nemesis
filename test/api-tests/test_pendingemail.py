@@ -98,7 +98,7 @@ def test_delete():
     pe = PendingEmail('abc')
     assert not pe.in_db
 
-@with_setup(test_helpers.remove_emails, test_helpers.remove_emails)
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_send_email():
     first_name = 'jim'
     verification_url = 'http://verify'
@@ -107,16 +107,16 @@ def test_send_email():
     pe.new_email = new_email
     pe.send_verification_email(first_name, verification_url)
 
-    last_email = test_helpers.last_email()
+    ps = test_helpers.last_email()
 
-    message = last_email['msg']
-    assert first_name in message
-    assert verification_url in message
-    assert new_email == last_email['toaddr']
+    vars = ps.template_vars
+    assert first_name == vars['name']
+    assert verification_url == vars['url']
+    toaddr = ps.toaddr
+    assert new_email == toaddr
 
-    template_lines = test_helpers.template('change_email.txt')
-    subject_line = template_lines[0]
-    assert last_email['subject'] in subject_line
+    template = ps.template_name
+    assert template == 'change_email'
 
 @raises(AttributeError)
 def test_invalid_property():
