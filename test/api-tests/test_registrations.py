@@ -103,7 +103,7 @@ def test_registration_wrong_college():
 def test_registration_name_in_use():
     params = {"username":"teacher_coll1",
               "password":"facebees",
-              "first_name":'student1i', # student_coll1_1
+              "first_name":'student2', # student_coll1_2
               "last_name":'student',
               "email":"bob@example.com",
               "team":"team-ABC",
@@ -111,7 +111,8 @@ def test_registration_name_in_use():
 
     r,data = test_helpers.server_post("/registrations", params)
 
-    assert r.status == 403
+    status = r.status
+    assert status == 403, data
     assert 'DETAILS_ALREADY_USED' in data
     assert len(test_helpers.get_registrations()) == 0
 
