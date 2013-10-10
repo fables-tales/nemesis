@@ -18,8 +18,8 @@ link, which will also let you set your password:
 
 	{activation_url}
 
-Note, this link is only valid for the next two days, after which you'll
-need to ask your team-leader to re-register you.
+Note: this is a one-time-use link, and is only valid for the next two days,
+after which you'll need to ask your team-leader to re-register you.
 
 If you have any problems with your account then please ask your team-leader.
 
