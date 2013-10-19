@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.3.0 [SemVer](http://semver.org/)
+##Version 3.4.0-alpha [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -115,6 +115,8 @@ If the response code is 200:
 * `is_blueshirt`: a boolean indicating whether the user is a blueshirt.
 * `is_student`: a boolean indicating whether the user is a student.
 * `is_team_leader`: a boolean indicating whether the user is a team-leader.
+* `has_media_consent`: a boolean indicating whether the user has given media consent.
+* `has_withdrawn`: a boolean indicating whether the user has withdrawn.
 
 
 ##POST /user/:username

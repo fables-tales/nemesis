@@ -1,11 +1,12 @@
 
 import json
+from nose.tools import with_setup
 import sys
 
 import test_helpers
 
 sys.path.append("../../nemesis/libnemesis")
-from libnemesis import User
+from libnemesis import User, srusers
 
 def test_user_get_no_user():
     params = {}
@@ -96,6 +97,74 @@ def test_user_properties_teacher():
     assert data['is_team_leader']
     assert not data['is_student']
     assert not data['is_blueshirt']
+
+def test_user_media_consent_false():
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
+
+    r,data = test_helpers.server_get("/user/teacher_coll2", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert not data['has_media_consent']
+
+@with_setup(test_helpers.remove_user('to-consent'), test_helpers.remove_user('to-consent'))
+def test_user_media_consent_true():
+    username = 'to-consent'
+    sru = srusers.user(username)
+    sru.cname = 'to'
+    sru.sname = 'consent'
+    sru.email = ''
+    sru.save()
+    for gid in ['students', 'media-consent', 'college-2']:
+        g = srusers.group(gid)
+        g.user_add(sru)
+        g.save()
+
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
+
+    r,data = test_helpers.server_get("/user/to-consent", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert data['has_media_consent']
+
+def test_user_withdrawn_false():
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
+
+    r,data = test_helpers.server_get("/user/teacher_coll2", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert not data['has_withdrawn']
+
+@with_setup(test_helpers.remove_user('to-withdraw'), test_helpers.remove_user('to-withdraw'))
+def test_user_withdrawn_true():
+    username = 'to-withdraw'
+    sru = srusers.user(username)
+    sru.cname = 'to'
+    sru.sname = 'consent'
+    sru.email = ''
+    sru.save()
+    for gid in ['students', 'withdrawn', 'college-2']:
+        g = srusers.group(gid)
+        g.user_add(sru)
+        g.save()
+
+    params = {"username":"teacher_coll2",
+              "password":"noway",
+              }
+
+    r,data = test_helpers.server_get("/user/to-withdraw", params)
+    data = json.loads(data)
+
+    assert r.status == 200
+    assert data['has_withdrawn']
 
 def test_user_get_blueshirt_wrong_password():
     params = {"username":"blueshirt",
