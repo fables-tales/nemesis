@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.0 [SemVer](http://semver.org/)
+##Version 3.2.1 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -25,7 +25,7 @@ permitted to interact with the resource)
 
 There are three user roles in nemesis:
 
-* team leader
+* team-leader
 * blueshirt
 * student
 
@@ -33,7 +33,7 @@ The term "can administrate" in this document is used to determine whether or
 not a user is capable of administrating another user. The conditions for this
 are as follows:
 
-* If the authenticated user is a team leader in the same college as the user to
+* If the authenticated user is a team-leader in the same college as the user to
   be accessed they may access/modify information about that user so long as
   that user is not a blueshirt.
 * If the authenticated user is a blueshirt in the same college as the user to
@@ -103,7 +103,7 @@ If the response code is 200:
 
 * `email`: the user's email address. Only given if the authenticated user
            is the user specified by :username or the authenticated user
-           is a teacher of the user specified by :username.
+           is a team-leader of the user specified by :username.
 * `new_email`: the email address that the system has been asked to change
            to using. Only given if the authenticated user has access to the
            `email` field (see above) and a change request has been made.
@@ -122,12 +122,12 @@ Updates information about the user specified in the URL parameter `username`.
 
 * `new_email` optional: the new email address for the user. An update of the
   email is only performed if the authenticated user is the user specified by
-:username or the authenticated user is a teacher of the user specified by
+:username or the authenticated user is a team-leader of the user specified by
 :username. Changes to email address require validation. Change requests can
 be cancelled by setting this to the users' current email.
 * `new_team` optional: the new team for the user. An update of the team
   is only performed if:
-  * the authenticated user is a teacher of the user specified by :username,
+  * the authenticated user is a team-leader of the user specified by :username,
   * and the authenticated user is a member of the new team,
   * and the user specified by :username is not a blueshirt.
 * `new_password` optional: the new password for the user.
@@ -163,7 +163,7 @@ new account's details.
 
 202 if the authenticated user is a member of the specified college and the
 specified college has the specified team and the authenticated user is a
-blueshirt or a team leader and the requested user details are not already
+blueshirt or a team-leader and the requested user details are not already
 in use. Otherwise 403.
 
 ####Response body
