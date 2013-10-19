@@ -22,6 +22,7 @@
         <script type="text/javascript" src="static/js/edit_view.js"></script>
         <script type="text/javascript" src="static/js/register_view.js"></script>
         <script type="text/javascript" src="static/js/college_list_view.js"></script>
+        <script type="text/javascript" src="static/js/self_view.js"></script>
         <script type="text/javascript" src="static/js/working_view.js"></script>
         <script type="text/javascript" src="static/js/template_expander.js"></script>
         <script type="text/javascript" src="static/js/main.js"></script>
@@ -42,6 +43,7 @@
                         <button type="submit" class="btn">Log in</button>
                     </form>
                     <p id="login-error" class="navbar-text pull-right"></p>
+                    <ul class="nav pull-right"><li id="logged-in-user"></li></ul>
                     <p id="messages" class="navbar-text pull-right"></p>
                 </div>
             </div>
@@ -71,6 +73,9 @@
                         {register}
                     </ul>
                 </div>
+            </script>
+            <script type="text/template" id="welcome_link">
+                <a href="#edit-{username}"><i class="icon-user icon-white"></i> {first_name} {last_name} ({username})</a>
             </script>
             <script type="text/template" id="user_link">
                 <li class="{user.username}"><a href="#edit-{user.username}"><i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>

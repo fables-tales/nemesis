@@ -16,6 +16,7 @@ $(document).ready(function() {
     cv = new CollegeListView($("#data-college-list"))
     ev = new EditView($("#data-edit-user"), cv.refresh);
     rv = new RegisterView($("#data-register-users"));
+    sv = new SelfView($("#logged-in-user"));
     wv = new WorkingView($("#messages"));
     $("#login").submit(function() {
         wv.start("Logging in...");
@@ -33,6 +34,7 @@ $(document).ready(function() {
             }
             $("#login").hide();
             $("#login-error").hide();
+            sv.show(user.username);
             wv.end("Login succeeded");
             wv.start("Loading college information");
         },
