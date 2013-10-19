@@ -42,6 +42,7 @@ var User = function() {
                 that.is_blueshirt = response.is_blueshirt;
                 that.is_student = response.is_student;
                 that.is_team_leader = response.is_team_leader;
+                that.has_media_consent = response.has_media_consent;
                 callback(that);
             });
         };

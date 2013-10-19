@@ -34,3 +34,8 @@ select {
     border:0 none;
     vertical-align:text-bottom;
 }
+
+#data-college-list li.user a {
+    margin-left:-2px;
+    padding-left:0;
+}

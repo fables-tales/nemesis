@@ -78,11 +78,15 @@
                 <a href="#edit-{username}"><i class="icon-user icon-white"></i> {first_name} {last_name} ({username})</a>
             </script>
             <script type="text/template" id="user_link">
-                <li class="{user.username}"><a href="#edit-{user.username}"><i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
+                <li class="user {user.username}"><a href="#edit-{user.username}">{user.media} <i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
             </script>
 
             <script type="text/template" id="register_link">
                 <li class="register"><a href="#reg-{college.canonical_name}"><i class="icon-pencil"></i> Register Users</a></li>
+            </script>
+
+            <script type="text/template" id="media_consent">
+                <i class="icon-{icon}" title="{first} {last} has {not}given media consent"></i>
             </script>
 
             <script type="text/template" id="user_edit">
