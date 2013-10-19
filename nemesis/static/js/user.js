@@ -39,6 +39,9 @@ var User = function() {
                 that.new_email = response.new_email;
                 that.colleges = response.colleges;
                 that.teams = response.teams;
+                that.is_blueshirt = response.is_blueshirt;
+                that.is_student = response.is_student;
+                that.is_team_leader = response.is_team_leader;
                 callback(that);
             });
         };

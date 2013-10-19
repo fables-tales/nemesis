@@ -47,7 +47,11 @@ var EditView = function() {
         };
 
         this.make_team_select = function(user) {
-            return TemplateExpander.make_select('new_team', my_requesting_user.teams, user.teams[0]);
+            if (user.is_student) {
+                return TemplateExpander.make_select('new_team', my_requesting_user.teams, user.teams[0]);
+            } else { // team-leader, blueshirt
+                return TemplateExpander.make_checkboxes("new_team' disabled='disabled", my_requesting_user.teams, user.teams);
+            }
         };
 
         this.hide = function() {
@@ -79,7 +83,10 @@ var EditView = function() {
                 details[$e.attr("name")] = $e.val();
             });
 
-            details['new_team'] = $("#update-user select[name=new_team]").val();
+            var team_select = $("#update-user select[name=new_team]");
+            if (team_select.length > 0) { // students only
+                details['new_team'] = team_select.val();
+            }
 
             if (details['new_email'] == my_user.email) {
                 // If unchanged, we mustn't send the value -- this cancels any outstanding change requests

@@ -13,6 +13,25 @@ var TemplateExpander = {
 
         build += "</select>";
         return build;
+    },
+    "make_checkboxes" : function(name, options, selected) {
+        build = "<ul>";
+
+        if (!(selected instanceof Array)) {
+            selected = [selected];
+        }
+
+        for (var i = 0 ; i < options.length; i++) {
+            build += "<li><label>";
+            var opt = options[i];
+            var selectAttr = $.inArray(opt, selected) >= 0 ? "' checked='checked" : '';
+            build += "<input type='checkbox' name='" + name + selectAttr + "' value='" + opt + "'>";
+            build += opt;
+            build += "</label></li>";
+        }
+
+        build += "</ul>";
+        return build;
     }
 };
 

@@ -19,3 +19,12 @@ select {
     padding:0 0.5em 10px;
     white-space:nowrap;
 }
+
+#update-user ul {
+    list-style-type:none;
+    margin-left: 0;
+}
+
+#update-user input[type=checkbox] {
+    margin:-0.1em 0.3em 0;
+}
