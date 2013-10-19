@@ -22,7 +22,7 @@ select {
 
 #update-user ul {
     list-style-type:none;
-    margin-left: 0;
+    margin-left:0;
 }
 
 #update-user input[type=checkbox] {
