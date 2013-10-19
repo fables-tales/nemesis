@@ -11,7 +11,7 @@ var CollegeListView = function() {
             var user_template    = TemplateExpander.template("user_link");
             var register_template = TemplateExpander.template("register_link");
 
-            result = "";
+            var result = "";
             for (var i = 0; i < college_list.length; i++) {
                 var college = college_list[i];
                 var user_templates = user_template.map_over("user", college.users);
