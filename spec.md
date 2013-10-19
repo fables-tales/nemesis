@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.2.1 [SemVer](http://semver.org/)
+##Version 3.2.2 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -112,6 +112,9 @@ If the response code is 200:
 * `last_name`: the user's last name.
 * `colleges`: a list of the colleges that the user is in.
 * `teams`: a list of the teams that the user is in.
+* `is_blueshirt`: a boolean indicating whether the user is a blueshirt.
+* `is_student`: a boolean indicating whether the user is a student.
+* `is_team_leader`: a boolean indicating whether the user is a team-leader.
 
 
 ##POST /user/:username
