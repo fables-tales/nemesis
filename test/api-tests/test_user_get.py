@@ -1,6 +1,8 @@
+
 import json
-import test_helpers
 import sys
+
+import test_helpers
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
