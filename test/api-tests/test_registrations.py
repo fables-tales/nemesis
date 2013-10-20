@@ -226,7 +226,7 @@ def test_registration_email_in_use():
               "password":"facebees",
               "first_name":NEW_USER_FNAME,
               "last_name":NEW_USER_LNAME,
-              "email":"sam@sam2518.com", # student_coll2_2
+              "email":"sam4@example.com", # student_coll2_2
               "team":"team-ABC",
               "college":"college-1"}
 

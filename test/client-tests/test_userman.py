@@ -19,7 +19,7 @@ class testUserman(unittest.TestCase):
 
         email_field = self.browser.find_element_by_id("user-email")
         email_field.clear()
-        email_field.send_keys("student1@teacher.com")
+        email_field.send_keys("student1@example.com")
 
         password_field = self.browser.find_element_by_id("user-password")
         password_field.clear()

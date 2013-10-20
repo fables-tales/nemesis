@@ -232,7 +232,7 @@ class TestHelpers(unittest.TestCase):
         assert used == False
 
     def test_is_email_used_full_user(self):
-        email = 'sam@sam2518.com' # student_coll2_2
+        email = 'sam4@example.com' # student_coll2_2
         used = helpers.email_used(email)
         assert used == True
 

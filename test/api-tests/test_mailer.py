@@ -32,7 +32,7 @@ class TestMailer(TestCase):
         self._msg = msg
 
     def test_store_temaplate(self):
-        exp_addr = 'a@b.cc'
+        exp_addr = 'test@example.com'
         exp_tpl  = 'tpl'
         exp_vars = {'foo':'bar'}
         ps = mailer.store_template(exp_addr, exp_tpl, exp_vars)
@@ -48,7 +48,7 @@ class TestMailer(TestCase):
         assert exp_vars == vars
 
     def test_try_send_ok(self):
-        exp_addr = 'a@b.cc'
+        exp_addr = 'test@example.com'
         exp_tpl  = 'example'
         exp_vars = {'foo':'bar'}
 
@@ -73,7 +73,7 @@ class TestMailer(TestCase):
         assert sent
 
     def test_try_send_throws(self):
-        exp_addr = 'a@b.cc'
+        exp_addr = 'test@example.com'
         exp_tpl  = 'example'
         exp_vars = {'foo':'bar'}
 

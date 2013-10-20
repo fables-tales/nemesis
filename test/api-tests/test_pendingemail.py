@@ -102,7 +102,7 @@ def test_delete():
 def test_send_email():
     first_name = 'jim'
     verification_url = 'http://verify'
-    new_email = 'new_email@nope.sr'
+    new_email = 'new_email@example.com'
     pe = PendingEmail('abc')
     pe.new_email = new_email
     pe.send_verification_email(first_name, verification_url)
