@@ -47,11 +47,8 @@ var RegisterView = function() {
                     count += 1;
                     wv.start("Registering users: " + count + "/" + max_count);
                     if (count == max_count) {
-                        wv.start("Users registered successfully");
+                        wv.end("Users registered successfully", 4000);
                         location.hash = "";
-                        setTimeout(function() {
-                            wv.hide();
-                        }, 4000);
                     }
                 });
             });

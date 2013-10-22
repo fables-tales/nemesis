@@ -7,9 +7,10 @@ WorkingView = function() {
             node.show();
         };
 
-        this.end = function(text) {
+        this.end = function(text, milliseconds) {
+            var milliseconds = milliseconds || 1000;
             node.text(text);
-            setTimeout(this.hide, 1000);
+            setTimeout(this.hide, milliseconds);
         };
 
         this.hide = function() {
