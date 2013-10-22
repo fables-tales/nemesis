@@ -10,11 +10,19 @@ WorkingView = function() {
         this.end = function(text, milliseconds) {
             var milliseconds = milliseconds || 1000;
             node.text(text);
-            setTimeout(this.hide, milliseconds);
+            setTimeout(hide_if(text), milliseconds);
         };
 
         this.hide = function() {
             node.hide();
+        };
+
+        var hide_if = function(text) {
+            return function() {
+                if (node.text() == text) {
+                    node.hide();
+                }
+            };
         };
     }
 }();
