@@ -17,6 +17,8 @@ var RegisterView = function() {
                 that.register_users();
             });
             node.show();
+
+            $("#data-register-table input[name=first_name]").first().focus();
         };
 
         this.make_team_select = function(college) {
@@ -27,6 +29,7 @@ var RegisterView = function() {
             var college = Colleges[canonical_name];
             var text = TemplateExpander.template("register-row").render_with({"team_select":this.make_team_select(college)});
             $("#data-register-table").append(text);
+            $("#data-register-table input[name=first_name]").last().focus();
         };
 
         this.register_users = function() {

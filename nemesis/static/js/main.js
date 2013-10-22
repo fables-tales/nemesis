@@ -45,6 +45,8 @@ $(document).ready(function() {
         return false;
     });
 
+    $("#username").focus();
+
     hashChangeEventListener = setInterval("hashChangeEventHandler()", 50);
 });
 

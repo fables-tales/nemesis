@@ -13,6 +13,7 @@ var ActivateView = function() {
             $("#set-password-submit").click(function() {
                 that.submit_form(user.username);
             });
+            $("input[name=new_password]").focus();
         };
 
         this.submit_form = function(username) {
