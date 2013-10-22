@@ -35,18 +35,18 @@ var RegisterView = function() {
         this.register_users = function() {
             var count = 0;
             var registrations = this.registrations_array();
-            var max_count = registrations.length;
-            if (max_count == 0) {
+            var submit_count = registrations.length;
+            if (submit_count == 0) {
                 // errors in all the lines, bail
                 return;
             }
-            wv.start("Registering users: " + count + "/" + max_count);
+            wv.start("Registering users: " + count + "/" + submit_count);
             $("#register-submit").attr("disabled", true);
             $(registrations).each(function(i, registration_hash) {
                 that.send_registration_hash(registration_hash, function() {
                     count += 1;
-                    wv.start("Registering users: " + count + "/" + max_count);
-                    if (count == max_count) {
+                    wv.start("Registering users: " + count + "/" + submit_count);
+                    if (count == submit_count) {
                         wv.end("Users registered successfully", 4000);
                         location.hash = "";
                     }
