@@ -42,32 +42,35 @@ var RegisterView = function() {
             }
             wv.start("Registering users: " + count + "/" + submit_count);
             $("#register-submit").attr("disabled", true);
-            $(registrations).each(function(i, registration_hash) {
-                that.send_registration_hash(registration_hash, function() {
+            $(registrations).each(function(i, row_info) {
+                that.send_registration_hash(row_info.fields, function() {
+                    // success callback -- see if all done
                     count += 1;
                     wv.start("Registering users: " + count + "/" + submit_count);
                     if (count == submit_count) {
                         wv.end("Users registered successfully", 4000);
                         location.hash = "";
                     }
+                }, function(response) {
+                    // failure callback -- show an error
+                    var human_error = human_readable_error(response.error);
+                    row_info.feedback_node.text(human_error);
+                    // re-enable submission
+                    $("#register-submit").attr("disabled", false);
                 });
             });
         };
 
-        this.send_registration_hash = function(hash, callback) {
+        this.send_registration_hash = function(hash, success, failure) {
             hash["college"] = college_name_from_hash();
-            var feedback_node = hash['feedback_node'];
-            delete hash['feedback_node'];
             $.post("registrations", hash, function(response) {
-                callback(response);
+                success(response);
             }).fail(function(response) {
-                $("#register-submit").attr("disabled", false);
                 response = response.responseText;
                 if (typeof(response) === "string") {
                     response = JSON.parse(response);
                 }
-                var human_error = human_readable_error(response.error);
-                feedback_node.html(human_error);
+                failure(response);
             });
         };
 
@@ -95,9 +98,11 @@ var RegisterView = function() {
                 if (invalid) {
                     continue;
                 }
-                row_hash['feedback_node'] = feedback_node;
+                var row_info = { 'tr': row,
+                      'feedback_node': feedback_node,
+                             'fields': row_hash };
 
-                inputs.push(row_hash);
+                inputs.push(row_info);
             }
 
             return inputs;
