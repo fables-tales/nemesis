@@ -40,23 +40,39 @@ var RegisterView = function() {
                 // errors in all the lines, bail
                 return;
             }
+            var request_total = registrations.total;
             wv.start("Registering users: " + count + "/" + submit_count);
             $("#register-submit").attr("disabled", true);
+            // for each row, try to submit it.
             $(registrations).each(function(i, row_info) {
+                // clear feedback before new request
+                row_info.feedback_node.text(null);
                 that.send_registration_hash(row_info.fields, function() {
-                    // success callback -- see if all done
+                    // success callback -- remove the row, see if all done
                     count += 1;
+                    row_info.tr.remove();
                     wv.start("Registering users: " + count + "/" + submit_count);
+                    // all submissions done
                     if (count == submit_count) {
                         wv.end("Users registered successfully", 4000);
-                        location.hash = "";
+                        // re-enable submission
+                        $("#register-submit").attr("disabled", false);
+                        // if all rows were submitted (and all worked)
+                        // then hide the registration form
+                        if (submit_count == request_total) {
+                            location.hash = "";
+                        }
                     }
                 }, function(response) {
                     // failure callback -- show an error
+                    count += 1;
                     var human_error = human_readable_error(response.error);
                     row_info.feedback_node.text(human_error);
-                    // re-enable submission
-                    $("#register-submit").attr("disabled", false);
+                    // all submissions done
+                    if (count == submit_count) {
+                        // re-enable submission
+                        $("#register-submit").attr("disabled", false);
+                    }
                 });
             });
         };
@@ -78,6 +94,7 @@ var RegisterView = function() {
             var rows = $("#data-register-table").find("tr");
             inputs = [];
             //1 because we skip the header row
+            inputs.total = rows.length - 1;
             for (var i = 1; i < rows.length; i++) {
                 var row = rows[i];
                 var row_hash = {};
