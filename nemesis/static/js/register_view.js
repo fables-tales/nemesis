@@ -35,42 +35,62 @@ var RegisterView = function() {
         this.register_users = function() {
             var count = 0;
             var registrations = this.registrations_array();
-            var max_count = registrations.length;
-            if (max_count == 0) {
+            var submit_count = registrations.length;
+            if (submit_count == 0) {
                 // errors in all the lines, bail
                 return;
             }
-            wv.start("Registering users: " + count + "/" + max_count);
+            var request_total = registrations.total;
+            wv.start("Registering users: " + count + "/" + submit_count);
             $("#register-submit").attr("disabled", true);
-            $(registrations).each(function(i, registration_hash) {
-                that.send_registration_hash(registration_hash, function() {
+            // for each row, try to submit it.
+            $(registrations).each(function(i, row_info) {
+                // clear feedback before new request
+                row_info.feedback_node.text(null);
+                that.send_registration_hash(row_info.fields, function() {
+                    // success callback -- remove the row, see if all done
                     count += 1;
-                    wv.start("Registering users: " + count + "/" + max_count);
-                    if (count == max_count) {
-                        wv.start("Users registered successfully");
-                        location.hash = "";
-                        setTimeout(function() {
-                            wv.hide();
-                        }, 4000);
+                    row_info.tr.remove();
+                    wv.start("Registering users: " + count + "/" + submit_count);
+                    // all submissions done
+                    if (count == submit_count) {
+                        wv.end("Users registered successfully", 4000);
+                        // re-enable submission
+                        $("#register-submit").attr("disabled", false);
+                        // if all rows were submitted (and all worked)
+                        // then hide the registration form
+                        if (submit_count == request_total) {
+                            location.hash = "";
+                        }
+                    }
+                }, function(response) {
+                    // failure callback -- show an error
+                    count += 1;
+                    var human_error = human_readable_error(response.error);
+                    row_info.feedback_node.text(human_error);
+                    // re-enable the fields
+                    $(row_info.tr).find(':input').each(function(i, e) {
+                        e.disabled = false;
+                    });
+                    // all submissions done
+                    if (count == submit_count) {
+                        // re-enable submission
+                        $("#register-submit").attr("disabled", false);
                     }
                 });
             });
         };
 
-        this.send_registration_hash = function(hash, callback) {
+        this.send_registration_hash = function(hash, success, failure) {
             hash["college"] = college_name_from_hash();
-            var feedback_node = hash['feedback_node'];
-            delete hash['feedback_node'];
             $.post("registrations", hash, function(response) {
-                callback(response);
+                success(response);
             }).fail(function(response) {
-                $("#register-submit").attr("disabled", false);
                 response = response.responseText;
                 if (typeof(response) === "string") {
                     response = JSON.parse(response);
                 }
-                var human_error = human_readable_error(response.error);
-                feedback_node.html(human_error);
+                failure(response);
             });
         };
 
@@ -78,6 +98,7 @@ var RegisterView = function() {
             var rows = $("#data-register-table").find("tr");
             inputs = [];
             //1 because we skip the header row
+            inputs.total = rows.length - 1;
             for (var i = 1; i < rows.length; i++) {
                 var row = rows[i];
                 var row_hash = {};
@@ -98,9 +119,15 @@ var RegisterView = function() {
                 if (invalid) {
                     continue;
                 }
-                row_hash['feedback_node'] = feedback_node;
 
-                inputs.push(row_hash);
+                $(row).find(":input").each(function (i, e) {
+                    e.disabled = true;
+                });
+                var row_info = { 'tr': row,
+                      'feedback_node': feedback_node,
+                             'fields': row_hash };
+
+                inputs.push(row_info);
             }
 
             return inputs;

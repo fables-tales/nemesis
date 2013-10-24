@@ -7,13 +7,22 @@ WorkingView = function() {
             node.show();
         };
 
-        this.end = function(text) {
+        this.end = function(text, milliseconds) {
+            var milliseconds = milliseconds || 1000;
             node.text(text);
-            setTimeout(this.hide, 1000);
+            setTimeout(hide_if(text), milliseconds);
         };
 
         this.hide = function() {
             node.hide();
+        };
+
+        var hide_if = function(text) {
+            return function() {
+                if (node.text() == text) {
+                    node.hide();
+                }
+            };
         };
     }
 }();
