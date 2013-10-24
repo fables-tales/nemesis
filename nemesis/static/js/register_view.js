@@ -68,6 +68,10 @@ var RegisterView = function() {
                     count += 1;
                     var human_error = human_readable_error(response.error);
                     row_info.feedback_node.text(human_error);
+                    // re-enable the fields
+                    $(row_info.tr).find(':input').each(function(i, e) {
+                        e.disabled = false;
+                    });
                     // all submissions done
                     if (count == submit_count) {
                         // re-enable submission
@@ -115,6 +119,10 @@ var RegisterView = function() {
                 if (invalid) {
                     continue;
                 }
+
+                $(row).find(":input").each(function (i, e) {
+                    e.disabled = true;
+                });
                 var row_info = { 'tr': row,
                       'feedback_node': feedback_node,
                              'fields': row_hash };
