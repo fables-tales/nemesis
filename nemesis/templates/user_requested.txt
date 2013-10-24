@@ -17,3 +17,6 @@ accounts@studentrobotics.org.
 Thanks,
 
 The Student Robotics Team
+
+Please note: this is an automated email, and the account it was sent from
+is unable to reply.
