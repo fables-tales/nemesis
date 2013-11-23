@@ -40,20 +40,23 @@ var Template = function() {
         var template_text = template_text;
 
         this.render_with = function(hash) {
-            var build = template_text;
-            for (var i = 0; i < build.length; i++) {
-                if (build.charAt(i) == "{") {
-                    var end_of_section = build.indexOf("}", i);
-                    var key = build.substring(i+1, end_of_section);
+            var build = "";
+            for (var i = 0; i < template_text.length; i++) {
+                if (template_text.charAt(i) == "{") {
+                    var end_of_section = template_text.indexOf("}", i);
+                    var key = template_text.substring(i+1, end_of_section);
                     var split = key.split(".");
                     if (split.length == 1) {
                         var majorkey = split[0];
-                        build = build.substring(0, i) + hash[majorkey] + build.substring(end_of_section+1,build.length);
+                        build += hash[majorkey];
                     } else {
                         var majorkey = split[0];
                         var minorkey = split[1];
-                        build = build.substring(0, i) + hash[majorkey][minorkey] + build.substring(end_of_section+1, build.length);
+                        build += hash[majorkey][minorkey];
                     }
+                    i = end_of_section;
+                } else {
+                    build += template_text.charAt(i);
                 }
             }
             return build;
