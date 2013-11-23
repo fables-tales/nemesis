@@ -106,6 +106,63 @@ def test_student_post_doesnt_set_first_last_name():
     assert details_dict["first_name"] == old_first
     assert details_dict["last_name"] == old_last
 
+def test_student_cant_set_team_leader():
+    params = {"username": "student_coll1_1",
+              "password": "cows",
+              "new_type": "team-leader",
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    assert not User("student_coll1_1").is_teacher
+
+def test_team_leader_can_set_team_leader():
+    params = {"username": "teacher_coll1",
+              "password": "facebees",
+              "new_type": "team-leader",
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    u = User("student_coll1_1")
+    is_teacher = u.is_teacher
+
+    # Clean up
+    u.make_student()
+    u.save()
+
+    # now assert (ensures the clean-up occurs)
+    assert is_teacher
+
+def test_team_leader_can_become_student():
+    # We need to test against another teacher, because team leaders demoting themselves is not allowed
+    u = User("student_coll1_1")
+    u.make_teacher()
+    u.save()
+
+    params = {"username": "teacher_coll1",
+              "password": "facebees",
+              "new_type": "student",
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    assert not User("student_coll1_1").is_teacher
+
+def test_team_leader_cant_demote_self():
+    params = {"username": "teacher_coll1",
+              "password": "facebees",
+              "new_type": "student",
+              }
+
+    r,data = test_helpers.server_post("/user/teacher_coll1", params)
+    assert r.status == 200
+
+    assert User("teacher_coll1").is_teacher
+
 def test_post_blueshirt_cant_set_team():
     old_team = "team-ABC"
     new_team = "team-DFE"

@@ -104,6 +104,9 @@
                     <input type="password" name="new_password">
                     <label>Team</label>
                     {team_select}
+                    <label>Type</label>
+                    <input type="radio" name="type" value="student"{checked.type_student}{disabled.type}>Student<br>
+                    <input type="radio" name="type" value="team-leader"{checked.type_team_leader}{disabled.type}>Team Leader - this will allow them to manage users
                     <hr>
                     <button type="submit" class="btn btn-primary" id="edit-submit">Submit</button>
                     <button type="submit" class="btn" id="edit-cancel-email-change">Cancel Email Change</button>

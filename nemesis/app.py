@@ -134,6 +134,11 @@ def set_user_details(userid):
             team = request.form["new_team"]
             if (not user_to_update.is_blueshirt) and ah.user.manages_team(team):
                 user_to_update.set_team(team)
+        if request.form.has_key("new_type") and ah.user.is_teacher and user_to_update != ah.user:
+            if request.form["new_type"] == 'student':
+                user_to_update.make_student()
+            elif request.form["new_type"] == 'team-leader':
+                user_to_update.make_teacher()
 
         user_to_update.save()
         return '{}', 200

@@ -20,15 +20,25 @@ var EditView = function() {
                 }
                 var disabled_fields = {
                     'first_name': '',
-                    'last_name': ''
+                    'last_name': '',
+                    'type': ''
                 };
+                var disabled = ' disabled="disabled"';
                 if (my_requesting_user.is_student) {
-                    var disabled = 'disabled="disabled"';
                     disabled_fields['first_name'] = disabled;
                     disabled_fields['last_name'] = disabled;
                 }
+                if (!my_requesting_user.is_team_leader) {
+                   disabled_fields['type'] = disabled;
+                }
+                var checked = ' checked="checked"';
+                var checked_fields = {
+                        'type_student': user.is_student ? checked : '',
+                    'type_team_leader': user.is_team_leader ? checked : ''
+                }
                 var opts = {"user":user,
                         "disabled":disabled_fields,
+                         "checked":checked_fields,
                    "email_comment":email_comment,
                      "team_select":that.make_team_select(user)};
                 var text = template.render_with(opts);
@@ -101,6 +111,11 @@ var EditView = function() {
             if (details['new_email'] == my_user.email) {
                 // If unchanged, we mustn't send the value -- this cancels any outstanding change requests
                 delete details['new_email'];
+            }
+
+            details['new_type'] = $("#update-user input[name=type]:checked")[0].value;
+            if ((details['new_type'] == 'student' && my_user.is_student) || (details['new_type'] == 'team-leader' && my_user.is_team_leader)) {
+                delete details['new_type'];
             }
 
             return details;
