@@ -36,7 +36,9 @@ $(document).ready(function() {
             $("#login-error").hide();
             sv.show(user.username);
             wv.end("Login succeeded");
-            wv.start("Loading college information");
+            if (user.colleges.length > 0) {
+                wv.start("Loading college information");
+            }
         },
         function(response) {
             av.display_auth_error(response["authentication_errors"]);
