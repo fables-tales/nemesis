@@ -33,18 +33,23 @@ var User = function() {
                     response = JSON.parse(response);
                 }
 
-                that.first_name = response.first_name;
-                that.last_name = response.last_name;
-                that.email = response.email;
-                that.new_email = response.new_email;
                 that.colleges = response.colleges;
                 that.teams = response.teams;
-                that.is_blueshirt = response.is_blueshirt;
-                that.is_student = response.is_student;
-                that.is_team_leader = response.is_team_leader;
-                that.has_media_consent = response.has_media_consent;
+                clone_simple_properties(response, that);
+
                 callback(that);
             });
+        };
+
+        var clone_simple_properties = function(from, to) {
+            to.first_name   = from.first_name;
+            to.last_name    = from.last_name;
+            to.email        = from.email;
+            to.new_email    = from.new_email;
+            to.is_blueshirt = from.is_blueshirt;
+            to.is_student   = from.is_student;
+            to.is_team_leader = from.is_team_leader;
+            to.has_media_consent = from.has_media_consent;
         };
 
         var set_header = function() {
