@@ -17,6 +17,8 @@ var User = function() {
                 }
                 that.colleges = $.map(response["colleges"], function(v, i) { return new College(v);});
                 that.teams = response.teams;
+                clone_simple_properties(response, that);
+
                 success_callback(that);
             }).error(function(response) {
                 response = response.responseText;

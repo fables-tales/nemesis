@@ -28,7 +28,7 @@ $(document).ready(function() {
                 college.fetch(function (college) {
                     waiting_colleges--;
                     if (waiting_colleges == 0) {
-                        cv.render_colleges(user.colleges);
+                        cv.render_colleges(user.colleges, !user.is_student);
                     };
                 });
             }
