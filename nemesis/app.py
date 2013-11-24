@@ -124,9 +124,11 @@ def set_user_details(userid):
             request_new_email(user_to_update, new_email)
         if request.form.has_key("new_password"):
             user_to_update.set_password(request.form["new_password"])
-        if request.form.has_key("new_first_name"):
+        # Students aren't allowed to update their own names
+        # at this point, if the ah.user is valid, we know it's a self-edit
+        if request.form.has_key("new_first_name") and not ah.user.is_student:
             user_to_update.set_first_name(request.form["new_first_name"])
-        if request.form.has_key("new_last_name"):
+        if request.form.has_key("new_last_name") and not ah.user.is_student:
             user_to_update.set_last_name(request.form["new_last_name"])
         if request.form.has_key("new_team"):
             team = request.form["new_team"]

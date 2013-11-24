@@ -18,7 +18,17 @@ var EditView = function() {
                 if (user.new_email !== undefined) {
                     email_comment = " (pending change to " + user.new_email + ")";
                 }
+                var disabled_fields = {
+                    'first_name': '',
+                    'last_name': ''
+                };
+                if (my_requesting_user.is_student) {
+                    var disabled = 'disabled="disabled"';
+                    disabled_fields['first_name'] = disabled;
+                    disabled_fields['last_name'] = disabled;
+                }
                 var opts = {"user":user,
+                        "disabled":disabled_fields,
                    "email_comment":email_comment,
                      "team_select":that.make_team_select(user)};
                 var text = template.render_with(opts);

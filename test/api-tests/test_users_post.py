@@ -82,6 +82,30 @@ def test_post_sets_first_last_name():
     u.set_last_name(old_last)
     u.save()
 
+def test_student_post_doesnt_set_first_last_name():
+    old_first = "student1i"
+    old_last  = "student"
+
+    params = {"username":"student_coll1_1",
+              "password":"cows",
+              "new_first_name":"asdf",
+              "new_last_name":"cheese",
+              }
+
+    r,data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    details_dict = User("student_coll1_1").details_dictionary_for(User.create_user("student_coll1_1", "cows"))
+
+    # restore original data
+    u = User("student_coll1_1")
+    u.set_first_name(old_first)
+    u.set_last_name(old_last)
+    u.save()
+
+    assert details_dict["first_name"] == old_first
+    assert details_dict["last_name"] == old_last
+
 def test_post_blueshirt_cant_set_team():
     old_team = "team-ABC"
     new_team = "team-DFE"

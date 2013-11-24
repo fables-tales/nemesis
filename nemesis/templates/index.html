@@ -93,9 +93,9 @@
                 <h2>Edit User <span class="username">{user.username}</span></h2>
                 <fieldset id="update-user">
                     <label>First Name</label>
-                    <input type="text" value="{user.first_name}" name="new_first_name">
+                    <input type="text" value="{user.first_name}" name="new_first_name" {disabled.first_name}>
                     <label>Last Name</label>
-                    <input type="text" value="{user.last_name}" name="new_last_name">
+                    <input type="text" value="{user.last_name}" name="new_last_name" {disabled.last_name}>
                     <div id="data-email">
                         <label>Email{email_comment}</label>
                         <input type="text" value="{user.email}" name="new_email">
