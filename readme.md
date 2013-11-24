@@ -1,8 +1,8 @@
 #Nemesis
 
-This is Nemesis, a new system for allowing team leaders running teams for the
-[Student Robotics](http://studentrobotics.org) competition to change their passwords.
-
+This is Nemesis, a system for allowing team leaders running teams for the
+[Student Robotics](http://studentrobotics.org) (SR) competition to administrate
+the user accounts of the team (including their own).
 
 ##Contributing
 
