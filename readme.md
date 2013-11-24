@@ -6,11 +6,15 @@ the user accounts of the team (including their own).
 
 ##Contributing
 
-Please file issues on GitHub. Not on the student robotics trac. Also please
-send me a GitHub pull request if you want to merge changes in. This allows
-for easy management in my brain
+Please file issues on Student Robotics [trac](http://trac.srobo.org) if you can.
+If you can't, please raise issues on GitHub instead, but be aware they'll
+be moved to trac for handling.
 
-##Phippen, you ass, just let me hack on it
+Patches should be submitted to SR's [gerrit](http://gerrit.srobo.org) if
+possible, but GitHub pull requests (to @PeterJCLaw) are OK if you can't do this.
+These are likely to be moved to gerrit for handling.
+
+##Development on a clone of the deployment server
 
 1. Get an srobo dev server [here](http://github.com/samphippen/badger-vagrant)
 2. You've got nemesis in `/srv/nemesis`
