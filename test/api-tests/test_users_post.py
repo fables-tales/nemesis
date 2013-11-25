@@ -82,6 +82,28 @@ def test_post_sets_first_last_name():
     u.set_last_name(old_last)
     u.save()
 
+def test_post_doesnt_set_blank_first_name():
+    old_first = User("student_coll1_1").first_name
+    params = {"username":"student_coll1_1",
+              "password":"cows",
+              "new_first_name":"",
+              }
+
+    r, data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+    assert User("student_coll1_1").first_name == old_first
+
+def test_post_doesnt_set_blank_last_name():
+    old_last = User("student_coll1_1").last_name
+    params = {"username":"student_coll1_1",
+              "password":"cows",
+              "new_last_name":"",
+              }
+
+    r, data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+    assert User("student_coll1_1").last_name == old_last
+
 def test_student_post_doesnt_set_first_last_name():
     old_first = "student1i"
     old_last  = "student"

@@ -58,8 +58,9 @@ var EditView = function() {
                     });
                 }
                 wv.end("Loaded user successfully!");
-                $("#edit-submit").click(function() {
+                $("#user_edit_form").submit(function(event) {
                     that.submit_form();
+                    event.preventDefault();
                 });
 
                 refresh_callback();
