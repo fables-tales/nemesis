@@ -46,7 +46,7 @@ var RegisterView = function() {
             // for each row, try to submit it.
             $(registrations).each(function(i, row_info) {
                 // clear feedback before new request
-                row_info.feedback_node.text(null);
+                row_info.feedback_node.text("");
                 that.send_registration_hash(row_info.fields, function() {
                     // success callback -- remove the row, see if all done
                     count += 1;
