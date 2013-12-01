@@ -74,3 +74,9 @@ var Template = function() {
         };
     };
 }();
+
+// node require() based exports.
+if (typeof(exports) != 'undefined') {
+	exports.Template = Template;
+	exports.TemplateExpander = TemplateExpander;
+}
