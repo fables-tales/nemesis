@@ -17,7 +17,7 @@ from libnemesis import User, srusers
 
 def create_pending_user(name = 'abc'):
     pu = PendingUser(name)
-    pu.teacher_username = 'jim'
+    pu.teacher_username = 'teacher_coll1'
     pu.college = 'college-1'
     pu.team = 'team-ABC'
     pu.email = name + '@srobo.org'
