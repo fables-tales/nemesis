@@ -2,6 +2,7 @@
 from datetime import timedelta
 import hashlib
 import random
+import re
 import os
 import sys
 
@@ -13,6 +14,9 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PATH + '/libnemesis/')
 
 from libnemesis import srusers, User
+
+def is_email_valid(email):
+    return re.match('.+@.+\...+', email)
 
 def create_verify_code(username, new_email):
     """

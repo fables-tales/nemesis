@@ -259,5 +259,16 @@ class TestHelpers(unittest.TestCase):
         used = helpers.email_used(email)
         assert used == True
 
+    def test_is_email_valid(self):
+        valids = ['pe@srobo.org', 'a@b.cc', 'sam@example.com']
+        invalids = ['@srobo.org', '@b.cc', 'a@b', 'a@.cc', 'a@b.', 'a@b.c', 'a@cc', 'bacon', 'bacon.cc']
+        for email in valids:
+            is_valid = helpers.is_email_valid(email)
+            assert is_valid, email
+
+        for email in invalids:
+            is_valid = helpers.is_email_valid(email)
+            assert not is_valid, email
+
 if __name__ == '__main__':
     unittest.main()

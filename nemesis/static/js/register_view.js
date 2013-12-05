@@ -114,6 +114,14 @@ var RegisterView = function() {
                         invalid = true;
                         return false;
                     }
+                    // reject emails that aren't a@b.cc
+                    if (name == 'email' && !/.+@.+\...+/.test(val)) {
+                        var human_error = human_readable_error('BAD_EMAIL');
+                        feedback_node.html(human_error);
+                        invalid = true;
+                        return false;
+                    }
+
                     row_hash[name] = val;
                 });
                 if (invalid) {
@@ -136,6 +144,7 @@ var RegisterView = function() {
         var human_readable_error = function(error_code) {
             var errors = { 'BAD_TEAM': "Invalid team requested",
                         'BAD_COLLEGE': "Invalid college requested",
+                          'BAD_EMAIL': "Invalid email address",
                'DETAILS_ALREADY_USED': "User details already in use",
             'YOU_CANT_REGISTER_USERS': "You are not allowed to register users",
                     // javascript generated errors

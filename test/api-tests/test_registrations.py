@@ -246,3 +246,31 @@ def test_registration_email_in_use():
     assert not pending.in_db
 
     test_helpers.assert_no_emails()
+
+@with_setup(remove_user('1_rt1'), remove_user('1_rt1'))
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
+def test_registration_email_in_use():
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "first_name":NEW_USER_FNAME,
+              "last_name":NEW_USER_LNAME,
+              "email":"nope",
+              "team":"team-ABC",
+              "college":"college-1"}
+
+    r,data = test_helpers.server_post("/registrations", params)
+
+    assert r.status == 403
+    assert 'BAD_EMAIL' in data
+    assert len(test_helpers.get_registrations()) == 0
+
+    try:
+        created = User.create_user('1_rt1')
+        assert False, "Should not have created user"
+    except:
+        pass
+
+    pending = PendingUser('1_rt1')
+    assert not pending.in_db
+
+    test_helpers.assert_no_emails()
