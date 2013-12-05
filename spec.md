@@ -183,7 +183,7 @@ in use. Otherwise 403.
 
 The usual authentication error conditions apply. Other errors are detailed
 via a single `error` key in the returned json object. Its values possible
-values are:
+values include:
 
 * `YOU_CANT_REGISTER_USERS`: The current user is not allowed to register
           users. Returned when the authenticated user is neither a
