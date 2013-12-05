@@ -50,7 +50,7 @@ var RegisterView = function() {
                 that.send_registration_hash(row_info.fields, function() {
                     // success callback -- remove the row, see if all done
                     count += 1;
-                    row_info.tr.remove();
+                    $(row_info.tr).remove();
                     wv.start("Registering users: " + count + "/" + submit_count);
                     // all submissions done
                     if (count == submit_count) {
