@@ -1,0 +1,17 @@
+Subject:User account activated
+Hello {name},
+
+This email confirms that {au_first_name} {au_last_name} has activated the
+user account ({au_username}) you requested for them. You should now be able
+to see them listed in the web interface, and can use that to make any
+required changes.
+
+If you have any problems getting them started, please contact us via
+accounts@studentrobotics.org.
+
+Thanks,
+
+The Student Robotics Team
+
+Please note: this is an automated email, and the account it was sent from
+is unable to reply.

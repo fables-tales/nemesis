@@ -212,6 +212,15 @@ def activate_account(username, code):
     u.make_student()
     u.save()
 
+    # let the team-leader know
+    rq_user = User.create_user(pu.teacher_username)
+    email_vars = { 'name': rq_user.first_name,
+            'au_username': username,
+          'au_first_name': u.first_name,
+           'au_last_name': u.last_name
+                 }
+    mailer.email_template(rq_user.email, 'user_activated_team_leader', email_vars)
+
     pu.delete()
 
     html = open(PATH + "/templates/activate.html").read()

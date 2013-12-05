@@ -11,6 +11,10 @@ Their username is: {pu_username}
 Their registered email address is: {pu_email}
 They will be a member of: {pu_team}, in {pu_college}
 
+Once they have activated their account, we'll send you another email confirming
+that that has happened. If the link expires before they've activated it,
+we'll send you an email to let you know that instead.
+
 If you have any problems getting them started, please contact us via
 accounts@studentrobotics.org.
 

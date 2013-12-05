@@ -69,3 +69,21 @@ def test_activate_success():
 
     pu = PendingUser(username)
     assert not pu.in_db, "registration DB entry should have been removed"
+
+    # ensure we sent the team-leader a confirmation
+    ps = test_helpers.last_email()
+    toaddr = ps.toaddr
+    tl_email = rq_user.email
+    assert toaddr == tl_email
+
+    vars = ps.template_vars
+    tl_name = rq_user.first_name
+    assert tl_name == vars['name']
+    first_name = cu.first_name
+    assert first_name == vars['au_first_name']
+    last_name = cu.last_name
+    assert last_name == vars['au_last_name']
+    assert username == vars['au_username']
+
+    template = ps.template_name
+    assert template == 'user_activated_team_leader'
