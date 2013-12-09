@@ -26,6 +26,10 @@ class KeyedSqliteThing(object):
         if id is not None:
             self._load()
 
+    def __repr__(self):
+        tname = type(self).__name__
+        return "{0}({1}, {2})".format(tname, self._id, self._props)
+
     def __getattr__(self, name):
         if name not in self._db_props:
             raise AttributeError("No property '%s'" % (name))

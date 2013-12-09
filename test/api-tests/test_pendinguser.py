@@ -69,6 +69,23 @@ def test_properties():
     assert pu.verify_code == 'bibble'
     assert pu.age == timedelta()
 
+def test_str():
+    pu = PendingUser('abc')
+    pu.teacher_username = 'jim'
+    pu.college = 'college-1'
+    pu.team = 'team-ABC'
+    pu.email = 'nope@srobo.org'
+    pu.verify_code = 'bibble'
+
+    as_str = str(pu)
+    assert 'PendingUser' in as_str
+    assert 'abc' in as_str
+    assert 'jim' in as_str
+    assert 'college-1' in as_str
+    assert 'team-ABC' in as_str
+    assert 'nope@srobo.org' in as_str
+    assert 'bibble' in as_str
+
 @with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_creation():
     pu = PendingUser('abc')
