@@ -293,6 +293,16 @@ class TestHelpersLogging(unittest.TestCase):
         expected = "my-action: foo, bar: jam, spam: ham"
         assert expected in logged
 
+    def test_log_action_objects(self):
+        class Foo(object):
+            def __repr__(self):
+                return 'Foo(bacon)'
+
+        helpers.log_action('action-my', Foo())
+        logged = self._stream.getvalue()
+        expected = "action-my: Foo(bacon)"
+        assert expected in logged
+
 
 if __name__ == '__main__':
     unittest.main()

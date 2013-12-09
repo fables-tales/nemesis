@@ -18,7 +18,7 @@ from libnemesis import srusers, User
 
 def log_action(action, *args, **kwargs):
     keyed = [k + ": " + str(v) for k, v in kwargs.iteritems()]
-    details = ", ".join(list(args) + keyed)
+    details = ", ".join(map(str, args) + keyed)
     logging.info("{0}: {1}".format(action, details))
 
 def is_email_valid(email):
