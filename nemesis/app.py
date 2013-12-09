@@ -5,10 +5,12 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(PATH + "/libnemesis/")
 
 import subprocess
+import logging
 import json
 
 import mailer
 import helpers
+from helpers import log_action
 
 from flask import Flask, request, url_for
 from datetime import timedelta
@@ -64,6 +66,8 @@ def register_user():
             pu.team = team
             pu.verify_code = verify_code
             pu.save()
+
+            log_action('registering user', pu)
 
             url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
             pu.send_welcome_email(first_name, url)
@@ -193,6 +197,8 @@ def activate_account(username, code):
     if pu.verify_code != code:
         return "Invalid verification code", 403
 
+    log_action('activating user', pu)
+
     from libnemesis import srusers
     new_pass = srusers.users.GenPasswd()
 
@@ -238,6 +244,8 @@ def verify_email(username, code):
     if change_request.verify_code != code:
         return "Invalid verification code", 403
 
+    log_action('changing email', user = username, new_email = change_request.new_email)
+
     u = User(change_request.username)
     u.set_email(change_request.new_email)
     u.save()
@@ -245,5 +253,12 @@ def verify_email(username, code):
     return "Email address successfully changed", 200
 
 if __name__ == "__main__":
+    # Print all the logging to stdout
+    defLoggger = logging.getLogger()
+    stdOutHandler = logging.StreamHandler(sys.stdout)
+    defLoggger.addHandler(stdOutHandler)
+    defLoggger.setLevel(logging.NOTSET)
+
+    # Run the app in debug mode
     app.debug = True
     app.run(host='0.0.0.0')

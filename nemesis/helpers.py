@@ -55,6 +55,7 @@ def clear_old_emails():
         # deliberately a larger delta than we restrict against to avoid
         # accidentally removing vaild entries
         if pe.age > timedelta(days = 3):
+            log_action('expiring email change', pe)
             pe.delete()
 
 def inform_team_lead_registration_expired(team_leader, expired_user):
@@ -71,6 +72,7 @@ def clear_old_registrations():
         # deliberately a larger delta than we restrict against to avoid
         # accidentally removing vaild entries
         if pu.age > timedelta(days = 3):
+            log_action('expiring registration', pu)
             pu.delete()
             expired = User(pu.username)
             expired.delete()
