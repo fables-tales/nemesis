@@ -1,9 +1,11 @@
 
 import datetime
 import httplib
+import logging
 import base64
 import unittest
 import urllib
+import StringIO
 import sys
 import os
 
@@ -270,6 +272,27 @@ class TestHelpersEmail(unittest.TestCase):
         for email in invalids:
             is_valid = helpers.is_email_valid(email)
             assert not is_valid, email
+
+class TestHelpersLogging(unittest.TestCase):
+
+    def setUp(self):
+        self._stream = StringIO.StringIO()
+        defLoggger = logging.getLogger()
+        self._handler = logging.StreamHandler(self._stream)
+        defLoggger.addHandler(self._handler)
+        defLoggger.setLevel(logging.NOTSET)
+
+    def tearDown(self):
+        defLoggger = logging.getLogger()
+        defLoggger.removeHandler(self._handler)
+        self._stream.close()
+
+    def test_log_action(self):
+        helpers.log_action('my-action', 'foo', bar = 'jam', spam = 'ham')
+        logged = self._stream.getvalue()
+        expected = "my-action: foo, bar: jam, spam: ham"
+        assert expected in logged
+
 
 if __name__ == '__main__':
     unittest.main()

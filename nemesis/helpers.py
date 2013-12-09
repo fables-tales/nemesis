@@ -1,6 +1,7 @@
 
 from datetime import timedelta
 import hashlib
+import logging
 import random
 import re
 import os
@@ -14,6 +15,11 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PATH + '/libnemesis/')
 
 from libnemesis import srusers, User
+
+def log_action(action, *args, **kwargs):
+    keyed = [k + ": " + str(v) for k, v in kwargs.iteritems()]
+    details = ", ".join(list(args) + keyed)
+    logging.info("{0}: {1}".format(action, details))
 
 def is_email_valid(email):
     return re.match('.+@.+\...+', email)
