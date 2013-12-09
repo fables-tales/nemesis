@@ -259,6 +259,7 @@ class TestHelpers(unittest.TestCase):
         used = helpers.email_used(email)
         assert used == True
 
+class TestHelpersEmail(unittest.TestCase):
     def test_is_email_valid(self):
         valids = ['pe@srobo.org', 'a@b.cc', 'sam@example.com']
         invalids = ['@srobo.org', '@b.cc', 'a@b', 'a@.cc', 'a@b.', 'a@b.c', 'a@cc', 'bacon', 'bacon.cc']
