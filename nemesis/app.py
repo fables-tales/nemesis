@@ -8,6 +8,7 @@ import subprocess
 import logging
 import json
 
+import config
 import mailer
 import helpers
 from helpers import log_action
@@ -18,6 +19,7 @@ from datetime import timedelta
 from libnemesis import User, College, AuthHelper
 from sqlitewrapper import PendingEmail, PendingUser
 
+config.configure_logging()
 app = Flask(__name__)
 
 
@@ -253,12 +255,6 @@ def verify_email(username, code):
     return "Email address successfully changed", 200
 
 if __name__ == "__main__":
-    # Print all the logging to stdout
-    defLoggger = logging.getLogger()
-    stdOutHandler = logging.StreamHandler(sys.stdout)
-    defLoggger.addHandler(stdOutHandler)
-    defLoggger.setLevel(logging.NOTSET)
-
     # Run the app in debug mode
     app.debug = True
     app.run(host='0.0.0.0')
