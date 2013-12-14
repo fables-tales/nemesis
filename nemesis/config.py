@@ -9,9 +9,11 @@ def _read_config():
     config = SafeConfigParser()
 
     baseDir = os.path.dirname(__file__)
+    config_ini = os.path.join(baseDir, 'config.ini')
+    local_ini = os.path.join(baseDir, 'local.ini')
 
-    config.readfp(open(os.path.join(baseDir, 'config.ini')))
-    config.read([os.path.join(baseDir, 'local.ini')])
+    config.readfp(open(config_ini))
+    config.read([local_ini])
 
 if config is None:
     _read_config()
