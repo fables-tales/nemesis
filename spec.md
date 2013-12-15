@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.4.0-alpha.3 [SemVer](http://semver.org/)
+##Version 3.4.0-alpha.4 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -139,9 +139,11 @@ be cancelled by setting this to the users' current email.
 * `new_first_name` optional: the new first name for the user. Note that
     students are not permitted to update names, so this value will be ignored
     if the authenticated user is a student (the request will otherwise appear to succeed).
+    If this value is set but is blank, no change will be made.
 * `new_last_name` optional: the new last name for the user. Note that
     students are not permitted to update names, so this value will be ignored
     if the authenticated user is a student (the request will otherwise appear to succeed).
+    If this value is set but is blank, no change will be made.
 * `new_type` optional: the type of account (either `student` or `team-leader`). Note that
     only teachers can cause any update to this information, and cannot change themselves,
     so this value will be ignored if the authenticated user is a student or a teacher is
