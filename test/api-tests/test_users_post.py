@@ -45,7 +45,7 @@ def test_post_blueshirt_own_student():
     r,data = test_helpers.server_post("/user/student_coll1_1", params)
     assert r.status == 200
 
-def test_post_sets_password():
+def test_post_sets_others_password():
     old_password = "cows"
 
     params = {"username":"blueshirt",
@@ -60,6 +60,51 @@ def test_post_sets_password():
     u = User("student_coll1_1")
     u.set_password(old_password)
     u.save()
+
+def test_post_sets_own_password():
+    old_password = "blueshirt"
+    new_password = 'bacon'
+
+    params = {"username":"blueshirt",
+              "password":old_password,
+              "new_password":new_password,
+              }
+
+    r,data = test_helpers.server_post("/user/blueshirt", params)
+    assert r.status == 200
+    assert User("blueshirt")._user.bind(new_password)
+
+    u = User("blueshirt")
+    u.set_password(old_password)
+    u.save()
+
+def test_post_sets_own_password_and_name():
+    old_password = "blueshirt"
+    new_password = 'bacon'
+    old_first = "Blue"
+    old_last  = "Shirt"
+
+    params = {"username":"blueshirt",
+              "password":old_password,
+              "new_password":new_password,
+              "new_first_name":'new_first',
+              "new_last_name":'new_last',
+              }
+
+    r,data = test_helpers.server_post("/user/blueshirt", params)
+    assert r.status == 200
+    assert User("blueshirt")._user.bind(new_password)
+
+    u = User("blueshirt")
+    first = u.first_name
+    last = u.last_name
+    u.set_password(old_password)
+    u.set_first_name(old_first)
+    u.set_last_name(old_last)
+    u.save()
+
+    assert first == 'new_first'
+    assert last == 'new_last'
 
 def test_post_sets_first_last_name():
     old_first = "student1i"

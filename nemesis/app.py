@@ -131,8 +131,6 @@ def set_user_details(userid):
         if request.form.has_key("new_email") and not ah.user.is_blueshirt:
             new_email = request.form["new_email"]
             request_new_email(user_to_update, new_email)
-        if request.form.has_key("new_password"):
-            user_to_update.set_password(request.form["new_password"])
         # Students aren't allowed to update their own names
         # at this point, if the ah.user is valid, we know it's a self-edit
         if request.form.has_key("new_first_name") and not ah.user.is_student:
@@ -150,6 +148,12 @@ def set_user_details(userid):
                 user_to_update.make_teacher()
 
         user_to_update.save()
+
+        # Do this separately and last because it makes an immediate change
+        # to the underlying database, rather than waiting for save().
+        if request.form.has_key("new_password"):
+            user_to_update.set_password(request.form["new_password"])
+
         return '{}', 200
     else:
         return ah.auth_error_json, 403
