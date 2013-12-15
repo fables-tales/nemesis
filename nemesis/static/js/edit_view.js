@@ -21,7 +21,9 @@ var EditView = function() {
                 var disabled_fields = {
                     'first_name': '',
                     'last_name': '',
-                    'type': ''
+                    'type': '',
+                    'update-user': '',
+                    'withdraw-user': ''
                 };
                 var disabled = ' disabled="disabled"';
                 if (my_requesting_user.is_student) {
@@ -31,16 +33,27 @@ var EditView = function() {
                 if (!my_requesting_user.is_team_leader) {
                    disabled_fields['type'] = disabled;
                 }
+                if (user.has_withdrawn) {
+                   disabled_fields['update-user'] = disabled;
+                }
+                if (!my_requesting_user.can_withdraw(user)) {
+                   disabled_fields['withdraw-user'] = disabled;
+                }
                 var checked = ' checked="checked"';
                 var checked_fields = {
                         'type_student': user.is_student ? checked : '',
                     'type_team_leader': user.is_team_leader ? checked : ''
                 }
+                var withdrawn_text = "";
+                if (user.has_withdrawn) {
+                    withdrawn_text = "This user has been withdrawn from the competition.";
+                }
                 var opts = {"user":user,
                         "disabled":disabled_fields,
                          "checked":checked_fields,
                    "email_comment":email_comment,
-                     "team_select":that.make_team_select(user)};
+                     "team_select":that.make_team_select(user),
+                  "withdrawn_text":withdrawn_text};
                 var text = template.render_with(opts);
                 jquerynode.html(text);
                 jquerynode.show();
@@ -55,6 +68,11 @@ var EditView = function() {
                     $("#edit-cancel-email-change").show()
                                                   .click(function() {
                         that.cancel_email_change();
+                    });
+                }
+                if (my_requesting_user.can_withdraw(user)) {
+                    $('#withdraw-user').show().click(function() {
+                        that.withdraw_user();
                     });
                 }
                 wv.end("Loaded user successfully!");
@@ -85,6 +103,13 @@ var EditView = function() {
                 that.refresh_view();
             });
         };
+
+        this.withdraw_user = function () {
+            wv.start("Withdrawing user");
+            $.post("user/" + my_user.username, {'withdrawn': true}, function (response) {
+                that.refresh_view();
+            });
+        }
 
         this.submit_form = function() {
             wv.start("Sending user details");

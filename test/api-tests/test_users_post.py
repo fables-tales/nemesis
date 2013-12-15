@@ -1,8 +1,9 @@
+from nose.tools import with_setup
 import test_helpers
 import sys
 
 sys.path.append("../../nemesis/libnemesis")
-from libnemesis import User
+from libnemesis import User, srusers
 
 def test_post_no_user():
     r,data = test_helpers.server_post("/user/student_coll1_1")
@@ -296,3 +297,44 @@ def test_post_teacher_cant_set_other_team():
     u = User("student_coll1_1")
     teams = [t.name for t in u.teams]
     assert [old_team] == teams
+
+def unwithdraw(username):
+    def do_unwithdrawal():
+        group = srusers.group('withdrawn')
+        group.user_rm(username)
+        group.save()
+    return do_unwithdrawal
+
+@with_setup(None, unwithdraw('student_coll1_1'))
+def test_post_teacher_can_withdraw_student():
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "withdrawn":'true',
+              }
+
+    r, data = test_helpers.server_post("/user/student_coll1_1", params)
+    assert r.status == 200
+
+    assert User("student_coll1_1").has_withdrawn
+
+def test_post_student_cant_withdraw_other_student():
+    params = {"username":"student_coll1_1",
+              "password":"cows",
+              "withdrawn":'true',
+              }
+
+    r, data = test_helpers.server_post("/user/student_coll1_2", params)
+    assert r.status == 403
+
+    assert not User("student_coll1_2").has_withdrawn
+
+def test_post_teacher_cant_withdraw_self():
+    params = {"username":"teacher_coll1",
+              "password":"facebees",
+              "withdrawn":'true',
+              }
+
+    r, data = test_helpers.server_post("/user/teacher_coll1", params)
+    assert r.status == 200
+
+    assert not User("teacher_coll1").has_withdrawn
