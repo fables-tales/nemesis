@@ -87,7 +87,18 @@ var EditView = function() {
 
         this.submit_form = function() {
             wv.start("Sending user details");
-            $.post("user/" + my_user.username, this.details_on_form(), function(response) {
+            var cb_extra = null;
+            var details = this.details_on_form();
+            if (my_user.username == my_requesting_user.username && 'new_password' in details) {
+                cb_extra = function() {
+                    var null_cb = function() {};
+                    my_requesting_user.login(details['new_password'], null_cb, null_cb);
+                };
+            }
+            $.post("user/" + my_user.username, details, function(response) {
+                if (cb_extra != null) {
+                    cb_extra();
+                }
                 that.refresh_view();
             });
         };
