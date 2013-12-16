@@ -55,6 +55,12 @@ def register_user():
             if not helpers.is_email_valid(email):
                 return json.dumps({"error":"BAD_EMAIL"}), 403
 
+            if not helpers.is_name_valid(first_name):
+                return json.dumps({"error":"BAD_FIRST_NAME"}), 403
+
+            if not helpers.is_name_valid(last_name):
+                return json.dumps({"error":"BAD_LAST_NAME"}), 403
+
             if User.name_used(first_name, last_name) or helpers.email_used(email):
                 return json.dumps({"error":"DETAILS_ALREADY_USED"}), 403
 

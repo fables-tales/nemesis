@@ -145,6 +145,8 @@ var RegisterView = function() {
             var errors = { 'BAD_TEAM': "Invalid team requested",
                         'BAD_COLLEGE': "Invalid college requested",
                           'BAD_EMAIL': "Invalid email address",
+                     'BAD_FIRST_NAME': "Invalid first name",
+                      'BAD_LAST_NAME': "Invalid last name",
                'DETAILS_ALREADY_USED': "User details already in use",
             'YOU_CANT_REGISTER_USERS': "You are not allowed to register users",
                     // javascript generated errors
