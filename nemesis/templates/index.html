@@ -68,9 +68,9 @@
                         <button class="refresh icon-refresh pull-right" title="Refresh college data"></button>
                     </h4>
                     <ul class="nav nav-pills nav-stacked">
-                        {users}
+                        {html:users}
                         <hr/>
-                        {register}
+                        {html:register}
                     </ul>
                 </div>
             </script>
@@ -78,7 +78,7 @@
                 <a href="#edit-{username}"><i class="icon-user icon-white"></i> {first_name} {last_name} ({username})</a>
             </script>
             <script type="text/template" id="user_link">
-                <li class="user {user.username}"><a href="#edit-{user.username}">{user.media} <i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
+                <li class="user {user.username}"><a href="#edit-{user.username}">{html:user.media} <i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
             </script>
 
             <script type="text/template" id="register_link">
@@ -94,9 +94,9 @@
                 <form id="user_edit_form">
                 <fieldset id="update-user">
                     <label>First Name</label>
-                    <input required type="text" value="{user.first_name}" name="new_first_name" {disabled.first_name}>
+                    <input required type="text" value="{user.first_name}" name="new_first_name" {html:disabled.first_name}>
                     <label>Last Name</label>
-                    <input required type="text" value="{user.last_name}" name="new_last_name" {disabled.last_name}>
+                    <input required type="text" value="{user.last_name}" name="new_last_name" {html:disabled.last_name}>
                     <div id="data-email">
                         <label>Email{email_comment}</label>
                         <input required type="text" value="{user.email}" name="new_email">
@@ -104,10 +104,10 @@
                     <label>Password</label>
                     <input type="password" name="new_password">
                     <label>Team</label>
-                    {team_select}
+                    {html:team_select}
                     <label>Type</label>
-                    <input type="radio" name="type" value="student"{checked.type_student}{disabled.type}>Student<br>
-                    <input type="radio" name="type" value="team-leader"{checked.type_team_leader}{disabled.type}>Team Leader - this will allow them to manage users
+                    <input type="radio" name="type" value="student"{html:checked.type_student}{html:disabled.type}>Student<br>
+                    <input type="radio" name="type" value="team-leader"{html:checked.type_team_leader}{html:disabled.type}>Team Leader - this will allow them to manage users
                     <hr>
                     <button type="submit" class="btn btn-primary" id="edit-submit">Submit</button>
                     <button class="btn" id="edit-cancel-email-change">Cancel Email Change</button>
@@ -135,7 +135,7 @@
                         <td><input type="text" required name="first_name"></td>
                         <td><input type="text" required name="last_name"></td>
                         <td><input type="email" required name="email"></td>
-                        <td>{team_select}</td>
+                        <td>{html:team_select}</td>
                         <td class="feedback"></td>
                     </fieldset>
                 </tr>

@@ -1,4 +1,7 @@
 var TemplateExpander = {
+    "escape" : function(text) {
+        return $('<div/>').text(text).html().replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    },
     "template" : function(template_name) {
         return new Template($("#" + template_name).html());
     },
@@ -39,7 +42,7 @@ var Template = function() {
     return function(template_text) {
         var template_text = template_text;
 
-        this.escape = function(t) { return t; };
+        this.escape = TemplateExpander.escape;
 
         this.render_with = function(hash) {
             var build = "";
