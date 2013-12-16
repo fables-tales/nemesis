@@ -39,6 +39,8 @@ var Template = function() {
     return function(template_text) {
         var template_text = template_text;
 
+        this.escape = function(t) { return t; };
+
         this.render_with = function(hash) {
             var build = "";
             for (var i = 0; i < template_text.length; i++) {
@@ -48,11 +50,18 @@ var Template = function() {
                     var split = key.split(".");
                     var value = '';
                     var majorkey = split[0];
+                    var at_idx = majorkey.indexOf(':');
+                    if (at_idx >= 0) {
+                        majorkey = majorkey.substring(at_idx + 1);
+                    }
                     if (split.length == 1) {
                         value = hash[majorkey];
                     } else {
                         var minorkey = split[1];
                         value = hash[majorkey][minorkey];
+                    }
+                    if (at_idx == -1) {
+                        value = this.escape(value);
                     }
                     build += value;
                     i = end_of_section;

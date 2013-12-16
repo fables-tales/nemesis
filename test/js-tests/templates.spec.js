@@ -4,6 +4,7 @@ var te = require('../../nemesis/static/js/template_expander.js');
 describe("The Template class", function() {
 	var getTemplate = function (text) {
 		var templateExpander = new te.Template(text);
+		templateExpander.escape = function(t) { return t; };
 		return templateExpander;
 	};
 	it("should be defined", function() {
@@ -41,6 +42,15 @@ describe("The Template class", function() {
 		var expander = getTemplate('before {a}{b}{c} after');
 		var out = expander.render_with({ 'a': '', 'b': '', 'c': '' });
 		expect(out).toBe('before  after');
+	});
+	it("should escape bad characters in unlabelled template blocks", function() {
+		var expander = getTemplate('before {foo} {html:other} after');
+		// fake escaping function to prove it's called.
+		expander.escape = function(text) {
+			return text.toUpperCase();
+		}
+		var out = expander.render_with({ 'foo':'bad', 'other':'good' });
+		expect(out).toBe('before BAD good after');
 	});
 	it("should expand keyed template blocks passed", function() {
 		var expander = getTemplate('before {tpl.first} after');
@@ -86,5 +96,14 @@ describe("The Template class", function() {
 		var expander = getTemplate('before {tpl.foo} after');
 		var out = expander.render_with({ 'tpl': {'foo':'jam', 'other':'nope'} });
 		expect(out).toBe('before jam after');
+	});
+	it("should escape bad characters in unlabelled keyed templates", function() {
+		var expander = getTemplate('before {tpl.foo} {html:tpl.other} after');
+		// fake escaping function to prove it's called.
+		expander.escape = function(text) {
+			return text.toUpperCase();
+		}
+		var out = expander.render_with({ 'tpl': {'foo':'bad', 'other':'good'} });
+		expect(out).toBe('before BAD good after');
 	});
 });
