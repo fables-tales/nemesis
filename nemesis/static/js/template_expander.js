@@ -46,14 +46,15 @@ var Template = function() {
                     var end_of_section = template_text.indexOf("}", i);
                     var key = template_text.substring(i+1, end_of_section);
                     var split = key.split(".");
+                    var value = '';
+                    var majorkey = split[0];
                     if (split.length == 1) {
-                        var majorkey = split[0];
-                        build += hash[majorkey];
+                        value = hash[majorkey];
                     } else {
-                        var majorkey = split[0];
                         var minorkey = split[1];
-                        build += hash[majorkey][minorkey];
+                        value = hash[majorkey][minorkey];
                     }
+                    build += value;
                     i = end_of_section;
                 } else {
                     build += template_text.charAt(i);
