@@ -6,7 +6,7 @@ describe("The Template class", function() {
 		expect(te.Template).toBeDefined();
 	});
 	it("should be possible to instantiate", function() {
-		var expander = te.Template('');
+		var expander = new te.Template('');
 	});
 	it("should be possible to render its content", function() {
 		var expander = new te.Template('');
