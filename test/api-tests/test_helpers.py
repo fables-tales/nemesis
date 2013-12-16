@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 
 import datetime
 import httplib
@@ -261,7 +262,7 @@ class TestHelpers(unittest.TestCase):
         used = helpers.email_used(email)
         assert used == True
 
-class TestHelpersEmail(unittest.TestCase):
+class TestValidityHelpers(unittest.TestCase):
     def test_is_email_valid(self):
         valids = ['pe@srobo.org', 'a@b.cc', 'sam@example.com']
         invalids = ['@srobo.org', '@b.cc', 'a@b', 'a@.cc', 'a@b.', 'a@b.c', 'a@cc', 'bacon', 'bacon.cc']
@@ -272,6 +273,18 @@ class TestHelpersEmail(unittest.TestCase):
         for email in invalids:
             is_valid = helpers.is_email_valid(email)
             assert not is_valid, email
+
+    def test_is_name_valid(self):
+        valids = ['valid name', 'Valid', "Lycée Emmanuel", "émmanuel", "Teal'c", u"\u5317\u4EB0", \
+                  'th"at', 'spa(m', 'spa)m', 'spa&m', 'spa=m']
+        invalids = ['@srobo', '2this', '"that', '(m', ')m', '&m', '=m']
+        for name in valids:
+            is_valid = helpers.is_name_valid(name)
+            assert is_valid, name
+
+        for name in invalids:
+            is_valid = helpers.is_name_valid(name)
+            assert not is_valid, name
 
 class TestHelpersLogging(unittest.TestCase):
 

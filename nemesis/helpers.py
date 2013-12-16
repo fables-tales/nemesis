@@ -6,6 +6,7 @@ import random
 import re
 import os
 import sys
+from unidecode import unidecode
 
 import mailer
 from sqlitewrapper import PendingEmail, PendingSend, PendingUser
@@ -23,6 +24,12 @@ def log_action(action, *args, **kwargs):
 
 def is_email_valid(email):
     return re.match('.+@.+\...+', email)
+
+def is_name_valid(name):
+    if len(name) == 0:
+        return False
+    first = unidecode(name[0])[0]
+    return first.isalpha()
 
 def create_verify_code(username, new_email):
     """
