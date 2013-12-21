@@ -10,15 +10,14 @@ import StringIO
 import sys
 import os
 
-sys.path.insert(0,os.path.abspath('../../nemesis/'))
-import helpers as helpers
-from sqlitewrapper import PendingEmail, PendingUser, PendingSend, sqlite_connect
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-sys.path.append("../../nemesis/libnemesis")
+from common_test_helpers import apache_mode, delete_db, get_registrations, assert_no_emails, last_email, last_n_emails, remove_user, root, template
+
+import helpers
+from sqlitewrapper import PendingUser, PendingEmail, sqlite_connect
+
 from libnemesis import srusers, User
-
-def apache_mode():
-    return os.path.exists(".apachetest")
 
 def make_connection():
     if not apache_mode():
@@ -28,20 +27,6 @@ def make_connection():
 
 def modify_endpoint(endpoint):
     return "/userman" + endpoint if apache_mode() else endpoint
-
-def delete_db():
-    conn = sqlite_connect()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM registrations")
-    cur.execute("DELETE FROM email_changes")
-    cur.execute("DELETE FROM outbox")
-    conn.commit()
-
-def get_registrations():
-    conn = sqlite_connect()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM registrations")
-    return list(cur)
 
 def unicode_encode(params_hash):
     for key in params_hash:
@@ -87,54 +72,6 @@ def server_get(endpoint, params=None):
     resp = conn.getresponse()
     data = resp.read()
     return resp, data
-
-def remove_user(name):
-    """A setup helper"""
-    def helper():
-        u = srusers.user(name)
-        if u.in_db:
-            for gid in u.groups():
-                g = srusers.group(gid)
-                g.user_rm(u.username)
-                g.save()
-            u.delete()
-    return helper
-
-def root():
-   root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-   return root
-
-def last_email():
-    conn = sqlite_connect()
-    cur  = conn.cursor()
-    cur.execute("SELECT id FROM outbox")
-    row = cur.fetchone()
-    assert row is not None, "Failed to get last email from SQLite."
-    return PendingSend(row[0])
-
-def last_n_emails(num):
-    conn = sqlite_connect()
-    cur  = conn.cursor()
-    cur.execute("SELECT id FROM outbox LIMIT ?", (num,))
-    rows = cur.fetchall()
-    assert len(rows) == num, "Failed to get last %d emails from SQLite." % (num,)
-    mails = []
-    for row in rows:
-        mails.append(PendingSend(row[0]))
-    return mails
-
-def assert_no_emails():
-    conn = sqlite_connect()
-    cur  = conn.cursor()
-    cur.execute("SELECT id FROM outbox")
-    row = cur.fetchone()
-    assert row is None, "Should not be any emails in SQLite."
-
-def template(name):
-    file_path = os.path.join(root(), 'nemesis/templates', name)
-    assert os.path.exists(file_path), "Cannot open a template that doesn't exist."
-    with open(file_path, 'r') as f:
-        return f.readlines()
 
 class TestHelpers(unittest.TestCase):
     def setUp(self):
