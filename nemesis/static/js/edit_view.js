@@ -126,11 +126,13 @@ var EditView = function() {
             }
 
             var user_type = $("#update-user input[name=type]:checked");
-            var new_type = user_type[0].value;
-            // only bother signalling changes
-            if ((new_type == 'student' && my_user.is_team_leader)
-             || (new_type == 'team-leader' && my_user.is_student)) {
-                details['new_type'] = new_type;
+            if (user_type.length > 0) { // blueshirts don't have a displayed type for the moment.
+                var new_type = user_type[0].value;
+                // only bother signalling changes
+                if ((new_type == 'student' && my_user.is_team_leader)
+                 || (new_type == 'team-leader' && my_user.is_student)) {
+                    details['new_type'] = new_type;
+                }
             }
 
             return details;
