@@ -1,11 +1,9 @@
 
 from datetime import datetime, timedelta
 from nose.tools import raises, with_setup
-import sys
 
 import test_helpers
 
-sys.path.append("../../nemesis")
 from sqlitewrapper import *
 
 def test_simple_properties():

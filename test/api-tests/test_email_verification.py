@@ -9,7 +9,7 @@ import unittest
 import test_helpers
 
 sys.path.append("../../nemesis")
-from sqlitewrapper import PendingEmail
+from sqlitewrapper import PendingEmail, sqlite_connect
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User
@@ -159,7 +159,7 @@ def test_verify_wrong_code():
 
 @with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_verify_outdated_request():
-    conn = test_helpers.sqlite_connect()
+    conn = sqlite_connect()
     cur = conn.cursor()
     statement = "INSERT INTO email_changes (username, new_email, request_time, verify_code) VALUES (?,?,?, ?)"
     old = datetime.datetime.now() - datetime.timedelta(days = 4)

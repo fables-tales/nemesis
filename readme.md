@@ -18,10 +18,8 @@ These are likely to be moved to gerrit for handling.
 
 1. Get an srobo dev server [here](http://github.com/samphippen/badger-vagrant)
 2. You've got nemesis in `/srv/nemesis`
-3. Run the rest-api tests by changing into `test/api-tests` and running
-   `./apache_tests.sh`
-4. Run the JavaScript unit tests: `jasmine-node test/js-tests`
-5. There are some obsolete javascript client tests in `test/client-tests`.
+3. Run the current set of valid tests using the `./run-tests` script.
+4. There are some obsolete javascript client tests in `test/client-tests`.
    In theory, the dependencies could be installed with `./get-dependencies.sh`,
    see the readme in the same directory to run the tests.
 

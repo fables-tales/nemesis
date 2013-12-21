@@ -1,11 +1,9 @@
 
 from datetime import timedelta
 from nose.tools import raises, with_setup
-import sys
 
 import test_helpers
 
-sys.path.append("../../nemesis")
 from sqlitewrapper import *
 
 @with_setup(test_helpers.delete_db)

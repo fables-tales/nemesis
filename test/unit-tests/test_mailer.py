@@ -1,5 +1,4 @@
 
-from nose.tools import with_setup
 import os
 from unittest import TestCase
 
