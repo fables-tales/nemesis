@@ -6,7 +6,7 @@ import traceback
 import os
 
 from config import config
-from sqlitewrapper import PendingSend
+import sqlitewrapper
 
 def send_email(toaddr, subject, msg):
 
@@ -49,7 +49,7 @@ def send_email_template(toaddr, template_name, template_vars):
 
 def store_template(toaddr, template_name, template_vars):
     logging.debug("storing pending email: '{0}' to '{1}'.".format(template_name, toaddr))
-    ps = PendingSend()
+    ps = sqlitewrapper.PendingSend()
     ps.toaddr = toaddr
     ps.template_name = template_name
     ps.template_vars = template_vars
