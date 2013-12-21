@@ -125,9 +125,12 @@ var EditView = function() {
                 delete details['new_email'];
             }
 
-            details['new_type'] = $("#update-user input[name=type]:checked")[0].value;
-            if ((details['new_type'] == 'student' && my_user.is_student) || (details['new_type'] == 'team-leader' && my_user.is_team_leader)) {
-                delete details['new_type'];
+            var user_type = $("#update-user input[name=type]:checked");
+            var new_type = user_type[0].value;
+            // only bother signalling changes
+            if ((new_type == 'student' && my_user.is_team_leader)
+             || (new_type == 'team-leader' && my_user.is_student)) {
+                details['new_type'] = new_type;
             }
 
             return details;
