@@ -1,34 +1,30 @@
-from pyvirtualdisplay import Display
-from selenium import webdriver
-import sqlite3
 
+import os
+import sys
 
-browser = None
-display = None
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from common_test_helpers import sqlite_connect, last_email, template
+from common_test_helpers import delete_db as clear_database
+
+# Customisable import. Deliberately not present by default
+import local
 
 def get_browser():
-    global browser
-    global display
-    display = Display(visible=0, size=(800, 600))
-    display.start()
-
-    browser = webdriver.Firefox(timeout=10)
-    browser.get("https://localhost/userman")
+    '''
+    Returns a webdriver instance already pointing at the nemesis main page.
+    This wrapper just asserts that this is the case.
+    '''
+    browser = local.get_browser()
+    browser.get(local.root_url)
+    assert 'Userman' in browser.title
     return browser
 
 def end_browser():
-    browser.quit()
-    display.stop()
-
-def sqlite_connect():
-    conn = sqlite3.connect("../../nemesis/db/nemesis.sqlite")
-    return conn
-
-def clear_database():
-    conn = sqlite_connect()
-    cur  = conn.cursor()
-    cur.execute("DELETE FROM registrations")
-    conn.commit()
+    '''
+    Quits the started browser, plus any related tidyup.
+    '''
+    local.end_browser()
 
 def registration_count():
     conn = sqlite_connect()
