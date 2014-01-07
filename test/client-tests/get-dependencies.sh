@@ -1,4 +1,4 @@
-wget -c http://selenium.googlecode.com/files/selenium-server-standalone-2.26.0.jar
+wget -c http://selenium.googlecode.com/files/selenium-server-standalone-2.39.0.jar
 yum groupinstall -y 'Fonts'
 yum install -y 'firefox'
 yum install -y xorg-x11-server-Xvfb
