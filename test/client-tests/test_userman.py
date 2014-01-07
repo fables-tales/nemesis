@@ -1,7 +1,8 @@
-import unittest
-import test_helpers as helpers
-import time
 
+import time
+import unittest
+
+import test_helpers as helpers
 
 class testUserman(unittest.TestCase):
     def tearDown(self):
