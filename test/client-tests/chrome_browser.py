@@ -6,6 +6,9 @@ import test_helpers
 
 browser = None
 
+# Default for developing, modify if needed
+root_url = 'http://localhost:5000'
+
 def get_browser():
     global browser
 
