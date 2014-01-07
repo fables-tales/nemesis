@@ -12,6 +12,16 @@ or any other browser Selenium can control.
 4. In the first start a selenium server by running  `java -jar $the_selenium_jar`
 5. Run the tests in the second (`python test_userman.py`).
 
+## HTMLUnit
+
+1. Download the Selenium standalone jar (see the first line in the
+   `get-dependencies.sh` script).
+2. Copy or link the `htmlunitwithjs_browser.py` file to `local_browser.py`
+   in this folder.
+3. Open a pair of terminals
+4. In the first start a selenium server by running  `java -jar $the_selenium_jar`
+5. Run the tests in the second (`python test_userman.py`).
+
 ## Chrome
 
 1. Download the Chrome Driver, from https://sites.google.com/a/chromium.org/chromedriver/downloads,
