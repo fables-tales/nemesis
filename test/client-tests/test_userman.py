@@ -36,38 +36,71 @@ class testUserman(unittest.TestCase):
         self.browser = b
 
     def login(self):
-        time.sleep(1.5)
-        username = self.browser.find_element_by_id("username")
+        self.assert_shown('login')
+
+        username = self.assert_shown('username')
         username.send_keys("teacher_coll1")
 
-        password = self.browser.find_element_by_id("password")
+        password = self.assert_shown('password')
         password.send_keys("facebees")
 
-        login_button = self.browser.find_element_by_id("go")
+        login_button = self.browser.find_element_by_css_selector('#login button')
         login_button.click()
+        messages = self.assert_shown('messages')
+        curr_msg = messages.text
+        assert curr_msg == 'Logging in...'
         time.sleep(2.5)
 
+    def assert_shown(self, elem_id):
+        elem = self.browser.find_element_by_id(elem_id)
+        assert elem.is_displayed(), "{0} should be shown".format(elem_id)
+        return elem
+
+    def assert_shown_selector(self, elem_selector):
+        elem = self.browser.find_element_by_css_selector(elem_selector)
+        assert elem.is_displayed(), "{0} should be shown".format(elem_id)
+        return elem
+
+    def assert_not_shown(self, elem_id):
+        elem = self.browser.find_element_by_id(elem_id)
+        assert not elem.is_displayed(), "{0} should not be shown".format(elem_id)
+        return elem
+
     def test_landingpage_title(self):
-        time.sleep(1)
-        self.assertEqual(self.browser.title,"Student Robotics Userman")
-        college = self.browser.find_element_by_id("college")
-        self.assertFalse(college.is_displayed())
+        assert self.browser.title == "Userman"
+        self.assert_shown('login')
+        self.assert_shown('username')
+        self.assert_shown('password')
 
     def test_landingpage_login(self):
         self.login()
-
-        college = self.browser.find_element_by_id("college")
-        self.assertTrue(college.is_displayed())
+        self.assert_shown('data-college-list')
+        college_1 = self.assert_shown('college-1')
+        assert "college the first" in college_1.text
+        self.assert_shown_selector('#college-1 li.register')
+        for uid in ['teacher_coll1', 'student_coll1_1', 'student_coll1_2', \
+                    'blueshirt', 'withdrawn_student']:
+            self.assert_shown_selector('#college-1 li.{0}'.format(uid))
 
     def test_landingpage_register(self):
         self.login()
 
-        registration_link = self.browser.find_element_by_id("show-register")
-        registration_link.click()
-        register_users_div = self.browser.find_element_by_id("register-users")
+        reg_link = self.assert_shown_selector('#college-1 li.register a')
+        reg_link.click()
 
-        self.assertTrue("#register-users" in self.browser.current_url)
-        self.assertTrue(register_users_div.is_displayed())
+        current_url = self.browser.current_url
+        assert "#reg-college-1" in current_url
+
+        time.sleep(0.5)
+
+        reg_li = self.assert_shown_selector('#college-1 li.register')
+        reg_li_classes = reg_li.get_attribute('class')
+        assert 'active' in reg_li_classes
+
+        register_users_div = self.assert_shown("data-register-users")
+        register_users_table = self.assert_shown("data-register-table")
+        first_name_1 = self.assert_shown_selector("#data-register-table input[name=first_name]")
+        assert first_name_1.is_selected, 'focus should be on the first_name input'
 
     def test_landingpage_user(self):
         self.login()
