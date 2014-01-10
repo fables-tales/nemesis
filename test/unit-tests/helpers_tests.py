@@ -155,15 +155,16 @@ class TestValidityHelpers(unittest.TestCase):
             assert not is_valid, email
 
     def test_is_name_valid(self):
-        valids = ['valid name', 'Valid', "Lycée Emmanuel", "émmanuel", "Teal'c", u"\u5317\u4EB0", \
+        valids = ['valid name', 'Valid', u"Lycée Emmanuel", u"émmanuel", \
+                  "Teal'c", u"\u5317\u4EB0", \
                   'th"at', 'spa(m', 'spa)m', 'spa&m', 'spa=m']
         invalids = ['@srobo', '2this', '"that', '(m', ')m', '&m', '=m']
         for name in valids:
-            is_valid = helpers.is_name_valid(name)
+            is_valid = helpers.is_name_valid(unicode(name))
             assert is_valid, name
 
         for name in invalids:
-            is_valid = helpers.is_name_valid(name)
+            is_valid = helpers.is_name_valid(unicode(name))
             assert not is_valid, name
 
 class TestHelpersLogging(unittest.TestCase):
