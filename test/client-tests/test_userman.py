@@ -157,6 +157,15 @@ class testUserman(unittest.TestCase):
         self_link.click()
         self.assert_editing('teacher_coll1')
 
+    def test_self_edit_link_student(self):
+        self.login('student_coll1_1', 'cows')
+
+        self_link = self.assert_shown_selector('#logged-in-user a')
+        assert "student1 student (student_coll1_1)" == self_link.text
+
+        self_link.click()
+        self.assert_editing('student_coll1_1')
+
     def test_register(self):
         self.login()
         registration_link = self.browser.find_element_by_id("show-register")
