@@ -4,6 +4,13 @@ import unittest
 
 import test_helpers as helpers
 
+def wait_while(predicate, max = 5):
+    end = time.time() + max
+    while predicate():
+        time.sleep(0.1)
+        if time.time() > end:
+            break
+
 class testUserman(unittest.TestCase):
     def tearDown(self):
         helpers.end_browser()
@@ -66,6 +73,31 @@ class testUserman(unittest.TestCase):
         assert not elem.is_displayed(), "{0} should not be shown".format(elem_id)
         return elem
 
+    def wait_shown(self, elem_id, max = 5):
+        not_shown = lambda: not self.browser.find_element_by_id(elem_id).is_displayed()
+        wait_while(not_shown, max)
+        return self.assert_shown(elem_id)
+
+    def wait_shown_selector(self, elem_selector, max = 5):
+        not_shown = lambda: not self.browser.find_element_by_css_selector(elem_id).is_displayed()
+        wait_while(not_shown, max)
+        return self.assert_shown_selector(elem_selector)
+
+
+    def assert_editing(self, username):
+        anchor = '#edit-' + username
+        url = self.browser.current_url
+        assert anchor in url
+
+        user_li = self.assert_shown_selector('#college-1 li.user.' + username)
+        classes = user_li.get_attribute('class')
+        assert 'active' in classes
+
+        self.wait_shown('data-edit-user', 1)
+        header = self.assert_shown_selector('#data-edit-user h2')
+        assert username in header.text
+
+
     def test_landingpage_title(self):
         assert self.browser.title == "Userman"
         self.assert_shown('login')
@@ -102,14 +134,27 @@ class testUserman(unittest.TestCase):
         first_name_1 = self.assert_shown_selector("#data-register-table input[name=first_name]")
         assert first_name_1.is_selected, 'focus should be on the first_name input'
 
-    def test_landingpage_user(self):
+    def test_user_display(self):
         self.login()
-        user_link = self.browser.find_element_by_link_text("student1 student (student_coll1_1)")
+
+        user_li = self.assert_shown_selector('#college-1 li.user.student_coll1_1')
+        classes = user_li.get_attribute('class')
+        assert 'active' not in classes
+
+        user_link = self.assert_shown_selector('#college-1 li.user.student_coll1_1 a')
+        assert "student1 student (student_coll1_1)" == user_link.text
+
         user_link.click()
-        user_div = self.browser.find_element_by_id("user")
-        time.sleep(3)
-        self.assertTrue("#show-student_coll1_1" in self.browser.current_url)
-        self.assertTrue(user_div.is_displayed())
+        self.assert_editing('student_coll1_1')
+
+    def test_self_edit_link(self):
+        self.login()
+
+        self_link = self.assert_shown_selector('#logged-in-user a')
+        assert "teacher teacher (teacher_coll1)" == self_link.text
+
+        self_link.click()
+        self.assert_editing('teacher_coll1')
 
     def test_register(self):
         self.login()
