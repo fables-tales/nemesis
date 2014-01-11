@@ -7,7 +7,7 @@ or any other browser Selenium can control.
 ## Firefox on a dev srobo server
 
 1. Install the dependencies with the `get-dependencies.sh` script.
-2. Copy or link the `badger_firefox.py` file to `local_browser.py` in this folder.
+2. Copy or link the `badger_firefox.py` file to `local.py` in this folder.
 3. Open two terminals.
 4. In the first start a selenium server by running  `java -jar $the_selenium_jar`
 5. Run the tests in the second (`python test_userman.py`).
@@ -16,7 +16,7 @@ or any other browser Selenium can control.
 
 1. Download the Selenium standalone jar (see the first line in the
    `get-dependencies.sh` script).
-2. Copy or link the `htmlunitwithjs_browser.py` file to `local_browser.py`
+2. Copy or link the `htmlunitwithjs_browser.py` file to `local.py`
    in this folder.
 3. Open a pair of terminals
 4. In the first start a selenium server by running  `java -jar $the_selenium_jar`
@@ -31,7 +31,7 @@ or any other browser Selenium can control.
 
 ## Other
 
-Other configurations are supported by creating custom `local_browser.py`
+Other configurations are supported by creating custom `local.py`
 files, which must contain two functions `get_browser` and `end_browser` plus a
 property '. These are extended by `test_helpers.py`, see there for more
 about what's expected.
