@@ -129,6 +129,25 @@ def test_email_changed_in_user_get():
     assert user_new_email == new_email
 
 @with_setup(test_helpers.delete_db, test_helpers.delete_db)
+def test_email_changed_in_user_get_wrong_case():
+    """
+    Tests that when the user is requested with the wrong case,
+    we still return the correct information about their pending email.
+    """
+    new_email = 'nope@srobo.org'
+    setup_new_email("student_coll1_1", new_email, 'bees')
+
+    params = {"username":"Student_Coll1_1",
+              "password":"cows"}
+    r,data = test_helpers.server_get("/user/Student_Coll1_1", params)
+    assert r.status == 200, data
+
+    user_info = json.loads(data)
+    user_new_email = user_info['new_email']
+
+    assert user_new_email == new_email
+
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_user_get_checks_same_email():
     username = "student_coll1_1"
     new_email = User(username).email

@@ -102,7 +102,7 @@ def user_details(userid):
     if ah.auth_will_succeed and ah.user.can_administrate(userid):
         user = User.create_user(userid)
         details = user.details_dictionary_for(ah.user)
-        email_change_rq = PendingEmail(userid)
+        email_change_rq = PendingEmail(user.username)
         if email_change_rq.in_db:
             new_email = email_change_rq.new_email
             if new_email != details['email']:

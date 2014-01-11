@@ -28,6 +28,18 @@ def test_user_get_self():
     assert r.status == 200
     assert data.find("student_coll1_1") != -1
 
+def test_user_get_self_wrong_case():
+    """
+    Tests that when a user auths with the wrong case,
+    and requests the wrong case of username in the url,
+    we still respond with the correctly cased data.
+    """
+    params = {"username":"Student_Coll1_1",
+              "password":"cows"}
+    r,data = test_helpers.server_get("/user/studenT_coll1_1", params)
+    assert r.status == 200
+    assert data.find("student_coll1_1") != -1
+
 def test_user_get_other_can_view():
     params = {"username":"blueshirt",
               "password":"blueshirt",
