@@ -108,7 +108,8 @@ class testUserman(unittest.TestCase):
         self.login()
         self.assert_shown('data-college-list')
         college_1 = self.assert_shown('college-1')
-        assert "college the first" in college_1.text
+        college_1_text = college_1.text
+        assert "college the first" in college_1_text.lower(), college_1_text
         self.assert_shown_selector('#college-1 li.register')
         for uid in ['teacher_coll1', 'student_coll1_1', 'student_coll1_2', \
                     'blueshirt', 'withdrawn_student']:
