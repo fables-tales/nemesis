@@ -112,7 +112,7 @@ class testUserman(unittest.TestCase):
         assert "college the first" in college_1_text.lower(), college_1_text
         self.assert_shown_selector('#college-1 li.register')
         for uid in ['teacher_coll1', 'student_coll1_1', 'student_coll1_2', \
-                    'blueshirt', 'withdrawn_student']:
+                    'withdrawn_student']:
             self.assert_shown_selector('#college-1 li.{0}'.format(uid))
 
     def test_landingpage_register(self):
