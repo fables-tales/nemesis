@@ -42,14 +42,14 @@ class testUserman(unittest.TestCase):
         b = helpers.get_browser()
         self.browser = b
 
-    def login(self):
+    def login(self, user = 'teacher_coll1', passwd = 'facebees'):
         self.assert_shown('login')
 
         username = self.assert_shown('username')
-        username.send_keys("teacher_coll1")
+        username.send_keys(user)
 
         password = self.assert_shown('password')
-        password.send_keys("facebees")
+        password.send_keys(passwd)
 
         login_button = self.browser.find_element_by_css_selector('#login button')
         login_button.click()
