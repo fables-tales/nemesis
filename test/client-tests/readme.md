@@ -27,7 +27,7 @@ or any other browser Selenium can control.
 1. Download the Chrome Driver, from https://sites.google.com/a/chromium.org/chromedriver/downloads,
    2.8 is current at the time of writing. If you put this next to the
    `chrome_browser.py` file, it should all just work.
-2. Copy and edit the `chrome.tpl` file to `local.py` in this folder.
+2. Copy or link the `chrome_browser.py` file to `local.py` in this folder.
 
 ## Other
 
