@@ -1,6 +1,7 @@
 
 import os
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 import test_helpers
 
@@ -14,8 +15,13 @@ def get_browser():
 
     my_dir = os.path.dirname(os.path.abspath(__file__))
 
+    # Un comment the line below to use chromedriver directly, and
     # modify with the path to your chromedriver download if needed
-    browser = webdriver.Chrome(os.path.join(my_dir, 'chromedriver'))
+    #browser = webdriver.Chrome(os.path.join(my_dir, 'chromedriver'))
+
+    # Use Chrome via the server, expects chromedriver to be next to the jar.
+    browser = webdriver.Remote(desired_capabilities = DesiredCapabilities.CHROME)
+
     return browser
 
 def end_browser():
