@@ -46,7 +46,7 @@ var EditView = function() {
                 }
                 var withdrawn_text = "";
                 if (user.has_withdrawn) {
-                    withdrawn_text = "This user has been withdrawn from the competition.";
+                    withdrawn_text = "This user has been withdrawn from the competition and cannot be edited.";
                 }
                 var opts = {"user":user,
                         "disabled":disabled_fields,

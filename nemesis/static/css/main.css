@@ -40,6 +40,9 @@ select {
     padding-left:0;
 }
 
+p.withdrawn-warning {
+    color: red;
+}
 p.withdrawn-warning:empty {
     display: none;
 }
