@@ -18,28 +18,6 @@ class testUserman(unittest.TestCase):
         helpers.remove_user('1_ww1')
         helpers.clear_database()
 
-    def reset_user_details(self):
-        helpers.end_browser()
-        self.browser = helpers.get_browser()
-        self.login()
-        user_link = self.browser.find_element_by_id("user-student_coll1_1")
-        user_link.click()
-        print "user details sleep"
-        time.sleep(4)
-        print "user details sleep done"
-
-        email_field = self.browser.find_element_by_id("user-email")
-        email_field.clear()
-        email_field.send_keys("student1@example.com")
-
-        password_field = self.browser.find_element_by_id("user-password")
-        password_field.clear()
-        password_field.send_keys("cows")
-
-        set_button = self.browser.find_element_by_id("set")
-        set_button.click()
-        time.sleep(4)
-
     def setUp(self):
         helpers.remove_user('1_ww1')
         helpers.clear_database()
@@ -208,40 +186,29 @@ class testUserman(unittest.TestCase):
         self.assert_editing('student_coll1_1')
 
     def test_change_user_details(self):
-        self.login()
-        print "."
-        user_link = self.browser.find_element_by_id("user-student_coll1_1")
-        user_link.click()
-        print "."
-        time.sleep(1)
-        print "."
-        self.assertTrue("#show-student_coll1_1" in self.browser.current_url)
+        self.test_user_display()
 
-        password_field = self.browser.find_element_by_id("user-password")
-        password_field.clear()
-        password_field.send_keys("my_new_password")
-
-        email_field = self.browser.find_element_by_id("user-email")
+        email_field = self.assert_shown_selector("#update-user input[name=new_email]")
         email_field.clear()
-        email_field.send_keys("email2@email.com")
+        new_email = "email2@example.com"
+        email_field.send_keys(new_email)
 
-        set_button = self.browser.find_element_by_id("set")
+        set_button = self.assert_shown("edit-submit")
         set_button.click()
-        print "."
-        time.sleep(2)
-        print "."
-        user_link = self.browser.find_element_by_id("user-student_coll1_1")
-        user_link.click()
-        print "."
-        time.sleep(2)
-        print "."
-        email_field = self.browser.find_element_by_id("user-email")
-        self.assertEqual(email_field.get_attribute("value"), "email2@email.com")
 
-        print "."
-        print "starting reset"
-        self.reset_user_details()
-        print "reset done"
+        msg_text = self.get_messages_text()
+        assert 'sending user detail' in msg_text.lower(), msg_text
+
+        time.sleep(1)
+
+        # Should still be showing the same user
+        self.assert_editing('student_coll1_1')
+
+        # Should have the new email as a pending
+        email_field = self.assert_shown("data-email")
+        email_field_text = email_field.text
+        expected = "pending change to " + new_email
+        assert expected in email_field_text, email_field_text
 
 if __name__ == '__main__':
     unittest.main()
