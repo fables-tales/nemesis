@@ -39,3 +39,15 @@ select {
     margin-left:-2px;
     padding-left:0;
 }
+
+p.withdrawn-warning {
+    color: red;
+}
+p.withdrawn-warning:empty {
+    display: none;
+}
+
+.user.active.disabled > a:focus, .user.active.disabled > a:hover {
+    background-color:#0088CC;
+    color:#999999;
+}

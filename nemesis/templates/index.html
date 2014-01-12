@@ -78,7 +78,7 @@
                 <a href="#edit-{username}"><i class="icon-user icon-white"></i> {first_name} {last_name} ({username})</a>
             </script>
             <script type="text/template" id="user_link">
-                <li class="user {user.username}"><a href="#edit-{user.username}">{html:user.media} <i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
+                <li class="user {user.username} {user.class}"><a href="#edit-{user.username}">{html:user.media} <i class="icon-user"></i> {user.first_name} {user.last_name} ({user.username})</a></li>
             </script>
 
             <script type="text/template" id="register_link">
@@ -91,8 +91,9 @@
 
             <script type="text/template" id="user_edit">
                 <h2>Edit User <span class="username">{user.username}</span></h2>
+                <p class="withdrawn-warning">{withdrawn_text}</p>
                 <form id="user_edit_form">
-                <fieldset id="update-user">
+                <fieldset id="update-user" {html:disabled.update-user}>
                     <label>First Name</label>
                     <input required type="text" value="{user.first_name}" name="new_first_name" {html:disabled.first_name}>
                     <label>Last Name</label>
@@ -109,8 +110,13 @@
                     <input type="radio" name="type" value="student"{html:checked.type_student}{html:disabled.type}>Student<br>
                     <input type="radio" name="type" value="team-leader"{html:checked.type_team_leader}{html:disabled.type}>Team Leader - this will allow them to manage users
                     <hr>
-                    <button type="submit" class="btn btn-primary" id="edit-submit">Submit</button>
-                    <button class="btn" id="edit-cancel-email-change">Cancel Email Change</button>
+                    <button type="submit" class="btn btn-primary" id="edit-submit" {html:disabled.update-user}>Submit</button>
+                    <button class="btn" id="withdraw-user" {disabled.withdraw-user}
+                            title="Withdraw the user from the competition. They no longer be able to access any of Student Robotics' services, nor will they be sent any information about events."
+                            >
+                        Withdraw user
+                    </button>
+                    <button type="submit" class="btn" id="edit-cancel-email-change">Cancel Email Change</button>
                 </fieldset>
                 </form>
             </script>

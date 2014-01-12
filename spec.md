@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.4.0-alpha.5 [SemVer](http://semver.org/)
+##Version 3.4.0-alpha.6 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -148,6 +148,9 @@ be cancelled by setting this to the users' current email.
     only teachers can cause any update to this information, and cannot change themselves,
     so this value will be ignored if the authenticated user is a student or a teacher is
     trying to demote themselves. The request will appear to succeed.
+* `withdrawn` optional: If set to 'true', the user will be withdrawn. For this to have any
+    effect, the requesting user must be a team leader, and the target user must not be
+    themselves or a blueshirt.
 
 ####Response code
 

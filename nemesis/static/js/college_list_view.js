@@ -33,6 +33,9 @@ var CollegeListView = function() {
                     }
                     u.media = media_consent_template.render_with(args);
                 });
+                $.each(college.users, function (index, user) {
+                    user.class = user.has_withdrawn ? "disabled" : undefined;
+                });
                 var user_templates = user_template.map_over("user", college.users);
                 var register_link = '';
                 if (allow_registration && register_template != null) { // will be null if not allowed to register

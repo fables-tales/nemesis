@@ -6,6 +6,7 @@ var User = function() {
         this.email = "";
         var password = "";
         this.colleges = [];
+        this.has_withdrawn = false;
         var that = this;
 
         this.login = function(pw, success_callback, error_callback) {
@@ -52,6 +53,7 @@ var User = function() {
             to.is_student   = from.is_student;
             to.is_team_leader = from.is_team_leader;
             to.has_media_consent = from.has_media_consent;
+            to.has_withdrawn = from.has_withdrawn;
         };
 
         var set_header = function() {
@@ -62,6 +64,10 @@ var User = function() {
                     'Authorization': "Basic " + hash
                 }
             });
+        };
+
+        this.can_withdraw = function(user) {
+            return !user.has_withdrawn && !user.is_blueshirt && user.username != that.username && that.is_team_leader;
         };
 
     };
