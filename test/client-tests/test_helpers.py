@@ -6,6 +6,7 @@ sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common_test_helpers import sqlite_connect, last_email, template
 from common_test_helpers import delete_db as clear_database
+from common_test_helpers import remove_user as remove_user_helper
 
 # Customisable import. Deliberately not present by default
 import local
@@ -30,3 +31,6 @@ def registration_count():
     conn = sqlite_connect()
     cur  = conn.cursor()
     return cur.execute("SELECT COUNT(*) FROM registrations").next()[0]
+
+def remove_user(username):
+    remove_user_helper(username)()

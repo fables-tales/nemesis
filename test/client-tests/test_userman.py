@@ -1,4 +1,5 @@
 
+from selenium.common.exceptions import StaleElementReferenceException
 import time
 import unittest
 
@@ -14,6 +15,8 @@ def wait_while(predicate, max = 5):
 class testUserman(unittest.TestCase):
     def tearDown(self):
         helpers.end_browser()
+        helpers.remove_user('1_ww1')
+        helpers.clear_database()
 
     def reset_user_details(self):
         helpers.end_browser()
@@ -38,6 +41,7 @@ class testUserman(unittest.TestCase):
         time.sleep(4)
 
     def setUp(self):
+        helpers.remove_user('1_ww1')
         helpers.clear_database()
         b = helpers.get_browser()
         self.browser = b
@@ -115,9 +119,10 @@ class testUserman(unittest.TestCase):
                     'withdrawn_student']:
             self.assert_shown_selector('#college-1 li.{0}'.format(uid))
 
-    def test_landingpage_register(self):
+    def test_register(self):
         self.login()
 
+        # Get the registration form showing
         reg_link = self.assert_shown_selector('#college-1 li.register a')
         reg_link.click()
 
@@ -130,10 +135,45 @@ class testUserman(unittest.TestCase):
         reg_li_classes = reg_li.get_attribute('class')
         assert 'active' in reg_li_classes
 
-        register_users_div = self.assert_shown("data-register-users")
-        register_users_table = self.assert_shown("data-register-table")
+        self.assert_shown("data-register-users")
+        self.assert_shown("data-register-table")
         first_name_1 = self.assert_shown_selector("#data-register-table input[name=first_name]")
         assert first_name_1.is_selected, 'focus should be on the first_name input'
+
+        # Actually submit a new user
+        last_name_1 = self.assert_shown_selector("#data-register-table input[name=last_name]")
+        email_1 = self.assert_shown_selector("#data-register-table input[name=email]")
+        feedback_1 = self.assert_shown_selector("#data-register-table td.feedback")
+
+        first_name_1.send_keys("winning")
+        last_name_1.send_keys("winning")
+        email_1.send_keys("winning@example.com")
+
+        register_button = self.assert_shown("register-submit")
+        register_button.click()
+        feedback = feedback_1.text
+        assert feedback == '', feedback
+
+        messages = self.assert_shown('messages')
+        msg_text = messages.text
+        assert '0/1' in msg_text
+
+        time.sleep(1)
+
+        try:
+            feedback = feedback_1.text
+            assert feedback == '', feedback
+        except StaleElementReferenceException:
+            pass # it gets removed on success
+
+        messages = self.assert_shown('messages')
+        msg_text = messages.text
+        assert 'success' in msg_text, msg_text
+
+        register_users_div = self.browser.find_element_by_id("data-register-users")
+        assert not register_users_div.is_displayed()
+
+        self.assertEqual(helpers.registration_count(), 1)
 
     def test_user_display(self):
         self.login()
@@ -165,28 +205,6 @@ class testUserman(unittest.TestCase):
 
         self_link.click()
         self.assert_editing('student_coll1_1')
-
-    def test_register(self):
-        self.login()
-        registration_link = self.browser.find_element_by_id("show-register")
-        registration_link.click()
-        time.sleep(1)
-        form = self.browser.find_elements_by_xpath('//*/td/input')
-        form[0].send_keys("winning")
-        form[1].send_keys("winning")
-        form[2].send_keys("winning")
-
-        register_button = self.browser.find_element_by_id("send-register")
-        register_button.click()
-        time.sleep(7)
-
-        msg_div = self.browser.find_element_by_id("msg")
-        print self.browser.current_url
-
-        self.assertTrue("#college" in self.browser.current_url)
-        self.assertEqual(msg_div.text, "1 users registered successfully!")
-        self.assertEqual(helpers.registration_count(), 1)
-
 
     def test_change_user_details(self):
         self.login()
