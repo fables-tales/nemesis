@@ -101,6 +101,9 @@ class testUserman(unittest.TestCase):
         header = self.assert_shown_selector('#data-edit-user h2')
         assert username in header.text
 
+    def get_messages_text(self):
+        return self.assert_shown('messages').text
+
 
     def test_landingpage_title(self):
         assert self.browser.title == "Userman"
@@ -154,8 +157,7 @@ class testUserman(unittest.TestCase):
         feedback = feedback_1.text
         assert feedback == '', feedback
 
-        messages = self.assert_shown('messages')
-        msg_text = messages.text
+        msg_text = self.get_messages_text()
         assert '0/1' in msg_text
 
         time.sleep(1)
@@ -166,8 +168,7 @@ class testUserman(unittest.TestCase):
         except StaleElementReferenceException:
             pass # it gets removed on success
 
-        messages = self.assert_shown('messages')
-        msg_text = messages.text
+        msg_text = self.get_messages_text()
         assert 'success' in msg_text, msg_text
 
         register_users_div = self.browser.find_element_by_id("data-register-users")
