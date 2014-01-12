@@ -105,6 +105,13 @@ var EditView = function() {
         };
 
         this.withdraw_user = function () {
+            var msg = "Withdrawing a user can only be undone by contacting Student Robotics.\n\n"
+                    + "The withdrawn user will no longer be able to access any of Student Robotics' services,\n"
+                    + "nor will they be sent any information about events.\n\n"
+                    + "Are you sure you want to continue?";
+            if (!confirm(msg)) {
+                return;
+            }
             wv.start("Withdrawing user");
             $.post("user/" + my_user.username, {'withdrawn': true}, function (response) {
                 that.refresh_view();

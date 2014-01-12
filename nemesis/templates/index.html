@@ -111,7 +111,11 @@
                     <input type="radio" name="type" value="team-leader"{html:checked.type_team_leader}{html:disabled.type}>Team Leader - this will allow them to manage users
                     <hr>
                     <button type="submit" class="btn btn-primary" id="edit-submit" {html:disabled.update-user}>Submit</button>
-                    <button class="btn" id="withdraw-user" {disabled.withdraw-user}>Withdraw user</button>
+                    <button class="btn" id="withdraw-user" {disabled.withdraw-user}
+                            title="Withdraw the user from the competition. They no longer be able to access any of Student Robotics' services, nor will they be sent any information about events."
+                            >
+                        Withdraw user
+                    </button>
                     <button type="submit" class="btn" id="edit-cancel-email-change">Cancel Email Change</button>
                 </fieldset>
                 </form>
