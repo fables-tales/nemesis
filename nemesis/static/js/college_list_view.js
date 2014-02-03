@@ -54,8 +54,14 @@ var CollegeListView = function() {
         };
         this.set_active = function(username) {
             this.set_all_inactive();
-            $("." + username).addClass("active");
-            current_username = username;
+            var u = $("." + username);
+            if (u.length) {
+                u.addClass("active");
+                current_username = username;
+            } else {
+                // not a valid username
+                clear_view();
+            }
         };
 
         this.set_all_inactive = function() {

@@ -81,6 +81,10 @@ function handle_hash() {
     }
 }
 
+function clear_view() {
+    location.hash = '';
+}
+
 function college_name_from_hash() {
     return location.hash.substring(5,location.hash.length);
 }
