@@ -132,40 +132,41 @@ def request_new_email(user, new_email):
 @app.route("/user/<userid>", methods=["POST"])
 def set_user_details(userid):
     ah = AuthHelper(request)
-    if ah.auth_will_succeed and ah.user.can_administrate(userid):
-        user_to_update = User.create_user(userid)
-        if request.form.has_key("new_email") and not ah.user.is_blueshirt:
-            new_email = request.form["new_email"]
-            request_new_email(user_to_update, new_email)
-        # Students aren't allowed to update their own names
-        # at this point, if the ah.user is valid, we know it's a self-edit
-        if request.form.has_key("new_first_name") and not ah.user.is_student and request.form["new_first_name"] != '':
-            user_to_update.set_first_name(request.form["new_first_name"])
-        if request.form.has_key("new_last_name") and not ah.user.is_student and request.form["new_last_name"] != '':
-            user_to_update.set_last_name(request.form["new_last_name"])
-        if request.form.has_key("new_team"):
-            team = request.form["new_team"]
-            if (not user_to_update.is_blueshirt) and ah.user.manages_team(team):
-                user_to_update.set_team(team)
-        if request.form.has_key("new_type") and ah.user.is_teacher and user_to_update != ah.user:
-            if request.form["new_type"] == 'student':
-                user_to_update.make_student()
-            elif request.form["new_type"] == 'team-leader':
-                user_to_update.make_teacher()
-        if request.form.has_key("withdrawn") and request.form['withdrawn'] == 'true' \
-            and ah.user.can_withdraw(user_to_update):
-            user_to_update.withdraw()
 
-        user_to_update.save()
-
-        # Do this separately and last because it makes an immediate change
-        # to the underlying database, rather than waiting for save().
-        if request.form.has_key("new_password"):
-            user_to_update.set_password(request.form["new_password"])
-
-        return '{}', 200
-    else:
+    if not (ah.auth_will_succeed and ah.user.can_administrate(userid)):
         return ah.auth_error_json, 403
+
+    user_to_update = User.create_user(userid)
+    if request.form.has_key("new_email") and not ah.user.is_blueshirt:
+        new_email = request.form["new_email"]
+        request_new_email(user_to_update, new_email)
+    # Students aren't allowed to update their own names
+    # at this point, if the ah.user is valid, we know it's a self-edit
+    if request.form.has_key("new_first_name") and not ah.user.is_student and request.form["new_first_name"] != '':
+        user_to_update.set_first_name(request.form["new_first_name"])
+    if request.form.has_key("new_last_name") and not ah.user.is_student and request.form["new_last_name"] != '':
+        user_to_update.set_last_name(request.form["new_last_name"])
+    if request.form.has_key("new_team"):
+        team = request.form["new_team"]
+        if (not user_to_update.is_blueshirt) and ah.user.manages_team(team):
+            user_to_update.set_team(team)
+    if request.form.has_key("new_type") and ah.user.is_teacher and user_to_update != ah.user:
+        if request.form["new_type"] == 'student':
+            user_to_update.make_student()
+        elif request.form["new_type"] == 'team-leader':
+            user_to_update.make_teacher()
+    if request.form.has_key("withdrawn") and request.form['withdrawn'] == 'true' \
+        and ah.user.can_withdraw(user_to_update):
+        user_to_update.withdraw()
+
+    user_to_update.save()
+
+    # Do this separately and last because it makes an immediate change
+    # to the underlying database, rather than waiting for save().
+    if request.form.has_key("new_password"):
+        user_to_update.set_password(request.form["new_password"])
+
+    return '{}', 200
 
 @app.route("/colleges", methods=["GET"])
 def colleges():
