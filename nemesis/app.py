@@ -36,65 +36,66 @@ def sha():
 @app.route("/registrations", methods=["POST"])
 def register_user():
     ah = AuthHelper(request)
-    if ah.auth_will_succeed:
-        requesting_user = ah.user
-        if requesting_user.can_register_users:
-            teacher_username = requesting_user.username
-            college_group    = request.form["college"].strip()
-            first_name       = request.form["first_name"].strip()
-            last_name        = request.form["last_name"].strip()
-            email            = request.form["email"].strip()
-            team             = request.form["team"].strip()
 
-            if College(college_group) not in requesting_user.colleges:
-                return json.dumps({"error":"BAD_COLLEGE"}), 403
-
-            if team not in [t.name for t in College(college_group).teams]:
-                return json.dumps({"error":"BAD_TEAM"}), 403
-
-            if not helpers.is_email_valid(email):
-                return json.dumps({"error":"BAD_EMAIL"}), 403
-
-            if not helpers.is_name_valid(first_name):
-                return json.dumps({"error":"BAD_FIRST_NAME"}), 403
-
-            if not helpers.is_name_valid(last_name):
-                return json.dumps({"error":"BAD_LAST_NAME"}), 403
-
-            if User.name_used(first_name, last_name) or helpers.email_used(email):
-                return json.dumps({"error":"DETAILS_ALREADY_USED"}), 403
-
-            u = User.create_new_user(requesting_user, college_group, first_name, last_name)
-            verify_code = helpers.create_verify_code(u.username, email)
-
-            pu = PendingUser(u.username)
-            pu.teacher_username = teacher_username
-            pu.college = college_group
-            pu.email = email
-            pu.team = team
-            pu.verify_code = verify_code
-            pu.save()
-
-            log_action('registering user', pu)
-
-            url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
-            pu.send_welcome_email(first_name, url)
-
-            rqu_email_vars = { 'name': requesting_user.first_name,
-                      'pu_first_name': first_name,
-                       'pu_last_name': last_name,
-                        'pu_username': pu.username,
-                         'pu_college': College(pu.college).name,
-                           'pu_email': pu.email,
-                            'pu_team': pu.team
-                              }
-            mailer.email_template(requesting_user.email, 'user_requested', rqu_email_vars)
-
-            return "{}", 202
-        else:
-            return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
-    else:
+    if not ah.auth_will_succeed:
         return ah.auth_error_json, 403
+
+    requesting_user = ah.user
+    if not requesting_user.can_register_users:
+        return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
+
+    teacher_username = requesting_user.username
+    college_group    = request.form["college"].strip()
+    first_name       = request.form["first_name"].strip()
+    last_name        = request.form["last_name"].strip()
+    email            = request.form["email"].strip()
+    team             = request.form["team"].strip()
+
+    if College(college_group) not in requesting_user.colleges:
+        return json.dumps({"error":"BAD_COLLEGE"}), 403
+
+    if team not in [t.name for t in College(college_group).teams]:
+        return json.dumps({"error":"BAD_TEAM"}), 403
+
+    if not helpers.is_email_valid(email):
+        return json.dumps({"error":"BAD_EMAIL"}), 403
+
+    if not helpers.is_name_valid(first_name):
+        return json.dumps({"error":"BAD_FIRST_NAME"}), 403
+
+    if not helpers.is_name_valid(last_name):
+        return json.dumps({"error":"BAD_LAST_NAME"}), 403
+
+    if User.name_used(first_name, last_name) or helpers.email_used(email):
+        return json.dumps({"error":"DETAILS_ALREADY_USED"}), 403
+
+    u = User.create_new_user(requesting_user, college_group, first_name, last_name)
+    verify_code = helpers.create_verify_code(u.username, email)
+
+    pu = PendingUser(u.username)
+    pu.teacher_username = teacher_username
+    pu.college = college_group
+    pu.email = email
+    pu.team = team
+    pu.verify_code = verify_code
+    pu.save()
+
+    log_action('registering user', pu)
+
+    url = url_for('activate_account', username=u.username, code=verify_code, _external=True)
+    pu.send_welcome_email(first_name, url)
+
+    rqu_email_vars = { 'name': requesting_user.first_name,
+              'pu_first_name': first_name,
+               'pu_last_name': last_name,
+                'pu_username': pu.username,
+                 'pu_college': College(pu.college).name,
+                   'pu_email': pu.email,
+                    'pu_team': pu.team
+                      }
+    mailer.email_template(requesting_user.email, 'user_requested', rqu_email_vars)
+
+    return "{}", 202
 
 @app.route("/user/<userid>", methods=["GET"])
 def user_details(userid):
