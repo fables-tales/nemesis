@@ -98,17 +98,18 @@ def register_user():
 @app.route("/user/<userid>", methods=["GET"])
 def user_details(userid):
     ah = AuthHelper(request)
-    if ah.auth_will_succeed and ah.user.can_administrate(userid):
-        user = User.create_user(userid)
-        details = user.details_dictionary_for(ah.user)
-        email_change_rq = PendingEmail(user.username)
-        if email_change_rq.in_db:
-            new_email = email_change_rq.new_email
-            if new_email != details['email']:
-                details['new_email'] = new_email
-        return json.dumps(details), 200
-    else:
+
+    if not (ah.auth_will_succeed and ah.user.can_administrate(userid)):
         return ah.auth_error_json, 403
+
+    user = User.create_user(userid)
+    details = user.details_dictionary_for(ah.user)
+    email_change_rq = PendingEmail(user.username)
+    if email_change_rq.in_db:
+        new_email = email_change_rq.new_email
+        if new_email != details['email']:
+            details['new_email'] = new_email
+    return json.dumps(details), 200
 
 def request_new_email(user, new_email):
     userid = user.username
