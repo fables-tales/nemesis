@@ -29,9 +29,7 @@ def index():
 
 @app.route("/site/sha")
 def sha():
-    p = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE, cwd=PATH)
-    p.wait()
-    return p.stdout.read()
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=PATH)
 
 @app.route("/registrations", methods=["POST"])
 def register_user():
