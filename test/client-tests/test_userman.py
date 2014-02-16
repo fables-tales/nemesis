@@ -55,7 +55,7 @@ class testUserman(unittest.TestCase):
         return self.assert_shown(elem_id)
 
     def wait_shown_selector(self, elem_selector, max = 5):
-        not_shown = lambda: not self.browser.find_element_by_css_selector(elem_id).is_displayed()
+        not_shown = lambda: not self.browser.find_element_by_css_selector(elem_selector).is_displayed()
         wait_while(not_shown, max)
         return self.assert_shown_selector(elem_selector)
 
