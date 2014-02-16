@@ -41,7 +41,7 @@ class testUserman(unittest.TestCase):
 
     def assert_shown_selector(self, elem_selector):
         elem = self.browser.find_element_by_css_selector(elem_selector)
-        assert elem.is_displayed(), "{0} should be shown".format(elem_id)
+        assert elem.is_displayed(), "{0} should be shown".format(elem_selector)
         return elem
 
     def assert_not_shown(self, elem_id):
