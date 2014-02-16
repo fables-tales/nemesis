@@ -73,6 +73,21 @@ class testUserman(unittest.TestCase):
         header = self.assert_shown_selector('#data-edit-user h2')
         assert username in header.text
 
+    def assert_user_display(self, username, name):
+        self.login()
+
+        user_li_selector = '#college-1 li.user.' + username
+        user_li = self.assert_shown_selector(user_li_selector)
+        classes = user_li.get_attribute('class')
+        assert 'active' not in classes
+
+        user_link = self.assert_shown_selector(user_li_selector + ' a')
+        expected = "{0} ({1})".format(name, username)
+        assert expected == user_link.text, "Link text for '{0}' was wrong.".format(username)
+
+        user_link.click()
+        self.assert_editing(username)
+
     def get_messages_text(self):
         return self.assert_shown('messages').text
 
@@ -149,17 +164,7 @@ class testUserman(unittest.TestCase):
         self.assertEqual(helpers.registration_count(), 1)
 
     def test_user_display(self):
-        self.login()
-
-        user_li = self.assert_shown_selector('#college-1 li.user.student_coll1_1')
-        classes = user_li.get_attribute('class')
-        assert 'active' not in classes
-
-        user_link = self.assert_shown_selector('#college-1 li.user.student_coll1_1 a')
-        assert "student1 student (student_coll1_1)" == user_link.text
-
-        user_link.click()
-        self.assert_editing('student_coll1_1')
+        self.assert_user_display('student_coll1_1', 'student1 student')
 
     def test_self_edit_link(self):
         self.login()
