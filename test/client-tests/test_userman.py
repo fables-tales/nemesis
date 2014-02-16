@@ -4,13 +4,7 @@ import time
 import unittest
 
 import test_helpers as helpers
-
-def wait_while(predicate, max = 5):
-    end = time.time() + max
-    while predicate():
-        time.sleep(0.1)
-        if time.time() > end:
-            break
+from test_helpers import wait_while
 
 class testUserman(unittest.TestCase):
     def tearDown(self):

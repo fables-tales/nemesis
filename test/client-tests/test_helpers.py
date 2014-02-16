@@ -1,6 +1,7 @@
 
 import os
 import sys
+import time
 
 sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -34,3 +35,10 @@ def registration_count():
 
 def remove_user(username):
     remove_user_helper(username)()
+
+def wait_while(predicate, max = 5):
+    end = time.time() + max
+    while predicate():
+        time.sleep(0.1)
+        if time.time() > end:
+            break
