@@ -1,19 +1,35 @@
 
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException
 import time
 import unittest
 
 import test_helpers as helpers
 from test_helpers import wait_while
 
+from libnemesis import srusers
+
+def create_user(username, first, last):
+    # Add the new user
+    u = srusers.user(username)
+    u.cname = first
+    u.sname = last
+    u.email = ''
+    u.save()
+    g = srusers.group('college-1')
+    g.user_add(u)
+    g.save()
+
 class testUserman(unittest.TestCase):
     def tearDown(self):
         helpers.end_browser()
         helpers.remove_user('1_ww1')
+        helpers.remove_user('other-created-user')
         helpers.clear_database()
 
     def setUp(self):
         helpers.remove_user('1_ww1')
+        helpers.remove_user('other-created-user')
         helpers.clear_database()
         b = helpers.get_browser()
         self.browser = b
@@ -48,6 +64,13 @@ class testUserman(unittest.TestCase):
         elem = self.browser.find_element_by_id(elem_id)
         assert not elem.is_displayed(), "{0} should not be shown".format(elem_id)
         return elem
+
+    def assert_no_selector(self, elem_selector):
+        try:
+            elem = self.browser.find_element_by_css_selector(elem_selector)
+            assert elem is None
+        except NoSuchElementException:
+            pass
 
     def wait_shown(self, elem_id, max = 5):
         not_shown = lambda: not self.browser.find_element_by_id(elem_id).is_displayed()
@@ -208,6 +231,58 @@ class testUserman(unittest.TestCase):
         email_field_text = email_field.text
         expected = "pending change to " + new_email
         assert expected in email_field_text, email_field_text
+
+    def test_add_user_refresh(self):
+        self.test_user_display()
+
+        username = 'other-created-user'
+        create_user(username, 'other-first', 'created-last')
+
+        refresh_button = self.assert_shown_selector('#college-1 button.refresh')
+        refresh_button.click()
+
+        time.sleep(3)
+
+        self.assert_shown_selector('#college-1 li.user.' + username)
+
+    def test_remove_user_refresh(self):
+        username = 'other-created-user'
+        first = 'other-first'
+        last = 'created-last'
+        create_user(username, first, last)
+
+        self.test_user_display()
+
+        helpers.remove_user(username)
+
+        refresh_button = self.assert_shown_selector('#college-1 button.refresh')
+        refresh_button.click()
+
+        time.sleep(3)
+
+        # Ensure we're still editing the user we were editing.
+        self.assert_editing('student_coll1_1')
+
+    def test_remove_current_user_refresh(self):
+        username = 'other-created-user'
+        first = 'other-first'
+        last = 'created-last'
+        create_user(username, first, last)
+
+        self.assert_user_display(username, first + ' ' + last)
+
+        helpers.remove_user(username)
+
+        refresh_button = self.assert_shown_selector('#college-1 button.refresh')
+        refresh_button.click()
+
+        time.sleep(3)
+
+        url = self.browser.current_url
+        assert url.endswith('#')
+
+        self.assert_not_shown('data-edit-user')
+        self.assert_no_selector('#college-1 li.user.' + username)
 
 if __name__ == '__main__':
     unittest.main()
