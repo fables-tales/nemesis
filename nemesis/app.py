@@ -40,7 +40,7 @@ def register_user():
 
     requesting_user = ah.user
     if not requesting_user.can_register_users:
-        return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}),403
+        return json.dumps({"error":"YOU_CANT_REGISTER_USERS"}), 403
 
     teacher_username = requesting_user.username
     college_group    = request.form["college"].strip()
