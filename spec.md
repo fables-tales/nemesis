@@ -1,6 +1,6 @@
 #Nemesis REST API spec
 
-##Version 3.4.0 [SemVer](http://semver.org/)
+##Version 3.5.0 [SemVer](http://semver.org/)
 
 This document explains all the Nemesis API endpoints. The production version of
 this API runs on http://studentrobotics.org/userman. URL components are of the
@@ -23,11 +23,12 @@ A 403 response from nemesis with no `authentication_errors` field represents
 an authorization problem (the user authenticated successfully but is not
 permitted to interact with the resource)
 
-There are three user roles in nemesis:
+There are the following user roles in nemesis:
 
 * team-leader
 * blueshirt
 * student
+* blueshirt-extra
 
 The term "can administrate" in this document is used to determine whether or
 not a user is capable of administrating another user. The conditions for this
@@ -40,6 +41,11 @@ are as follows:
   be accessed they may access/modify information about that user so long as
   that user is not a blueshirt.
 * An authenticated user can administrate itself
+
+Users in the category of blueshirt-extra act like blueshirts, but have
+additional read access to some values. The details of this are deliberately
+not specified here as they may change as the requirements of the system's
+users change.
 
 ##GET /colleges
 
