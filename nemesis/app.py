@@ -104,11 +104,15 @@ def user_details(userid):
 
     user = User.create_user(userid)
     details = user.details_dictionary_for(ah.user)
-    email_change_rq = PendingEmail(user.username)
-    if email_change_rq.in_db:
-        new_email = email_change_rq.new_email
-        if new_email != details['email']:
-            details['new_email'] = new_email
+
+    if 'email' in details:
+        """Then the requesting user can view the emails -- also tell them
+        about any pending changes."""
+        email_change_rq = PendingEmail(user.username)
+        if email_change_rq.in_db:
+            new_email = email_change_rq.new_email
+            if new_email != details['email']:
+                details['new_email'] = new_email
     return json.dumps(details), 200
 
 def request_new_email(user, new_email):

@@ -7,6 +7,7 @@ import test_helpers
 
 sys.path.append("../../nemesis/libnemesis")
 from libnemesis import User, srusers
+from sqlitewrapper import PendingEmail
 
 def test_user_get_no_user():
     params = {}
@@ -40,7 +41,14 @@ def test_user_get_self_wrong_case():
     assert r.status == 200
     assert data.find("student_coll1_1") != -1
 
+@with_setup(test_helpers.delete_db, test_helpers.delete_db)
 def test_user_get_other_can_view():
+    # Set up a pending email for the student
+    pe = PendingEmail('student_coll1_1')
+    pe.new_email = 'nope@srobo.org'
+    pe.verify_code = 'bibble'
+    pe.save()
+
     params = {"username":"blueshirt",
               "password":"blueshirt",
               }
@@ -48,6 +56,8 @@ def test_user_get_other_can_view():
     r,data = test_helpers.server_get("/user/student_coll1_1", params)
     assert r.status == 200
     assert data.find("student_coll1_1") != -1
+    assert 'email' not in data
+    assert 'new_email' not in data
 
 def test_user_colleges():
     params = {"username":"blueshirt",
