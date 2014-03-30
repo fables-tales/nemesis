@@ -99,7 +99,7 @@ def register_user():
 def user_details(userid):
     ah = AuthHelper(request)
 
-    if not (ah.auth_will_succeed and ah.user.can_administrate(userid)):
+    if not (ah.auth_will_succeed and ah.user.can_view(userid)):
         return ah.auth_error_json, 403
 
     user = User.create_user(userid)
